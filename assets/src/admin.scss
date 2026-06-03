@@ -1,0 +1,621 @@
+/**
+ * Flex Booking — wp-admin UI (Bootstrap 5 + modern tables & panels).
+ */
+
+// ─── Design tokens ───────────────────────────────────────────────────────────
+body.fbs-admin-screen {
+	--fbs-admin-primary: #2563eb;
+	--fbs-admin-primary-hover: #1d4ed8;
+	--fbs-admin-primary-soft: rgba(37, 99, 235, 0.1);
+	--fbs-admin-surface: #ffffff;
+	--fbs-admin-surface-2: #f8fafc;
+	--fbs-admin-border: #e2e8f0;
+	--fbs-admin-border-strong: #cbd5e1;
+	--fbs-admin-text: #0f172a;
+	--fbs-admin-muted: #64748b;
+	--fbs-admin-radius: 10px;
+	--fbs-admin-radius-lg: 14px;
+	--fbs-admin-shadow: 0 1px 2px rgba(15, 23, 42, 0.06), 0 4px 12px rgba(15, 23, 42, 0.04);
+	--fbs-admin-shadow-lg: 0 8px 24px rgba(15, 23, 42, 0.08);
+	--fbs-admin-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+	--fbs-table-head-bg: #f1f5f9;
+	--fbs-table-row-hover: #f8fafc;
+	--fbs-table-sticky-top: 32px;
+
+	--bs-primary: var(--fbs-admin-primary);
+	--bs-primary-rgb: 37, 99, 235;
+	--bs-border-color: var(--fbs-admin-border);
+	--bs-body-font-family: var(--fbs-admin-font);
+	--bs-body-color: var(--fbs-admin-text);
+	--bs-link-color: var(--fbs-admin-primary);
+	--bs-link-hover-color: var(--fbs-admin-primary-hover);
+}
+
+// ─── Full-width wrap ─────────────────────────────────────────────────────────
+#wpbody-content .wrap.fbs-admin-wrap,
+.fbs-admin-wrap {
+	--fbs-admin-primary: #2563eb;
+	--fbs-admin-primary-hover: #1d4ed8;
+	--fbs-admin-primary-soft: rgba(37, 99, 235, 0.1);
+	--fbs-admin-surface: #ffffff;
+	--fbs-admin-surface-2: #f8fafc;
+	--fbs-admin-border: #e2e8f0;
+	--fbs-admin-text: #0f172a;
+	--fbs-admin-muted: #64748b;
+	--fbs-admin-radius: 10px;
+	--fbs-admin-radius-lg: 14px;
+	--fbs-admin-shadow: 0 1px 2px rgba(15, 23, 42, 0.06), 0 4px 12px rgba(15, 23, 42, 0.04);
+	--fbs-table-head-bg: #f1f5f9;
+	--fbs-table-row-hover: #f8fafc;
+	--fbs-radius: 10px;
+}
+
+#wpbody-content .wrap.fbs-admin-wrap {
+	box-sizing: border-box;
+	float: none;
+	width: 100% !important;
+	max-width: none !important;
+	margin-left: 0 !important;
+	margin-right: 0 !important;
+	clear: both;
+	font-family: inherit;
+	color: var(--fbs-admin-text, #1d2327);
+}
+
+#wpbody-content .wrap.fbs-admin-wrap .fbs-table,
+#wpbody-content .wrap.fbs-admin-wrap table.table {
+	font-family: inherit;
+}
+
+#wpbody-content .wrap.fbs-admin-wrap.container,
+#wpbody-content .wrap.fbs-admin-wrap .container {
+	width: 100% !important;
+	max-width: none !important;
+}
+
+// ─── Page chrome ─────────────────────────────────────────────────────────────
+.fbs-admin-wrap {
+	h1.h3,
+	.fbs-page-title {
+		font-weight: 700;
+		letter-spacing: -0.02em;
+		color: var(--fbs-admin-text);
+	}
+
+	.text-muted {
+		color: var(--fbs-admin-muted) !important;
+	}
+
+	.fbs-page-header {
+		margin-bottom: 1.5rem;
+		padding-bottom: 1rem;
+		border-bottom: 1px solid var(--fbs-admin-border);
+	}
+
+	.fbs-version-badge {
+		font-weight: 600;
+		letter-spacing: 0.02em;
+		padding: 0.45em 0.85em;
+		border-radius: 999px;
+		background: var(--fbs-admin-primary) !important;
+		box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
+	}
+
+	// KPI / stat cards
+	.fbs-stat-card {
+		border: 1px solid var(--fbs-admin-border) !important;
+		border-radius: var(--fbs-admin-radius-lg) !important;
+		background: var(--fbs-admin-surface) !important;
+		box-shadow: var(--fbs-admin-shadow);
+		transition: box-shadow 0.2s ease, transform 0.2s ease;
+
+		&:hover {
+			box-shadow: var(--fbs-admin-shadow-lg);
+			transform: translateY(-1px);
+		}
+
+		.fs-3 {
+			letter-spacing: -0.03em;
+		}
+	}
+
+	.fbs-stat-icon {
+		width: 40px;
+		height: 40px;
+		border-radius: 10px;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 1.1rem;
+	}
+
+	// Panels (tables, filters) — do not clip table body
+	.fbs-admin-panel {
+		border: 1px solid var(--fbs-admin-border) !important;
+		border-radius: var(--fbs-admin-radius-lg) !important;
+		background: var(--fbs-admin-surface);
+		box-shadow: var(--fbs-admin-shadow);
+		overflow: visible;
+	}
+
+	.fbs-admin-panel .table-responsive {
+		overflow-x: auto;
+		overflow-y: visible;
+		max-height: none;
+	}
+
+	.fbs-admin-panel-head {
+		background: var(--fbs-admin-surface-2) !important;
+		border-bottom: 1px solid var(--fbs-admin-border) !important;
+		font-weight: 600;
+	}
+
+	.fbs-admin-panel-foot {
+		background: var(--fbs-admin-surface-2) !important;
+		border-top: 1px solid var(--fbs-admin-border) !important;
+	}
+
+	// Legacy bordered blocks → panel look
+	.border.rounded.bg-white:not(.fbs-stat-card) {
+		border-color: var(--fbs-admin-border) !important;
+		border-radius: var(--fbs-admin-radius-lg) !important;
+		box-shadow: var(--fbs-admin-shadow);
+	}
+
+	// ─── Data tables (plugin screens only) ────────────────────────────────────
+	.fbs-table {
+		display: table;
+		width: 100%;
+		table-layout: auto;
+		margin-bottom: 0 !important;
+		border-collapse: collapse;
+		font-size: 13px;
+		line-height: 1.5;
+		color: var(--fbs-admin-text);
+
+		thead {
+			display: table-header-group;
+		}
+
+		tbody {
+			display: table-row-group;
+		}
+
+		tr {
+			display: table-row;
+		}
+
+		th,
+		td {
+			display: table-cell;
+		}
+
+		thead th {
+			background: var(--fbs-table-head-bg);
+			color: var(--fbs-admin-text);
+			font-size: 12px;
+			font-weight: 600;
+			text-transform: none;
+			letter-spacing: normal;
+			padding: 0.65rem 0.85rem;
+			border-bottom: 2px solid var(--fbs-admin-border);
+			border-top: none;
+			white-space: nowrap;
+			vertical-align: middle;
+		}
+
+		tbody td {
+			padding: 0.65rem 0.85rem;
+			border-bottom: 1px solid var(--fbs-admin-border);
+			border-top: none;
+			vertical-align: middle;
+			background: var(--fbs-admin-surface);
+			font-size: 13px;
+		}
+
+		tbody tr:hover td {
+			background: var(--fbs-table-row-hover);
+		}
+
+		tbody tr:last-child td {
+			border-bottom: none;
+		}
+
+		code {
+			font-size: 12px;
+			padding: 0.15em 0.4em;
+			border-radius: 4px;
+			background: #f1f5f9;
+			color: #334155;
+			border: 1px solid var(--fbs-admin-border);
+		}
+
+		.badge {
+			font-weight: 600;
+			font-size: 11px;
+		}
+	}
+
+	.table-responsive {
+		width: 100%;
+		max-width: 100%;
+		overflow-x: auto;
+		-webkit-overflow-scrolling: touch;
+
+		> .fbs-table {
+			margin-bottom: 0;
+		}
+	}
+
+	.fbs-bookings-table-wrap .table-responsive {
+		max-height: none;
+		overflow-x: auto;
+		overflow-y: visible;
+	}
+
+	.fbs-col-form-answers {
+		max-width: 14rem;
+	}
+
+	// Row flash after AJAX update
+	tbody tr.fbs-row-updated td {
+		animation: fbs-row-flash 1.2s ease;
+	}
+
+	@keyframes fbs-row-flash {
+		0% {
+			background-color: rgba(34, 197, 94, 0.2);
+		}
+		100% {
+			background-color: transparent;
+		}
+	}
+
+	// Filters toolbar
+	.fbs-toolbar {
+		background: var(--fbs-admin-surface-2);
+		border: 1px solid var(--fbs-admin-border);
+		border-radius: var(--fbs-admin-radius);
+		padding: 1rem 1.25rem;
+	}
+
+	.form-label.small {
+		font-weight: 600;
+		text-transform: uppercase;
+		font-size: 0.65rem;
+		letter-spacing: 0.05em;
+		color: var(--fbs-admin-muted);
+	}
+
+	.form-control,
+	.form-select {
+		border-color: var(--fbs-admin-border);
+		border-radius: 8px;
+		font-size: 0.875rem;
+
+		&:focus {
+			border-color: var(--fbs-admin-primary);
+			box-shadow: 0 0 0 3px var(--fbs-admin-primary-soft);
+		}
+	}
+
+	.btn {
+		border-radius: 8px;
+		font-weight: 600;
+		font-size: 0.8125rem;
+	}
+
+	.btn-primary {
+		background: var(--fbs-admin-primary);
+		border-color: var(--fbs-admin-primary);
+
+		&:hover {
+			background: var(--fbs-admin-primary-hover);
+			border-color: var(--fbs-admin-primary-hover);
+		}
+	}
+
+	.btn-group-sm .btn {
+		font-size: 0.7rem;
+		padding: 0.2rem 0.45rem;
+	}
+
+	.alert {
+		border-radius: var(--fbs-admin-radius);
+		border: none;
+		box-shadow: var(--fbs-admin-shadow);
+	}
+
+	// Settings tabs
+	.nav-tabs {
+		border-bottom: 2px solid var(--fbs-admin-border);
+		gap: 0.25rem;
+
+		.nav-link {
+			border: none;
+			border-radius: 8px 8px 0 0;
+			color: var(--fbs-admin-muted);
+			font-weight: 600;
+			font-size: 0.8125rem;
+			padding: 0.55rem 1rem;
+			margin-bottom: -2px;
+
+			&:hover {
+				color: var(--fbs-admin-primary);
+				background: var(--fbs-admin-primary-soft);
+			}
+
+			&.active {
+				color: var(--fbs-admin-primary);
+				background: var(--fbs-admin-surface);
+				border-bottom: 2px solid var(--fbs-admin-primary);
+			}
+		}
+	}
+
+	.tab-content > .tab-pane {
+		padding-top: 0.5rem;
+	}
+
+	.list-group-item {
+		border-color: var(--fbs-admin-border);
+		font-size: 0.875rem;
+
+		&:hover {
+			background: var(--fbs-admin-primary-soft);
+			color: var(--fbs-admin-primary);
+		}
+	}
+
+	// Pagination
+	.fbs-pagination {
+		.page-numbers {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			min-width: 2rem;
+			height: 2rem;
+			margin: 0 0.15rem;
+			padding: 0 0.5rem;
+			border-radius: 8px;
+			text-decoration: none;
+			font-weight: 600;
+			font-size: 0.8125rem;
+			color: var(--fbs-admin-muted);
+			border: 1px solid var(--fbs-admin-border);
+			background: var(--fbs-admin-surface);
+			transition: background 0.15s ease, color 0.15s ease;
+		}
+
+		.page-numbers:hover {
+			background: var(--fbs-admin-primary-soft);
+			color: var(--fbs-admin-primary);
+			border-color: var(--fbs-admin-primary);
+		}
+
+		.page-numbers.current {
+			background: var(--fbs-admin-primary);
+			color: #fff;
+			border-color: var(--fbs-admin-primary);
+		}
+	}
+
+	.fbs-placeholder-min-height {
+		min-height: 120px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.fbs-setup-shell,
+	.fbs-industry-panel {
+		border-radius: var(--fbs-admin-radius-lg);
+		box-shadow: var(--fbs-admin-shadow-lg);
+	}
+
+	// Color settings live preview (no Bootstrap .btn — avoids admin theme override).
+	.fbs-color-preview {
+		color: var(--fbs-preview-text, #212529);
+	}
+
+	.fbs-color-preview-page {
+		background: var(--fbs-preview-page-bg, #f5f6f8);
+	}
+
+	.fbs-color-preview-card {
+		background: var(--fbs-preview-card-bg, #fff);
+		border: 1px solid var(--fbs-preview-border, #e5e7eb);
+		color: var(--fbs-preview-text, #212529);
+	}
+
+	.fbs-color-preview-badge {
+		display: inline-block;
+		font-size: 11px;
+		font-weight: 600;
+		padding: 0.2rem 0.5rem;
+		border-radius: 4px;
+		margin-bottom: 0.5rem;
+		background: var(--fbs-preview-success, #198754);
+		color: #fff;
+	}
+
+	.fbs-color-preview-title {
+		color: var(--fbs-preview-heading, #1a2b48);
+		font-size: 1.1rem;
+	}
+
+	.fbs-color-preview-muted {
+		color: var(--fbs-preview-muted, #6b7280);
+	}
+
+	.fbs-color-preview-price {
+		color: var(--fbs-preview-primary, #0d6efd);
+	}
+
+	.fbs-color-preview-sale {
+		color: var(--fbs-preview-danger, #dc3545);
+		text-decoration: line-through;
+	}
+
+	.fbs-color-preview-stars {
+		color: var(--fbs-preview-accent, #ffc107);
+		letter-spacing: 0.05em;
+	}
+
+	.fbs-color-preview-btn {
+		display: inline-block;
+		border: none;
+		border-radius: 6px;
+		padding: 0.4rem 0.85rem;
+		font-size: 13px;
+		font-weight: 600;
+		font-family: inherit;
+		line-height: 1.3;
+		cursor: default;
+		color: var(--fbs-preview-btn-text, #fff);
+	}
+
+	.fbs-color-preview-btn[data-fbs-preview='primary'] {
+		background-color: var(--fbs-preview-primary, #0d6efd);
+	}
+
+	.fbs-color-preview-btn[data-fbs-preview='secondary'] {
+		background-color: var(--fbs-preview-secondary, #6c757d);
+	}
+
+	.fbs-color-preview-btn[data-fbs-preview='success'] {
+		background-color: var(--fbs-preview-success, #198754);
+	}
+
+	.fbs-color-preview-btn[data-fbs-preview='accent'] {
+		background-color: var(--fbs-preview-accent, #ffc107);
+		color: #111;
+	}
+}
+
+[data-bs-theme='dark'] .fbs-admin-wrap {
+	color-scheme: dark;
+}
+
+// ─── WordPress native list tables (listing CPT screens) — light touch only ─
+body.fbs-admin-screen {
+	#wpbody-content > .wrap > h1,
+	#wpbody-content > .wrap > .wp-heading-inline {
+		font-weight: 600;
+	}
+
+	.wp-list-table.widefat {
+		border: 1px solid var(--fbs-admin-border, #c3c4c7);
+		border-radius: var(--fbs-admin-radius-lg, 8px);
+		font-size: 13px;
+		line-height: 1.5;
+
+		thead th,
+		thead td,
+		tfoot th,
+		tfoot td {
+			font-size: 13px;
+			font-weight: 600;
+			text-transform: none;
+			letter-spacing: normal;
+		}
+
+		tbody td,
+		tbody th {
+			font-size: 13px;
+			padding: 8px 10px;
+			vertical-align: middle;
+		}
+
+		.row-title {
+			font-size: 14px;
+			font-weight: 600;
+		}
+	}
+
+	.tablenav {
+		margin: 12px 0 16px;
+
+		.actions select,
+		.actions input[type='search'] {
+			border-radius: 8px;
+			border-color: var(--fbs-admin-border);
+		}
+
+		.button,
+		.button-secondary {
+			border-radius: 8px;
+			font-weight: 600;
+		}
+	}
+
+	.subsubsub {
+		margin-bottom: 12px;
+
+		a {
+			font-weight: 500;
+		}
+
+		.current {
+			font-weight: 700;
+			color: var(--fbs-admin-primary);
+		}
+	}
+
+	#posts-filter .search-box input[type='search'] {
+		border-radius: 8px;
+		border-color: var(--fbs-admin-border);
+	}
+}
+
+// ─── Listing metabox (post editor) ─────────────────────────────────────────
+.fbs-listing-metabox {
+	padding: 12px 0;
+
+	.nav-tabs {
+		border-bottom: 2px solid var(--fbs-admin-border);
+
+		.nav-link {
+			font-size: 13px;
+			font-weight: 600;
+			padding: 0.45rem 0.85rem;
+			border-radius: 8px 8px 0 0;
+			color: var(--fbs-admin-muted, #64748b);
+
+			&.active {
+				color: var(--fbs-admin-primary, #2563eb);
+				border-bottom-color: var(--fbs-admin-primary, #2563eb);
+			}
+		}
+	}
+
+	.tab-pane {
+		padding: 14px 0;
+	}
+
+	.form-label {
+		font-size: 12px;
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.04em;
+		color: var(--fbs-admin-muted, #64748b);
+		margin-bottom: 4px;
+	}
+
+	.form-control,
+	.form-select {
+		font-size: 13px;
+		border-radius: 8px;
+	}
+
+	.form-text {
+		font-size: 11px;
+	}
+
+	#fbs-gallery-preview {
+		min-height: 60px;
+		border-radius: 8px;
+		background: #f8fafc;
+		border: 1px dashed var(--fbs-admin-border, #e2e8f0);
+	}
+}

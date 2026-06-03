@@ -1,0 +1,28 @@
+{
+  "name": "flexbooking/flex-multiple-listing-booking-system",
+  "description": "Flex Multiple Listing and Booking System — WordPress listings and booking plugin",
+  "type": "wordpress-plugin",
+  "license": "GPL-2.0-or-later",
+  "homepage": "https://wprogers.com/",
+  "authors": [
+    {
+      "name": "Usman Ali",
+      "homepage": "https://profiles.wordpress.org/usmanaliwpdeveloper/",
+      "role": "Developer"
+    }
+  ],
+  "support": {
+    "source": "https://github.com/usman-dc"
+  },
+  "autoload": {
+    "psr-4": {
+      "FlexBooking\\": "includes/"
+    }
+  },
+  "config": {
+    "sort-packages": true
+  },
+  "require": {
+    "php": ">=7.4"
+  }
+}
