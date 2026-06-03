@@ -138,7 +138,7 @@ while ( have_posts() ) :
 									<span class="fbs-quick-stat"><i class="bi bi-people" aria-hidden="true"></i><?php
 									printf(
 										/* translators: %d: maximum guest count */
-										esc_html__( '%d Guests', 'flex-booking-system' ),
+										esc_html__( '%d Guests', 'flex-multiple-listing-and-booking-system' ),
 										(int) $max_guests
 									);
 									?></span>
@@ -169,7 +169,7 @@ while ( have_posts() ) :
 							<i class="bi bi-geo-alt-fill" aria-hidden="true"></i>
 							<?php echo esc_html( $address ); ?>
 							<?php if ( $latitude && $longitude ) : ?>
-								<a href="#fbs-map" class="fbs-view-map"><?php esc_html_e( 'View on map', 'flex-booking-system' ); ?></a>
+								<a href="#fbs-map" class="fbs-view-map"><?php esc_html_e( 'View on map', 'flex-multiple-listing-and-booking-system' ); ?></a>
 							<?php endif; ?>
 						</p>
 					<?php endif; ?>
@@ -189,7 +189,7 @@ while ( have_posts() ) :
 				</header>
 
 				<div class="fbs-section mb-4">
-					<h2 class="fbs-section-title"><?php esc_html_e( 'About The Property', 'flex-booking-system' ); ?></h2>
+					<h2 class="fbs-section-title"><?php esc_html_e( 'About The Property', 'flex-multiple-listing-and-booking-system' ); ?></h2>
 					<div class="fbs-content-area">
 						<?php the_content(); ?>
 					</div>
@@ -198,7 +198,7 @@ while ( have_posts() ) :
 				<!-- Extra Services -->
 				<?php if ( ! empty( $extra_svc ) ) : ?>
 					<div class="fbs-section mb-4">
-						<h4 class="fw-bold mb-3"><i class="bi bi-plus-circle me-2 text-primary"></i><?php esc_html_e( 'Extra Services', 'flex-booking-system' ); ?></h4>
+						<h4 class="fw-bold mb-3"><i class="bi bi-plus-circle me-2 text-primary"></i><?php esc_html_e( 'Extra Services', 'flex-multiple-listing-and-booking-system' ); ?></h4>
 						<div class="list-group">
 							<?php foreach ( $extra_svc as $svc ) : ?>
 								<div class="list-group-item d-flex justify-content-between align-items-center">
@@ -206,7 +206,7 @@ while ( have_posts() ) :
 										<i class="bi bi-check2 text-success me-1"></i>
 										<?php echo esc_html( $svc['name'] ); ?>
 										<?php if ( ! empty( $svc['required'] ) ) : ?>
-											<span class="badge text-bg-warning ms-1"><?php esc_html_e( 'Required', 'flex-booking-system' ); ?></span>
+											<span class="badge text-bg-warning ms-1"><?php esc_html_e( 'Required', 'flex-multiple-listing-and-booking-system' ); ?></span>
 										<?php endif; ?>
 									</span>
 									<span class="fw-semibold">
@@ -222,7 +222,7 @@ while ( have_posts() ) :
 				<!-- Video -->
 				<?php if ( $video_url ) : ?>
 					<div class="fbs-section mb-4">
-						<h4 class="fw-bold mb-3"><i class="bi bi-play-circle me-2 text-primary"></i><?php esc_html_e( 'Video', 'flex-booking-system' ); ?></h4>
+						<h4 class="fw-bold mb-3"><i class="bi bi-play-circle me-2 text-primary"></i><?php esc_html_e( 'Video', 'flex-multiple-listing-and-booking-system' ); ?></h4>
 						<div class="ratio ratio-16x9 rounded overflow-hidden">
 							<?php
 							$fbs_oembed = wp_oembed_get( $video_url );
@@ -239,7 +239,7 @@ while ( have_posts() ) :
 				<!-- Location / Map -->
 				<?php if ( $address || ( $latitude && $longitude ) ) : ?>
 					<div class="fbs-section mb-4" id="fbs-map">
-						<h2 class="fbs-section-title"><?php esc_html_e( 'Location', 'flex-booking-system' ); ?></h2>
+						<h2 class="fbs-section-title"><?php esc_html_e( 'Location', 'flex-multiple-listing-and-booking-system' ); ?></h2>
 						<?php if ( $address ) : ?>
 							<p class="text-muted mb-2"><i class="bi bi-pin-map me-1"></i><?php echo esc_html( $address ); ?></p>
 						<?php endif; ?>
@@ -266,7 +266,7 @@ while ( have_posts() ) :
 				?>
 				<?php if ( ! empty( $faq_items ) ) : ?>
 					<div class="fbs-section mb-4">
-						<h4 class="fw-bold mb-3"><i class="bi bi-question-circle me-2 text-primary"></i><?php esc_html_e( 'Frequently Asked Questions', 'flex-booking-system' ); ?></h4>
+						<h4 class="fw-bold mb-3"><i class="bi bi-question-circle me-2 text-primary"></i><?php esc_html_e( 'Frequently Asked Questions', 'flex-multiple-listing-and-booking-system' ); ?></h4>
 						<div class="accordion" id="fbs-faq-accordion-<?php echo esc_attr( (string) $post_id ); ?>">
 							<?php foreach ( $faq_items as $idx => $item ) : ?>
 								<div class="accordion-item">
@@ -304,30 +304,30 @@ while ( have_posts() ) :
 
 				<div class="fbs-partner-cta fbs-partner-cta--compact d-none">
 						<?php if ( is_user_logged_in() && VendorRole::can_manage_listings() ) : ?>
-							<h6 class="fw-semibold mb-2"><i class="bi bi-building me-1 text-primary"></i><?php esc_html_e( 'Manage your listings', 'flex-booking-system' ); ?></h6>
-							<p class="small text-muted mb-3"><?php esc_html_e( 'Add a new property, car, tour, or service from your partner dashboard.', 'flex-booking-system' ); ?></p>
+							<h6 class="fw-semibold mb-2"><i class="bi bi-building me-1 text-primary"></i><?php esc_html_e( 'Manage your listings', 'flex-multiple-listing-and-booking-system' ); ?></h6>
+							<p class="small text-muted mb-3"><?php esc_html_e( 'Add a new property, car, tour, or service from your partner dashboard.', 'flex-multiple-listing-and-booking-system' ); ?></p>
 							<div class="d-grid gap-2">
 								<a href="<?php echo esc_url( VendorPages::add_listing_url() ); ?>" class="btn btn-primary btn-sm">
-									<i class="bi bi-plus-lg me-1"></i><?php esc_html_e( 'Add New Listing', 'flex-booking-system' ); ?>
+									<i class="bi bi-plus-lg me-1"></i><?php esc_html_e( 'Add New Listing', 'flex-multiple-listing-and-booking-system' ); ?>
 								</a>
 								<a href="<?php echo esc_url( VendorPages::dashboard_url() ); ?>" class="btn btn-outline-secondary btn-sm">
-									<i class="bi bi-person-circle me-1"></i><?php esc_html_e( 'Go to Account', 'flex-booking-system' ); ?>
+									<i class="bi bi-person-circle me-1"></i><?php esc_html_e( 'Go to Account', 'flex-multiple-listing-and-booking-system' ); ?>
 								</a>
 							</div>
 						<?php else : ?>
-							<h6 class="fw-semibold mb-2"><i class="bi bi-megaphone me-1 text-primary"></i><?php esc_html_e( 'Want to list here?', 'flex-booking-system' ); ?></h6>
-							<p class="small text-muted mb-3"><?php esc_html_e( 'Register as a partner to add your property, car, tour, or service and receive bookings.', 'flex-booking-system' ); ?></p>
+							<h6 class="fw-semibold mb-2"><i class="bi bi-megaphone me-1 text-primary"></i><?php esc_html_e( 'Want to list here?', 'flex-multiple-listing-and-booking-system' ); ?></h6>
+							<p class="small text-muted mb-3"><?php esc_html_e( 'Register as a partner to add your property, car, tour, or service and receive bookings.', 'flex-multiple-listing-and-booking-system' ); ?></p>
 							<div class="d-grid gap-2">
 								<a href="<?php echo esc_url( VendorPages::register_url() ); ?>" class="btn btn-primary btn-sm">
-									<i class="bi bi-person-plus me-1"></i><?php esc_html_e( 'Register & Add Listing', 'flex-booking-system' ); ?>
+									<i class="bi bi-person-plus me-1"></i><?php esc_html_e( 'Register & Add Listing', 'flex-multiple-listing-and-booking-system' ); ?>
 								</a>
 								<?php if ( ! is_user_logged_in() ) : ?>
 									<a href="<?php echo esc_url( VendorPages::login_url() ); ?>" class="btn btn-outline-secondary btn-sm">
-										<i class="bi bi-box-arrow-in-right me-1"></i><?php esc_html_e( 'Already have an account? Log in', 'flex-booking-system' ); ?>
+										<i class="bi bi-box-arrow-in-right me-1"></i><?php esc_html_e( 'Already have an account? Log in', 'flex-multiple-listing-and-booking-system' ); ?>
 									</a>
 								<?php else : ?>
 									<a href="<?php echo esc_url( VendorPages::register_url() ); ?>" class="btn btn-outline-secondary btn-sm">
-										<i class="bi bi-person-circle me-1"></i><?php esc_html_e( 'Apply for Partner Access', 'flex-booking-system' ); ?>
+										<i class="bi bi-person-circle me-1"></i><?php esc_html_e( 'Apply for Partner Access', 'flex-multiple-listing-and-booking-system' ); ?>
 									</a>
 								<?php endif; ?>
 							</div>

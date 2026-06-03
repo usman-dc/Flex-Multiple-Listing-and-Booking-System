@@ -51,11 +51,11 @@ $rating_data = ListingDisplay::rating_data( $post_id );
 				<?php endif; ?>
 			</a>
 			<?php if ( $is_feat ) : ?>
-				<span class="fbs-card-badge fbs-card-badge--featured"><?php esc_html_e( 'Featured', 'flex-booking-system' ); ?></span>
+				<span class="fbs-card-badge fbs-card-badge--featured"><?php esc_html_e( 'Featured', 'flex-multiple-listing-and-booking-system' ); ?></span>
 			<?php elseif ( $is_new ) : ?>
-				<span class="fbs-card-badge fbs-card-badge--new"><?php esc_html_e( 'New', 'flex-booking-system' ); ?></span>
+				<span class="fbs-card-badge fbs-card-badge--new"><?php esc_html_e( 'New', 'flex-multiple-listing-and-booking-system' ); ?></span>
 			<?php endif; ?>
-			<button type="button" class="fbs-card-wishlist" aria-label="<?php esc_attr_e( 'Add to favorites', 'flex-booking-system' ); ?>" data-id="<?php echo esc_attr( (string) $post_id ); ?>">
+			<button type="button" class="fbs-card-wishlist" aria-label="<?php esc_attr_e( 'Add to favorites', 'flex-multiple-listing-and-booking-system' ); ?>" data-id="<?php echo esc_attr( (string) $post_id ); ?>">
 				<i class="bi bi-heart" aria-hidden="true"></i>
 			</button>
 		</div>
@@ -76,7 +76,7 @@ $rating_data = ListingDisplay::rating_data( $post_id );
 					<span><i class="bi bi-people" aria-hidden="true"></i><?php
 					printf(
 						/* translators: %d: maximum guest count */
-						esc_html__( '%d Guests', 'flex-booking-system' ),
+						esc_html__( '%d Guests', 'flex-multiple-listing-and-booking-system' ),
 						(int) $max_guests
 					);
 					?></span>
@@ -103,7 +103,7 @@ $rating_data = ListingDisplay::rating_data( $post_id );
 					<?php PriceFormatter::echo_price( $base_price, $sale_price, $suffix ); ?>
 				</div>
 				<?php if ( $instant ) : ?>
-					<span class="fbs-card-instant"><i class="bi bi-lightning-charge-fill" aria-hidden="true"></i><?php esc_html_e( 'Instant', 'flex-booking-system' ); ?></span>
+					<span class="fbs-card-instant"><i class="bi bi-lightning-charge-fill" aria-hidden="true"></i><?php esc_html_e( 'Instant', 'flex-multiple-listing-and-booking-system' ); ?></span>
 				<?php endif; ?>
 			</div>
 		</div>

@@ -32,7 +32,7 @@ final class BookingFormWidget extends Widget_Base {
 	 * @return string
 	 */
 	public function get_title() {
-		return __( 'Flex MLS Booking Form', 'flex-booking-system' );
+		return __( 'Flex MLS Booking Form', 'flex-multiple-listing-and-booking-system' );
 	}
 
 	/**
@@ -84,7 +84,7 @@ final class BookingFormWidget extends Widget_Base {
 	protected function register_controls() {
 		$type_repo = new \FlexBooking\Booking\BookingTypeRepository();
 		$all_types = $type_repo->get_all();
-		$id_opts   = array( '0' => __( '— Select Booking Type —', 'flex-booking-system' ) );
+		$id_opts   = array( '0' => __( '— Select Booking Type —', 'flex-multiple-listing-and-booking-system' ) );
 		foreach ( $all_types as $t ) {
 			$id_opts[ (string) (int) $t['id'] ] = (string) $t['name'] . ' (#' . (int) $t['id'] . ')';
 		}
@@ -92,7 +92,7 @@ final class BookingFormWidget extends Widget_Base {
 		$this->start_controls_section(
 			'content_section',
 			array(
-				'label' => __( 'Booking Form', 'flex-booking-system' ),
+				'label' => __( 'Booking Form', 'flex-multiple-listing-and-booking-system' ),
 				'tab'   => Controls_Manager::TAB_CONTENT,
 			)
 		);
@@ -100,7 +100,7 @@ final class BookingFormWidget extends Widget_Base {
 		$this->add_control(
 			'booking_type_id',
 			array(
-				'label'   => __( 'Booking Type', 'flex-booking-system' ),
+				'label'   => __( 'Booking Type', 'flex-multiple-listing-and-booking-system' ),
 				'type'    => Controls_Manager::SELECT,
 				'default' => '0',
 				'options' => $id_opts,
@@ -110,10 +110,10 @@ final class BookingFormWidget extends Widget_Base {
 		$this->add_control(
 			'booking_type_slug',
 			array(
-				'label'       => __( 'Or type slug (advanced)', 'flex-booking-system' ),
+				'label'       => __( 'Or type slug (advanced)', 'flex-multiple-listing-and-booking-system' ),
 				'type'        => Controls_Manager::TEXT,
 				'default'     => '',
-				'description' => __( 'Override with a custom slug. Leave blank to use the dropdown above.', 'flex-booking-system' ),
+				'description' => __( 'Override with a custom slug. Leave blank to use the dropdown above.', 'flex-multiple-listing-and-booking-system' ),
 			)
 		);
 
@@ -122,7 +122,7 @@ final class BookingFormWidget extends Widget_Base {
 		$this->start_controls_section(
 			'style_section',
 			array(
-				'label' => __( 'Style', 'flex-booking-system' ),
+				'label' => __( 'Style', 'flex-multiple-listing-and-booking-system' ),
 				'tab'   => Controls_Manager::TAB_STYLE,
 			)
 		);
@@ -130,7 +130,7 @@ final class BookingFormWidget extends Widget_Base {
 		$this->add_control(
 			'form_border_radius',
 			array(
-				'label'      => __( 'Border radius (px)', 'flex-booking-system' ),
+				'label'      => __( 'Border radius (px)', 'flex-multiple-listing-and-booking-system' ),
 				'type'       => Controls_Manager::SLIDER,
 				'size_units' => array( 'px' ),
 				'range'      => array( 'px' => array( 'min' => 0, 'max' => 30 ) ),
@@ -144,9 +144,9 @@ final class BookingFormWidget extends Widget_Base {
 		$this->add_control(
 			'button_color',
 			array(
-				'label'       => __( 'Override button color (optional)', 'flex-booking-system' ),
+				'label'       => __( 'Override button color (optional)', 'flex-multiple-listing-and-booking-system' ),
 				'type'        => Controls_Manager::COLOR,
-				'description' => __( 'Leave empty to use Flex MLS & Booking → Settings → Colors.', 'flex-booking-system' ),
+				'description' => __( 'Leave empty to use Flex MLS & Booking → Settings → Colors.', 'flex-multiple-listing-and-booking-system' ),
 				'selectors'   => array(
 					'{{WRAPPER}} .fbs-root' => '--fbs-primary: {{VALUE}}; --bs-primary: {{VALUE}};',
 					'{{WRAPPER}} .btn-primary' => 'background-color: {{VALUE}}; border-color: {{VALUE}};',

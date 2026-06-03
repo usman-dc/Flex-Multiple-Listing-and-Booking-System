@@ -59,7 +59,7 @@ final class DemoContentSeeder {
 				'skipped'    => 0,
 				'type_name'  => '',
 				'cpt'        => '',
-				'error'      => __( 'Booking type not found.', 'flex-booking-system' ),
+				'error'      => __( 'Booking type not found.', 'flex-multiple-listing-and-booking-system' ),
 			);
 		}
 
@@ -70,7 +70,7 @@ final class DemoContentSeeder {
 				'skipped'    => 0,
 				'type_name'  => (string) $type_row['name'],
 				'cpt'        => $cpt,
-				'error'      => __( 'Post type is not registered yet. Save permalinks or reload admin.', 'flex-booking-system' ),
+				'error'      => __( 'Post type is not registered yet. Save permalinks or reload admin.', 'flex-multiple-listing-and-booking-system' ),
 			);
 		}
 
@@ -80,7 +80,7 @@ final class DemoContentSeeder {
 				'skipped'    => 0,
 				'type_name'  => (string) $type_row['name'],
 				'cpt'        => $cpt,
-				'error'      => __( 'Permission denied.', 'flex-booking-system' ),
+				'error'      => __( 'Permission denied.', 'flex-multiple-listing-and-booking-system' ),
 			);
 		}
 
@@ -332,14 +332,14 @@ final class DemoContentSeeder {
 			'title'         => $title,
 			'content'       => sprintf(
 				/* translators: 1: listing title, 2: booking type name, 3: city */
-				__( 'This is demo content for <strong>%1$s</strong> — a sample %2$s listing in %3$s. Use it to preview your grid, single page layout, filters, and booking form before adding real listings.', 'flex-booking-system' ),
+				__( 'This is demo content for <strong>%1$s</strong> — a sample %2$s listing in %3$s. Use it to preview your grid, single page layout, filters, and booking form before adding real listings.', 'flex-multiple-listing-and-booking-system' ),
 				$title,
 				strtolower( $type_name ),
 				$city
 			),
 			'excerpt'       => sprintf(
 				/* translators: 1: booking type name, 2: city */
-				__( 'Demo %1$s in %2$s with full pricing, gallery, FAQ, and amenities.', 'flex-booking-system' ),
+				__( 'Demo %1$s in %2$s with full pricing, gallery, FAQ, and amenities.', 'flex-multiple-listing-and-booking-system' ),
 				strtolower( $type_name ),
 				$city
 			),

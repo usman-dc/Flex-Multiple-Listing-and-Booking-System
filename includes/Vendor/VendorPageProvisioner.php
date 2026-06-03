@@ -26,19 +26,19 @@ final class VendorPageProvisioner {
 	public static function definitions() {
 		return array(
 			'vendor_register_page'  => array(
-				'title'     => __( 'Partner Register', 'flex-booking-system' ),
+				'title'     => __( 'Partner Register', 'flex-multiple-listing-and-booking-system' ),
 				'slug'      => 'partner-register',
 				'shortcode' => '[fbs_register]',
 				'meta'      => 'register',
 			),
 			'vendor_login_page'     => array(
-				'title'     => __( 'Partner Login', 'flex-booking-system' ),
+				'title'     => __( 'Partner Login', 'flex-multiple-listing-and-booking-system' ),
 				'slug'      => 'partner-login',
 				'shortcode' => '[fbs_login]',
 				'meta'      => 'login',
 			),
 			'vendor_dashboard_page' => array(
-				'title'     => __( 'Partner Dashboard', 'flex-booking-system' ),
+				'title'     => __( 'Partner Dashboard', 'flex-multiple-listing-and-booking-system' ),
 				'slug'      => 'partner-dashboard',
 				'shortcode' => '[fbs_dashboard]',
 				'meta'      => 'dashboard',
@@ -100,7 +100,7 @@ final class VendorPageProvisioner {
 				self::sync_page_content( $page_id, $def );
 				$messages[] = sprintf(
 					/* translators: %s: page title */
-					__( 'Linked existing page: %s', 'flex-booking-system' ),
+					__( 'Linked existing page: %s', 'flex-multiple-listing-and-booking-system' ),
 					$def['title']
 				);
 			} else {
@@ -109,7 +109,7 @@ final class VendorPageProvisioner {
 					++$created;
 					$messages[] = sprintf(
 						/* translators: %s: page title */
-						__( 'Created page: %s', 'flex-booking-system' ),
+						__( 'Created page: %s', 'flex-multiple-listing-and-booking-system' ),
 						$def['title']
 					);
 				}

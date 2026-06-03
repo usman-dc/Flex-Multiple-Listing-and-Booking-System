@@ -21,8 +21,8 @@ $post_id         = isset( $post_id ) ? (int) $post_id : get_the_ID();
 	<?php include FBS_PLUGIN_DIR . 'templates/public/partials/listing-booking-widget.php'; ?>
 
 	<div class="fbs-help-widget">
-		<h3 class="fbs-help-widget-title"><?php esc_html_e( 'Need Help?', 'flex-booking-system' ); ?></h3>
-		<p class="fbs-help-widget-text"><?php esc_html_e( 'Our team is here to help you.', 'flex-booking-system' ); ?></p>
+		<h3 class="fbs-help-widget-title"><?php esc_html_e( 'Need Help?', 'flex-multiple-listing-and-booking-system' ); ?></h3>
+		<p class="fbs-help-widget-text"><?php esc_html_e( 'Our team is here to help you.', 'flex-multiple-listing-and-booking-system' ); ?></p>
 		<?php if ( $help_phone ) : ?>
 			<p class="fbs-help-contact"><i class="bi bi-telephone" aria-hidden="true"></i><a href="tel:<?php echo esc_attr( $help_phone ); ?>"><?php echo esc_html( $help_phone ); ?></a></p>
 		<?php endif; ?>
@@ -33,7 +33,7 @@ $post_id         = isset( $post_id ) ? (int) $post_id : get_the_ID();
 
 	<div class="fbs-favorite-card">
 		<button type="button" class="fbs-favorite-btn" data-id="<?php echo esc_attr( (string) $post_id ); ?>">
-			<i class="bi bi-heart" aria-hidden="true"></i><?php esc_html_e( 'Add to Favorites', 'flex-booking-system' ); ?>
+			<i class="bi bi-heart" aria-hidden="true"></i><?php esc_html_e( 'Add to Favorites', 'flex-multiple-listing-and-booking-system' ); ?>
 		</button>
 	</div>
 </div>

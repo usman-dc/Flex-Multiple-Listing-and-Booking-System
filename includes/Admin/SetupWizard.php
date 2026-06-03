@@ -28,8 +28,8 @@ final class SetupWizard {
 			'admin_menu',
 			function () {
 				$label = get_option( 'fbs_setup_completed', false )
-					? __( 'Add Industries', 'flex-booking-system' )
-					: __( 'Setup Wizard', 'flex-booking-system' );
+					? __( 'Add Industries', 'flex-multiple-listing-and-booking-system' )
+					: __( 'Setup Wizard', 'flex-multiple-listing-and-booking-system' );
 
 				add_submenu_page(
 					'fbs-dashboard',
@@ -71,7 +71,7 @@ final class SetupWizard {
 		printf(
 			wp_kses(
 				/* translators: %s: URL to setup wizard */
-				__( 'Flex MLS & Booking needs a quick setup: <a href="%s">choose your booking industries</a> (cars, hotels, appointments, …) and finish.', 'flex-booking-system' ),
+				__( 'Flex MLS & Booking needs a quick setup: <a href="%s">choose your booking industries</a> (cars, hotels, appointments, …) and finish.', 'flex-multiple-listing-and-booking-system' ),
 				array(
 					'a' => array(
 						'href' => array(),

@@ -84,7 +84,7 @@ final class ListingMetabox {
 		foreach ( $screens as $screen ) {
 			add_meta_box(
 				'fbs_listing_settings',
-				__( 'Listing Settings', 'flex-booking-system' ),
+				__( 'Listing Settings', 'flex-multiple-listing-and-booking-system' ),
 				array( __CLASS__, 'render' ),
 				$screen,
 				'normal',

@@ -70,8 +70,8 @@ foreach ( $fbs_count_by_type as $tid => $cnt ) {
 	<!-- Header -->
 	<div class="fbs-page-header d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
 		<div>
-			<h1 class="h3 mb-1 fbs-page-title"><?php esc_html_e( 'Dashboard', 'flex-booking-system' ); ?></h1>
-			<p class="text-muted small mb-0"><?php esc_html_e( 'Performance overview for the last 30 days.', 'flex-booking-system' ); ?></p>
+			<h1 class="h3 mb-1 fbs-page-title"><?php esc_html_e( 'Dashboard', 'flex-multiple-listing-and-booking-system' ); ?></h1>
+			<p class="text-muted small mb-0"><?php esc_html_e( 'Performance overview for the last 30 days.', 'flex-multiple-listing-and-booking-system' ); ?></p>
 		</div>
 		<span class="badge text-bg-primary fs-6 fbs-version-badge"><?php echo esc_html( fbs_plugin_menu_label() . ' v' . FBS_VERSION ); ?></span>
 	</div>
@@ -82,13 +82,13 @@ foreach ( $fbs_count_by_type as $tid => $cnt ) {
 			<div class="fbs-stat-card border rounded bg-white p-3 h-100">
 				<div class="d-flex align-items-center gap-2 mb-2">
 					<span class="fbs-stat-icon bg-primary bg-opacity-10 text-primary"><i class="bi bi-calendar-check"></i></span>
-					<span class="small text-muted"><?php esc_html_e( 'Bookings (30d)', 'flex-booking-system' ); ?></span>
+					<span class="small text-muted"><?php esc_html_e( 'Bookings (30d)', 'flex-multiple-listing-and-booking-system' ); ?></span>
 				</div>
 				<p class="fs-3 fw-bold mb-0"><?php echo esc_html( (string) (int) $fbs_stat_bookings_30d ); ?></p>
 				<p class="small text-muted mb-0"><?php
 				printf(
 					/* translators: %d: total booking count */
-					esc_html__( '%d all-time', 'flex-booking-system' ),
+					esc_html__( '%d all-time', 'flex-multiple-listing-and-booking-system' ),
 					(int) $fbs_stat_bookings_all
 				);
 				?></p>
@@ -98,7 +98,7 @@ foreach ( $fbs_count_by_type as $tid => $cnt ) {
 			<div class="fbs-stat-card border rounded bg-white p-3 h-100">
 				<div class="d-flex align-items-center gap-2 mb-2">
 					<span class="fbs-stat-icon bg-success bg-opacity-10 text-success"><i class="bi bi-currency-dollar"></i></span>
-					<span class="small text-muted"><?php esc_html_e( 'Revenue (30d)', 'flex-booking-system' ); ?></span>
+					<span class="small text-muted"><?php esc_html_e( 'Revenue (30d)', 'flex-multiple-listing-and-booking-system' ); ?></span>
 				</div>
 				<p class="fs-3 fw-bold mb-0"><?php echo esc_html( number_format_i18n( (float) $fbs_stat_revenue_30d, 2 ) ); ?></p>
 				<p class="small text-muted mb-0"><?php echo esc_html( $currency ); ?></p>
@@ -108,7 +108,7 @@ foreach ( $fbs_count_by_type as $tid => $cnt ) {
 			<div class="fbs-stat-card border rounded bg-white p-3 h-100">
 				<div class="d-flex align-items-center gap-2 mb-2">
 					<span class="fbs-stat-icon bg-warning bg-opacity-10 text-warning"><i class="bi bi-people"></i></span>
-					<span class="small text-muted"><?php esc_html_e( 'Customers', 'flex-booking-system' ); ?></span>
+					<span class="small text-muted"><?php esc_html_e( 'Customers', 'flex-multiple-listing-and-booking-system' ); ?></span>
 				</div>
 				<p class="fs-3 fw-bold mb-0"><?php echo esc_html( (string) (int) $fbs_stat_customers ); ?></p>
 			</div>
@@ -117,10 +117,10 @@ foreach ( $fbs_count_by_type as $tid => $cnt ) {
 			<div class="fbs-stat-card border rounded bg-white p-3 h-100">
 				<div class="d-flex align-items-center gap-2 mb-2">
 					<span class="fbs-stat-icon bg-info bg-opacity-10 text-info"><i class="bi bi-tags"></i></span>
-					<span class="small text-muted"><?php esc_html_e( 'Booking Types', 'flex-booking-system' ); ?></span>
+					<span class="small text-muted"><?php esc_html_e( 'Booking Types', 'flex-multiple-listing-and-booking-system' ); ?></span>
 				</div>
 				<p class="fs-3 fw-bold mb-0"><?php echo esc_html( (string) (int) $fbs_stat_types_count ); ?></p>
-				<a class="small" href="<?php echo esc_url( admin_url( 'admin.php?page=fbs-booking-types' ) ); ?>"><?php esc_html_e( 'Manage', 'flex-booking-system' ); ?></a>
+				<a class="small" href="<?php echo esc_url( admin_url( 'admin.php?page=fbs-booking-types' ) ); ?>"><?php esc_html_e( 'Manage', 'flex-multiple-listing-and-booking-system' ); ?></a>
 			</div>
 		</div>
 	</div>
@@ -129,17 +129,17 @@ foreach ( $fbs_count_by_type as $tid => $cnt ) {
 	<div class="row g-3 mb-4">
 		<div class="col-lg-8">
 			<div class="border rounded bg-white p-3 h-100">
-				<h6 class="fw-semibold mb-3"><?php esc_html_e( 'Bookings & Revenue — Last 30 Days', 'flex-booking-system' ); ?></h6>
+				<h6 class="fw-semibold mb-3"><?php esc_html_e( 'Bookings & Revenue — Last 30 Days', 'flex-multiple-listing-and-booking-system' ); ?></h6>
 				<canvas id="fbs-chart-main" height="220"></canvas>
 			</div>
 		</div>
 		<div class="col-lg-4">
 			<div class="border rounded bg-white p-3 h-100">
-				<h6 class="fw-semibold mb-3"><?php esc_html_e( 'Status Breakdown', 'flex-booking-system' ); ?></h6>
+				<h6 class="fw-semibold mb-3"><?php esc_html_e( 'Status Breakdown', 'flex-multiple-listing-and-booking-system' ); ?></h6>
 				<?php if ( ! empty( $status_counts ) ) : ?>
 					<canvas id="fbs-chart-status" height="200"></canvas>
 				<?php else : ?>
-					<p class="text-muted small text-center mt-5"><?php esc_html_e( 'No bookings yet.', 'flex-booking-system' ); ?></p>
+					<p class="text-muted small text-center mt-5"><?php esc_html_e( 'No bookings yet.', 'flex-multiple-listing-and-booking-system' ); ?></p>
 				<?php endif; ?>
 			</div>
 		</div>
@@ -149,26 +149,26 @@ foreach ( $fbs_count_by_type as $tid => $cnt ) {
 	<div class="row g-3 mb-4">
 		<div class="col-lg-6">
 			<div class="border rounded bg-white p-3 h-100">
-				<h6 class="fw-semibold mb-3"><?php esc_html_e( 'Bookings by Type', 'flex-booking-system' ); ?></h6>
+				<h6 class="fw-semibold mb-3"><?php esc_html_e( 'Bookings by Type', 'flex-multiple-listing-and-booking-system' ); ?></h6>
 				<?php if ( ! empty( $type_counts ) ) : ?>
 					<canvas id="fbs-chart-types" height="180"></canvas>
 				<?php else : ?>
-					<p class="text-muted small text-center mt-4"><?php esc_html_e( 'No data yet.', 'flex-booking-system' ); ?></p>
+					<p class="text-muted small text-center mt-4"><?php esc_html_e( 'No data yet.', 'flex-multiple-listing-and-booking-system' ); ?></p>
 				<?php endif; ?>
 			</div>
 		</div>
 		<div class="col-lg-6">
 			<div class="border rounded bg-white p-3 h-100">
-				<h6 class="fw-semibold mb-3"><?php esc_html_e( 'Quick Links', 'flex-booking-system' ); ?></h6>
+				<h6 class="fw-semibold mb-3"><?php esc_html_e( 'Quick Links', 'flex-multiple-listing-and-booking-system' ); ?></h6>
 				<div class="list-group list-group-flush">
 					<a href="<?php echo esc_url( admin_url( 'admin.php?page=fbs-bookings' ) ); ?>" class="list-group-item list-group-item-action d-flex align-items-center gap-2">
-						<i class="bi bi-calendar2-check text-primary"></i> <?php esc_html_e( 'All Bookings', 'flex-booking-system' ); ?>
+						<i class="bi bi-calendar2-check text-primary"></i> <?php esc_html_e( 'All Bookings', 'flex-multiple-listing-and-booking-system' ); ?>
 					</a>
 					<a href="<?php echo esc_url( admin_url( 'admin.php?page=fbs-booking-types' ) ); ?>" class="list-group-item list-group-item-action d-flex align-items-center gap-2">
-						<i class="bi bi-tags text-primary"></i> <?php esc_html_e( 'Booking Types', 'flex-booking-system' ); ?>
+						<i class="bi bi-tags text-primary"></i> <?php esc_html_e( 'Booking Types', 'flex-multiple-listing-and-booking-system' ); ?>
 					</a>
 					<a href="<?php echo esc_url( admin_url( 'admin.php?page=fbs-settings' ) ); ?>" class="list-group-item list-group-item-action d-flex align-items-center gap-2">
-						<i class="bi bi-gear text-primary"></i> <?php esc_html_e( 'Settings & Shortcodes', 'flex-booking-system' ); ?>
+						<i class="bi bi-gear text-primary"></i> <?php esc_html_e( 'Settings & Shortcodes', 'flex-multiple-listing-and-booking-system' ); ?>
 					</a>
 					<?php
 					$fbs_listings_url = admin_url( 'admin.php?page=fbs-booking-types' );
@@ -181,11 +181,11 @@ foreach ( $fbs_count_by_type as $tid => $cnt ) {
 					}
 					?>
 					<a href="<?php echo esc_url( $fbs_listings_url ); ?>" class="list-group-item list-group-item-action d-flex align-items-center gap-2">
-						<i class="bi bi-building text-primary"></i> <?php esc_html_e( 'Listings', 'flex-booking-system' ); ?>
+						<i class="bi bi-building text-primary"></i> <?php esc_html_e( 'Listings', 'flex-multiple-listing-and-booking-system' ); ?>
 					</a>
 				</div>
 				<div class="mt-3 p-2 bg-light rounded small text-muted">
-					<strong><?php esc_html_e( 'REST API:', 'flex-booking-system' ); ?></strong>
+					<strong><?php esc_html_e( 'REST API:', 'flex-multiple-listing-and-booking-system' ); ?></strong>
 					<code><?php echo esc_html( rest_url( 'flex-booking/v1' ) ); ?></code>
 				</div>
 			</div>
@@ -197,24 +197,24 @@ foreach ( $fbs_count_by_type as $tid => $cnt ) {
 		<div class="col-lg-7">
 			<div class="fbs-admin-panel border rounded bg-white h-100">
 				<div class="fbs-admin-panel-head px-3 py-3 d-flex justify-content-between align-items-center border-bottom">
-					<span><i class="bi bi-calendar-event text-primary me-1"></i><?php esc_html_e( 'Recent Bookings', 'flex-booking-system' ); ?></span>
-					<a class="small" href="<?php echo esc_url( admin_url( 'admin.php?page=fbs-bookings' ) ); ?>"><?php esc_html_e( 'View all', 'flex-booking-system' ); ?></a>
+					<span><i class="bi bi-calendar-event text-primary me-1"></i><?php esc_html_e( 'Recent Bookings', 'flex-multiple-listing-and-booking-system' ); ?></span>
+					<a class="small" href="<?php echo esc_url( admin_url( 'admin.php?page=fbs-bookings' ) ); ?>"><?php esc_html_e( 'View all', 'flex-multiple-listing-and-booking-system' ); ?></a>
 				</div>
 				<div class="p-0">
 					<div class="table-responsive">
 						<table class="table fbs-table mb-0 align-middle w-100">
 							<thead>
 								<tr>
-									<th><?php esc_html_e( 'ID', 'flex-booking-system' ); ?></th>
-									<th><?php esc_html_e( 'Type', 'flex-booking-system' ); ?></th>
-									<th><?php esc_html_e( 'Status', 'flex-booking-system' ); ?></th>
-									<th class="text-end"><?php esc_html_e( 'Total', 'flex-booking-system' ); ?></th>
-									<th><?php esc_html_e( 'Date', 'flex-booking-system' ); ?></th>
+									<th><?php esc_html_e( 'ID', 'flex-multiple-listing-and-booking-system' ); ?></th>
+									<th><?php esc_html_e( 'Type', 'flex-multiple-listing-and-booking-system' ); ?></th>
+									<th><?php esc_html_e( 'Status', 'flex-multiple-listing-and-booking-system' ); ?></th>
+									<th class="text-end"><?php esc_html_e( 'Total', 'flex-multiple-listing-and-booking-system' ); ?></th>
+									<th><?php esc_html_e( 'Date', 'flex-multiple-listing-and-booking-system' ); ?></th>
 								</tr>
 							</thead>
 							<tbody>
 								<?php if ( empty( $fbs_recent_bookings ) ) : ?>
-									<tr><td colspan="5" class="text-muted p-4"><?php esc_html_e( 'No bookings yet.', 'flex-booking-system' ); ?></td></tr>
+									<tr><td colspan="5" class="text-muted p-4"><?php esc_html_e( 'No bookings yet.', 'flex-multiple-listing-and-booking-system' ); ?></td></tr>
 								<?php else : ?>
 									<?php foreach ( $fbs_recent_bookings as $row ) : ?>
 										<tr>
@@ -235,7 +235,7 @@ foreach ( $fbs_count_by_type as $tid => $cnt ) {
 		<div class="col-lg-5">
 			<div class="fbs-admin-panel border rounded bg-white h-100">
 				<div class="fbs-admin-panel-head px-3 py-3 d-flex justify-content-between align-items-center border-bottom">
-					<span><i class="bi bi-activity text-primary me-1"></i><?php esc_html_e( 'Activity Log', 'flex-booking-system' ); ?></span>
+					<span><i class="bi bi-activity text-primary me-1"></i><?php esc_html_e( 'Activity Log', 'flex-multiple-listing-and-booking-system' ); ?></span>
 					<span class="badge text-bg-secondary"><?php echo esc_html( (string) (int) $fbs_activity_total ); ?></span>
 				</div>
 				<div class="p-0">
@@ -243,14 +243,14 @@ foreach ( $fbs_count_by_type as $tid => $cnt ) {
 						<table class="table fbs-table mb-0 align-middle w-100">
 							<thead>
 								<tr>
-									<th><?php esc_html_e( 'Action', 'flex-booking-system' ); ?></th>
-									<th><?php esc_html_e( 'Object', 'flex-booking-system' ); ?></th>
-									<th><?php esc_html_e( 'When', 'flex-booking-system' ); ?></th>
+									<th><?php esc_html_e( 'Action', 'flex-multiple-listing-and-booking-system' ); ?></th>
+									<th><?php esc_html_e( 'Object', 'flex-multiple-listing-and-booking-system' ); ?></th>
+									<th><?php esc_html_e( 'When', 'flex-multiple-listing-and-booking-system' ); ?></th>
 								</tr>
 							</thead>
 							<tbody>
 								<?php if ( empty( $fbs_recent_activity ) ) : ?>
-									<tr><td colspan="3" class="text-muted p-4"><?php esc_html_e( 'No activity yet.', 'flex-booking-system' ); ?></td></tr>
+									<tr><td colspan="3" class="text-muted p-4"><?php esc_html_e( 'No activity yet.', 'flex-multiple-listing-and-booking-system' ); ?></td></tr>
 								<?php else : ?>
 									<?php foreach ( $fbs_recent_activity as $log ) : ?>
 										<tr>

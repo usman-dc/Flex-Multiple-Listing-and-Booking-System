@@ -24,16 +24,16 @@ $logout_url   = VendorPages::logout_url();
 		<div class="d-flex align-items-center justify-content-between gap-2 flex-wrap">
 			<div class="fbs-account-toolbar-left small text-muted d-none d-md-block">
 				<?php if ( $is_vendor ) : ?>
-					<i class="bi bi-shop me-1"></i><?php esc_html_e( 'Partner account', 'flex-booking-system' ); ?>
+					<i class="bi bi-shop me-1"></i><?php esc_html_e( 'Partner account', 'flex-multiple-listing-and-booking-system' ); ?>
 				<?php else : ?>
-					<i class="bi bi-megaphone me-1"></i><?php esc_html_e( 'Have something to list?', 'flex-booking-system' ); ?>
+					<i class="bi bi-megaphone me-1"></i><?php esc_html_e( 'Have something to list?', 'flex-multiple-listing-and-booking-system' ); ?>
 				<?php endif; ?>
 			</div>
 
 			<div class="fbs-account-toolbar-actions d-flex align-items-center gap-2 ms-auto">
 				<?php if ( $is_vendor ) : ?>
 					<a href="<?php echo esc_url( VendorPages::add_listing_url() ); ?>" class="btn btn-primary btn-sm">
-						<i class="bi bi-plus-lg me-1"></i><?php esc_html_e( 'Add Listing', 'flex-booking-system' ); ?>
+						<i class="bi bi-plus-lg me-1"></i><?php esc_html_e( 'Add Listing', 'flex-multiple-listing-and-booking-system' ); ?>
 					</a>
 
 					<div class="dropdown">
@@ -42,7 +42,7 @@ $logout_url   = VendorPages::logout_url();
 							id="fbs-account-menu"
 							data-bs-toggle="dropdown"
 							aria-expanded="false"
-							aria-label="<?php esc_attr_e( 'Account menu', 'flex-booking-system' ); ?>">
+							aria-label="<?php esc_attr_e( 'Account menu', 'flex-multiple-listing-and-booking-system' ); ?>">
 							<span class="fbs-account-avatar rounded-circle overflow-hidden d-inline-flex align-items-center justify-content-center bg-primary bg-opacity-10 text-primary">
 								<?php
 								if ( $user ) {
@@ -61,33 +61,33 @@ $logout_url   = VendorPages::logout_url();
 							<li><hr class="dropdown-divider"></li>
 							<li>
 								<a class="dropdown-item" href="<?php echo esc_url( VendorPages::dashboard_url() ); ?>">
-									<i class="bi bi-speedometer2 me-2"></i><?php esc_html_e( 'Dashboard', 'flex-booking-system' ); ?>
+									<i class="bi bi-speedometer2 me-2"></i><?php esc_html_e( 'Dashboard', 'flex-multiple-listing-and-booking-system' ); ?>
 								</a>
 							</li>
 							<li>
 								<a class="dropdown-item" href="<?php echo esc_url( VendorPages::add_listing_url() ); ?>">
-									<i class="bi bi-plus-circle me-2"></i><?php esc_html_e( 'Add Listing', 'flex-booking-system' ); ?>
+									<i class="bi bi-plus-circle me-2"></i><?php esc_html_e( 'Add Listing', 'flex-multiple-listing-and-booking-system' ); ?>
 								</a>
 							</li>
 							<li>
 								<a class="dropdown-item" href="<?php echo esc_url( VendorPages::listings_url() ); ?>">
-									<i class="bi bi-grid me-2"></i><?php esc_html_e( 'My Listings', 'flex-booking-system' ); ?>
+									<i class="bi bi-grid me-2"></i><?php esc_html_e( 'My Listings', 'flex-multiple-listing-and-booking-system' ); ?>
 								</a>
 							</li>
 							<li>
 								<a class="dropdown-item" href="<?php echo esc_url( VendorPages::bookings_url() ); ?>">
-									<i class="bi bi-calendar-check me-2"></i><?php esc_html_e( 'Bookings', 'flex-booking-system' ); ?>
+									<i class="bi bi-calendar-check me-2"></i><?php esc_html_e( 'Bookings', 'flex-multiple-listing-and-booking-system' ); ?>
 								</a>
 							</li>
 							<li>
 								<a class="dropdown-item" href="<?php echo esc_url( VendorPages::profile_url() ); ?>">
-									<i class="bi bi-gear me-2"></i><?php esc_html_e( 'Profile', 'flex-booking-system' ); ?>
+									<i class="bi bi-gear me-2"></i><?php esc_html_e( 'Profile', 'flex-multiple-listing-and-booking-system' ); ?>
 								</a>
 							</li>
 							<li><hr class="dropdown-divider"></li>
 							<li>
 								<a class="dropdown-item text-danger" href="<?php echo esc_url( $logout_url ); ?>">
-									<i class="bi bi-box-arrow-right me-2"></i><?php esc_html_e( 'Log out', 'flex-booking-system' ); ?>
+									<i class="bi bi-box-arrow-right me-2"></i><?php esc_html_e( 'Log out', 'flex-multiple-listing-and-booking-system' ); ?>
 								</a>
 							</li>
 						</ul>
@@ -95,23 +95,23 @@ $logout_url   = VendorPages::logout_url();
 
 				<?php elseif ( $is_logged_in ) : ?>
 					<a href="<?php echo esc_url( $register_url ); ?>" class="btn btn-primary btn-sm">
-						<i class="bi bi-person-plus me-1"></i><?php esc_html_e( 'Become a Partner', 'flex-booking-system' ); ?>
+						<i class="bi bi-person-plus me-1"></i><?php esc_html_e( 'Become a Partner', 'flex-multiple-listing-and-booking-system' ); ?>
 					</a>
-					<a href="<?php echo esc_url( $account_url ); ?>" class="btn btn-outline-secondary btn-sm" title="<?php esc_attr_e( 'My account', 'flex-booking-system' ); ?>">
-						<i class="bi bi-person-circle me-1"></i><span class="d-none d-sm-inline"><?php esc_html_e( 'Account', 'flex-booking-system' ); ?></span>
+					<a href="<?php echo esc_url( $account_url ); ?>" class="btn btn-outline-secondary btn-sm" title="<?php esc_attr_e( 'My account', 'flex-multiple-listing-and-booking-system' ); ?>">
+						<i class="bi bi-person-circle me-1"></i><span class="d-none d-sm-inline"><?php esc_html_e( 'Account', 'flex-multiple-listing-and-booking-system' ); ?></span>
 					</a>
 					<a href="<?php echo esc_url( $logout_url ); ?>" class="btn btn-link btn-sm text-muted text-decoration-none">
-						<?php esc_html_e( 'Log out', 'flex-booking-system' ); ?>
+						<?php esc_html_e( 'Log out', 'flex-multiple-listing-and-booking-system' ); ?>
 					</a>
 
 				<?php else : ?>
 					<a href="<?php echo esc_url( $register_url ); ?>" class="btn btn-primary btn-sm">
-						<i class="bi bi-plus-circle me-1"></i><?php esc_html_e( 'List Your Property', 'flex-booking-system' ); ?>
+						<i class="bi bi-plus-circle me-1"></i><?php esc_html_e( 'List Your Property', 'flex-multiple-listing-and-booking-system' ); ?>
 					</a>
 					<a href="<?php echo esc_url( $login_url ); ?>" class="btn btn-outline-secondary btn-sm">
-						<i class="bi bi-box-arrow-in-right me-1"></i><?php esc_html_e( 'Log in', 'flex-booking-system' ); ?>
+						<i class="bi bi-box-arrow-in-right me-1"></i><?php esc_html_e( 'Log in', 'flex-multiple-listing-and-booking-system' ); ?>
 					</a>
-					<a href="<?php echo esc_url( $account_url ); ?>" class="btn btn-light btn-sm border fbs-account-icon-btn" title="<?php esc_attr_e( 'Account / Log in', 'flex-booking-system' ); ?>" aria-label="<?php esc_attr_e( 'Account / Log in', 'flex-booking-system' ); ?>">
+					<a href="<?php echo esc_url( $account_url ); ?>" class="btn btn-light btn-sm border fbs-account-icon-btn" title="<?php esc_attr_e( 'Account / Log in', 'flex-multiple-listing-and-booking-system' ); ?>" aria-label="<?php esc_attr_e( 'Account / Log in', 'flex-multiple-listing-and-booking-system' ); ?>">
 						<i class="bi bi-person-circle fs-5"></i>
 					</a>
 				<?php endif; ?>

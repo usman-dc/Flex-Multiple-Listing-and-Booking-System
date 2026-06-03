@@ -51,7 +51,7 @@ $showing_end = min( $per_page, $total );
 					<?php
 					printf(
 						/* translators: %s: booking type name (lowercase) */
-						esc_html__( 'Browse all %s listings and find your perfect match.', 'flex-booking-system' ),
+						esc_html__( 'Browse all %s listings and find your perfect match.', 'flex-multiple-listing-and-booking-system' ),
 						esc_html( strtolower( $type_name ) )
 					);
 					?>
@@ -62,26 +62,26 @@ $showing_end = min( $per_page, $total );
 			<div class="fbs-grid-filters fbs-filter-panel">
 				<div class="row g-3 align-items-end">
 					<div class="col-lg-5">
-						<label class="form-label small fw-semibold mb-1"><?php esc_html_e( 'Keyword / Location', 'flex-booking-system' ); ?></label>
+						<label class="form-label small fw-semibold mb-1"><?php esc_html_e( 'Keyword / Location', 'flex-multiple-listing-and-booking-system' ); ?></label>
 						<div class="input-group">
 							<span class="input-group-text bg-white"><i class="bi bi-search" aria-hidden="true"></i></span>
-							<input type="text" class="form-control fbs-filter-keyword" placeholder="<?php esc_attr_e( 'Search by location or property name…', 'flex-booking-system' ); ?>">
+							<input type="text" class="form-control fbs-filter-keyword" placeholder="<?php esc_attr_e( 'Search by location or property name…', 'flex-multiple-listing-and-booking-system' ); ?>">
 						</div>
 					</div>
 					<div class="col-6 col-md-3 col-lg-2">
-						<label class="form-label small fw-semibold mb-1"><?php esc_html_e( 'Min price', 'flex-booking-system' ); ?></label>
+						<label class="form-label small fw-semibold mb-1"><?php esc_html_e( 'Min price', 'flex-multiple-listing-and-booking-system' ); ?></label>
 						<input type="number" class="form-control fbs-filter-min-price" placeholder="0" min="0" step="1">
 					</div>
 					<div class="col-6 col-md-3 col-lg-2">
-						<label class="form-label small fw-semibold mb-1"><?php esc_html_e( 'Max price', 'flex-booking-system' ); ?></label>
-						<input type="number" class="form-control fbs-filter-max-price" placeholder="<?php esc_attr_e( 'Any', 'flex-booking-system' ); ?>" min="0" step="1">
+						<label class="form-label small fw-semibold mb-1"><?php esc_html_e( 'Max price', 'flex-multiple-listing-and-booking-system' ); ?></label>
+						<input type="number" class="form-control fbs-filter-max-price" placeholder="<?php esc_attr_e( 'Any', 'flex-multiple-listing-and-booking-system' ); ?>" min="0" step="1">
 					</div>
 					<div class="col-6 col-md-3 col-lg-1">
-						<label class="form-label small fw-semibold mb-1"><?php esc_html_e( 'Guests', 'flex-booking-system' ); ?></label>
-						<input type="number" class="form-control fbs-filter-guests" placeholder="<?php esc_attr_e( 'Any', 'flex-booking-system' ); ?>" min="0">
+						<label class="form-label small fw-semibold mb-1"><?php esc_html_e( 'Guests', 'flex-multiple-listing-and-booking-system' ); ?></label>
+						<input type="number" class="form-control fbs-filter-guests" placeholder="<?php esc_attr_e( 'Any', 'flex-multiple-listing-and-booking-system' ); ?>" min="0">
 					</div>
 					<div class="col-6 col-md-4 col-lg-2 d-grid">
-						<button type="button" class="btn btn-primary fbs-filter-submit"><i class="bi bi-funnel me-1" aria-hidden="true"></i><?php esc_html_e( 'Show Results', 'flex-booking-system' ); ?></button>
+						<button type="button" class="btn btn-primary fbs-filter-submit"><i class="bi bi-funnel me-1" aria-hidden="true"></i><?php esc_html_e( 'Show Results', 'flex-multiple-listing-and-booking-system' ); ?></button>
 					</div>
 				</div>
 				<input type="hidden" class="fbs-filter-sort" value="date">
@@ -95,22 +95,22 @@ $showing_end = min( $per_page, $total );
 					if ( $total > 0 ) {
 						printf(
 							/* translators: 1: number shown on page, 2: total listings */
-							esc_html__( 'Showing 1–%1$d of %2$d properties', 'flex-booking-system' ),
+							esc_html__( 'Showing 1–%1$d of %2$d properties', 'flex-multiple-listing-and-booking-system' ),
 							(int) $showing_end,
 							(int) $total
 						);
 					} else {
-						esc_html_e( 'No properties found', 'flex-booking-system' );
+						esc_html_e( 'No properties found', 'flex-multiple-listing-and-booking-system' );
 					}
 					?>
 				</span>
 				<div class="d-flex align-items-center gap-2">
-					<label class="small text-muted mb-0" for="<?php echo esc_attr( $uid ); ?>-sort"><?php esc_html_e( 'Sort by:', 'flex-booking-system' ); ?></label>
+					<label class="small text-muted mb-0" for="<?php echo esc_attr( $uid ); ?>-sort"><?php esc_html_e( 'Sort by:', 'flex-multiple-listing-and-booking-system' ); ?></label>
 					<select class="form-select form-select-sm fbs-filter-sort-select" id="<?php echo esc_attr( $uid ); ?>-sort" style="width:auto;">
-						<option value="date"><?php esc_html_e( 'Newest', 'flex-booking-system' ); ?></option>
-						<option value="price_asc"><?php esc_html_e( 'Price: low to high', 'flex-booking-system' ); ?></option>
-						<option value="price_desc"><?php esc_html_e( 'Price: high to low', 'flex-booking-system' ); ?></option>
-						<option value="title"><?php esc_html_e( 'Name A–Z', 'flex-booking-system' ); ?></option>
+						<option value="date"><?php esc_html_e( 'Newest', 'flex-multiple-listing-and-booking-system' ); ?></option>
+						<option value="price_asc"><?php esc_html_e( 'Price: low to high', 'flex-multiple-listing-and-booking-system' ); ?></option>
+						<option value="price_desc"><?php esc_html_e( 'Price: high to low', 'flex-multiple-listing-and-booking-system' ); ?></option>
+						<option value="title"><?php esc_html_e( 'Name A–Z', 'flex-multiple-listing-and-booking-system' ); ?></option>
 					</select>
 					<span class="spinner-border spinner-border-sm text-primary d-none fbs-grid-spinner" role="status"></span>
 				</div>
@@ -122,16 +122,16 @@ $showing_end = min( $per_page, $total );
 						<?php ListingDisplay::render_grid_card( get_the_ID(), $col_class ); ?>
 					<?php endwhile; ?>
 				<?php else : ?>
-					<div class="col-12"><p class="text-muted text-center py-5"><?php esc_html_e( 'No listings found.', 'flex-booking-system' ); ?></p></div>
+					<div class="col-12"><p class="text-muted text-center py-5"><?php esc_html_e( 'No listings found.', 'flex-multiple-listing-and-booking-system' ); ?></p></div>
 				<?php endif; ?>
 			</div>
 
 			<?php if ( $show_filters && $wp_query->max_num_pages > 1 ) : ?>
-				<nav class="fbs-grid-pagination mt-4" data-pages="<?php echo esc_attr( (string) $wp_query->max_num_pages ); ?>" aria-label="<?php esc_attr_e( 'Pagination', 'flex-booking-system' ); ?>">
+				<nav class="fbs-grid-pagination mt-4" data-pages="<?php echo esc_attr( (string) $wp_query->max_num_pages ); ?>" aria-label="<?php esc_attr_e( 'Pagination', 'flex-multiple-listing-and-booking-system' ); ?>">
 					<ul class="pagination justify-content-center mb-0">
-						<li class="page-item"><button class="page-link fbs-grid-prev" disabled aria-label="<?php esc_attr_e( 'Previous', 'flex-booking-system' ); ?>">&laquo;</button></li>
+						<li class="page-item"><button class="page-link fbs-grid-prev" disabled aria-label="<?php esc_attr_e( 'Previous', 'flex-multiple-listing-and-booking-system' ); ?>">&laquo;</button></li>
 						<li class="page-item active"><span class="page-link fbs-grid-page-info">1</span></li>
-						<li class="page-item"><button class="page-link fbs-grid-next" aria-label="<?php esc_attr_e( 'Next', 'flex-booking-system' ); ?>">&raquo;</button></li>
+						<li class="page-item"><button class="page-link fbs-grid-next" aria-label="<?php esc_attr_e( 'Next', 'flex-multiple-listing-and-booking-system' ); ?>">&raquo;</button></li>
 					</ul>
 				</nav>
 			<?php elseif ( ! $show_filters && $wp_query->max_num_pages > 1 ) : ?>
@@ -139,8 +139,8 @@ $showing_end = min( $per_page, $total );
 					<?php
 					the_posts_pagination( array(
 						'mid_size'  => 2,
-						'prev_text' => '&laquo; ' . __( 'Previous', 'flex-booking-system' ),
-						'next_text' => __( 'Next', 'flex-booking-system' ) . ' &raquo;',
+						'prev_text' => '&laquo; ' . __( 'Previous', 'flex-multiple-listing-and-booking-system' ),
+						'next_text' => __( 'Next', 'flex-multiple-listing-and-booking-system' ) . ' &raquo;',
 					) );
 					?>
 				</div>

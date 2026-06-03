@@ -52,8 +52,9 @@ Put the GitHub URL in `readme.txt` (already added) so reviewers can browse sourc
 
 ## WordPress.org upload checklist
 
-- Folder name: `flex-booking-system` (do not rename — keeps updates stable)
-- Text domain: `flex-booking-system` (unchanged for translations)
+- Folder name for Git/local ZIP: `flex-booking-system` (keeps existing installs stable)
+- Text domain (all `__()`, `_e()`, etc.): `flex-multiple-listing-and-booking-system` (must match WordPress.org plugin slug)
+- WordPress.org SVN slug: `flex-multiple-listing-and-booking-system`
 - `Stable tag` in readme.txt matches plugin version (1.0.1)
 - Include `/dist` built CSS/JS
 - Exclude `node_modules/`, `.git/`, dev-only files

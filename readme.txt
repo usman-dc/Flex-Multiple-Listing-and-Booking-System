@@ -89,6 +89,10 @@ No. You must upload a plugin ZIP through [wordpress.org/plugins/developers/add/]
 
 Zip the `flex-booking-system` directory so the archive unpacks to one folder named `flex-booking-system`. Include `dist/`, `readme.txt`, and `LICENSE`. Do not include `node_modules`. Run [Plugin Check](https://wordpress.org/plugins/plugin-check/) on your site before submitting.
 
+= Why is the text domain different from the folder name? =
+
+WordPress.org requires the text domain to match the plugin slug (`flex-multiple-listing-and-booking-system`). The install folder may remain `flex-booking-system` for compatibility with existing sites and GitHub releases.
+
 = Does this work with any theme? =
 
 Yes. The plugin ships frontend styles and uses Bootstrap 5 on booking pages. Container width is configurable in **Settings → Layout**.

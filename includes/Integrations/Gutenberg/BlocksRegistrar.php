@@ -54,7 +54,7 @@ final class BlocksRegistrar {
 
 				'api_version'     => 2,
 
-				'title'           => __( 'Flex MLS Booking Form', 'flex-booking-system' ),
+				'title'           => __( 'Flex MLS Booking Form', 'flex-multiple-listing-and-booking-system' ),
 
 				'render_callback' => array( __CLASS__, 'render_booking_form' ),
 
@@ -80,7 +80,7 @@ final class BlocksRegistrar {
 
 				'api_version'     => 2,
 
-				'title'           => __( 'Flex MLS Listing Grid', 'flex-booking-system' ),
+				'title'           => __( 'Flex MLS Listing Grid', 'flex-multiple-listing-and-booking-system' ),
 
 				'render_callback' => array( __CLASS__, 'render_listing_grid' ),
 
@@ -100,7 +100,7 @@ final class BlocksRegistrar {
 
 				'api_version'     => 2,
 
-				'title'           => __( 'Flex MLS Listing Search', 'flex-booking-system' ),
+				'title'           => __( 'Flex MLS Listing Search', 'flex-multiple-listing-and-booking-system' ),
 
 				'render_callback' => array( __CLASS__, 'render_search' ),
 

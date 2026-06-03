@@ -49,25 +49,25 @@ final class BookingEngine {
 
 		$errors = array();
 		if ( $booking_type_id < 1 ) {
-			$errors[] = __( 'Invalid booking type.', 'flex-booking-system' );
+			$errors[] = __( 'Invalid booking type.', 'flex-multiple-listing-and-booking-system' );
 		}
 		if ( empty( $start ) || empty( $end ) ) {
-			$errors[] = __( 'Start and end are required.', 'flex-booking-system' );
+			$errors[] = __( 'Start and end are required.', 'flex-multiple-listing-and-booking-system' );
 		}
 
 		if ( apply_filters( 'fbs_require_booking_contact', true, $payload ) ) {
 			$ce = isset( $payload['customer_email'] ) ? sanitize_email( (string) $payload['customer_email'] ) : '';
 			if ( ! $ce || ! is_email( $ce ) ) {
-				$errors[] = __( 'A valid email is required.', 'flex-booking-system' );
+				$errors[] = __( 'A valid email is required.', 'flex-multiple-listing-and-booking-system' );
 			}
 			$ph = isset( $payload['customer_phone'] ) ? trim( (string) $payload['customer_phone'] ) : '';
 			if ( '' === $ph ) {
-				$errors[] = __( 'Mobile / phone is required.', 'flex-booking-system' );
+				$errors[] = __( 'Mobile / phone is required.', 'flex-multiple-listing-and-booking-system' );
 			}
 			$fn = isset( $payload['customer_first_name'] ) ? trim( (string) $payload['customer_first_name'] ) : '';
 			$ln = isset( $payload['customer_last_name'] ) ? trim( (string) $payload['customer_last_name'] ) : '';
 			if ( '' === $fn || '' === $ln ) {
-				$errors[] = __( 'First and last name are required.', 'flex-booking-system' );
+				$errors[] = __( 'First and last name are required.', 'flex-multiple-listing-and-booking-system' );
 			}
 		}
 
