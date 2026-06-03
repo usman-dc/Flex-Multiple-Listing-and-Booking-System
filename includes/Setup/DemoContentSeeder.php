@@ -239,7 +239,7 @@ final class DemoContentSeeder {
 
 		$id = media_handle_sideload( $file_array, 0 );
 		if ( is_wp_error( $id ) ) {
-			@unlink( $tmp );
+			wp_delete_file( $tmp );
 			return 0;
 		}
 

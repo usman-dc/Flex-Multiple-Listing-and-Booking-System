@@ -189,11 +189,10 @@ final class BookingRepository {
 		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$sql = "SELECT * FROM `{$table}`{$where} ORDER BY id DESC LIMIT %d OFFSET %d";
 
-		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $where is empty or prepared clauses only.
-		$rows = $wpdb->get_results(
-			$wpdb->prepare( $sql, $per, $offset ),
-			ARRAY_A
-		);
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $sql uses validated table name; $where is prepared fragments only.
+		$prepared = $wpdb->prepare( $sql, $per, $offset );
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+		$rows     = $wpdb->get_results( $prepared, ARRAY_A );
 
 		return is_array( $rows ) ? $rows : array();
 	}
@@ -249,7 +248,8 @@ final class BookingRepository {
 		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$sql = "SELECT id, email FROM `{$table}` WHERE id IN ($placeholders)";
 
-		$prepared = $wpdb->prepare( $sql, $customer_ids );
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $sql uses schema table name; IDs passed to prepare().
+		$prepared = $wpdb->prepare( $sql, ...$customer_ids );
 		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 		$rows     = $wpdb->get_results( $prepared, ARRAY_A );
 
@@ -441,9 +441,10 @@ final class BookingRepository {
 		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$sql          = "SELECT booking_id, meta_value FROM `{$table}` WHERE meta_key = %s AND booking_id IN ({$placeholders})";
 		$args         = array_merge( array( 'form_values' ), $booking_ids );
-		$prep         = $wpdb->prepare( $sql, $args );
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $sql uses schema table name; $args are prepared.
+		$prep = $wpdb->prepare( $sql, ...$args );
 		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-		$rows         = $wpdb->get_results( $prep, ARRAY_A );
+		$rows = $wpdb->get_results( $prep, ARRAY_A );
 		$out          = array();
 
 		if ( is_array( $rows ) ) {

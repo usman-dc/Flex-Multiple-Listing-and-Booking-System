@@ -85,7 +85,13 @@ foreach ( $fbs_count_by_type as $tid => $cnt ) {
 					<span class="small text-muted"><?php esc_html_e( 'Bookings (30d)', 'flex-booking-system' ); ?></span>
 				</div>
 				<p class="fs-3 fw-bold mb-0"><?php echo esc_html( (string) (int) $fbs_stat_bookings_30d ); ?></p>
-				<p class="small text-muted mb-0"><?php printf( esc_html__( '%d all-time', 'flex-booking-system' ), (int) $fbs_stat_bookings_all ); ?></p>
+				<p class="small text-muted mb-0"><?php
+				printf(
+					/* translators: %d: total booking count */
+					esc_html__( '%d all-time', 'flex-booking-system' ),
+					(int) $fbs_stat_bookings_all
+				);
+				?></p>
 			</div>
 		</div>
 		<div class="col-6 col-lg-3">
@@ -262,79 +268,3 @@ foreach ( $fbs_count_by_type as $tid => $cnt ) {
 		</div>
 	</div>
 </div>
-
-<!-- Chart.js CDN -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-	var mainCtx = document.getElementById('fbs-chart-main');
-	if (mainCtx) {
-		new Chart(mainCtx, {
-			type: 'line',
-			data: {
-				labels: <?php echo wp_json_encode( $chart_labels ); ?>,
-				datasets: [
-					{
-						label: '<?php echo esc_js( __( 'Bookings', 'flex-booking-system' ) ); ?>',
-						data: <?php echo wp_json_encode( $chart_bookings ); ?>,
-						borderColor: '#0d6efd',
-						backgroundColor: 'rgba(13,110,253,0.1)',
-						fill: true,
-						tension: 0.3,
-						yAxisID: 'y'
-					},
-					{
-						label: '<?php echo esc_js( __( 'Revenue', 'flex-booking-system' ) ); ?> (<?php echo esc_js( $currency ); ?>)',
-						data: <?php echo wp_json_encode( $chart_revenue ); ?>,
-						borderColor: '#198754',
-						backgroundColor: 'rgba(25,135,84,0.08)',
-						fill: true,
-						tension: 0.3,
-						yAxisID: 'y1'
-					}
-				]
-			},
-			options: {
-				responsive: true,
-				interaction: { mode: 'index', intersect: false },
-				plugins: { legend: { position: 'top' } },
-				scales: {
-					y: { beginAtZero: true, position: 'left', title: { display: true, text: '<?php echo esc_js( __( 'Bookings', 'flex-booking-system' ) ); ?>' } },
-					y1: { beginAtZero: true, position: 'right', grid: { drawOnChartArea: false }, title: { display: true, text: '<?php echo esc_js( $currency ); ?>' } }
-				}
-			}
-		});
-	}
-
-	var statusCtx = document.getElementById('fbs-chart-status');
-	if (statusCtx) {
-		new Chart(statusCtx, {
-			type: 'doughnut',
-			data: {
-				labels: <?php echo wp_json_encode( $status_labels ); ?>,
-				datasets: [{
-					data: <?php echo wp_json_encode( $status_counts ); ?>,
-					backgroundColor: <?php echo wp_json_encode( $status_colors ); ?>
-				}]
-			},
-			options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { boxWidth: 12 } } } }
-		});
-	}
-
-	var typesCtx = document.getElementById('fbs-chart-types');
-	if (typesCtx) {
-		new Chart(typesCtx, {
-			type: 'bar',
-			data: {
-				labels: <?php echo wp_json_encode( $type_labels ); ?>,
-				datasets: [{
-					label: '<?php echo esc_js( __( 'Bookings', 'flex-booking-system' ) ); ?>',
-					data: <?php echo wp_json_encode( $type_counts ); ?>,
-					backgroundColor: '#0d6efd'
-				}]
-			},
-			options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
-		});
-	}
-});
-</script>

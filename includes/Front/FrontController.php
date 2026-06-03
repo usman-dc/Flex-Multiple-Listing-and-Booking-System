@@ -18,6 +18,7 @@ namespace FlexBooking\Front;
 
 use FlexBooking\Core\Plugin;
 
+use FlexBooking\Assets\VendorAssets;
 use FlexBooking\Front\ColorSettings;
 
 
@@ -96,31 +97,7 @@ final class FrontController {
 
 
 
-		wp_register_style(
-
-			'fbs-bootstrap',
-
-			'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css',
-
-			array(),
-
-			'5.3.3'
-
-		);
-
-
-
-		wp_register_style(
-
-			'fbs-bootstrap-icons',
-
-			'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css',
-
-			array(),
-
-			'1.11.3'
-
-		);
+		VendorAssets::register_bootstrap();
 
 
 
@@ -138,19 +115,6 @@ final class FrontController {
 
 
 
-		wp_register_script(
-
-			'fbs-bootstrap',
-
-			'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js',
-
-			array(),
-
-			'5.3.3',
-
-			true
-
-		);
 
 
 

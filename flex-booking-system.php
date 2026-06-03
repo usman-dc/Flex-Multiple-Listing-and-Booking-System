@@ -26,22 +26,26 @@ define( 'FBS_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
 define( 'FBS_PLUGIN_DISPLAY_NAME', 'Flex Multiple Listing and Booking System' );
 define( 'FBS_PLUGIN_MENU_LABEL', 'Flex MLS & Booking' );
 
-/**
- * Public plugin display name (translatable).
- *
- * @return string
- */
-function fbs_plugin_display_name() {
-	return __( 'Flex Multiple Listing and Booking System', 'flex-booking-system' );
+if ( ! function_exists( 'fbs_plugin_display_name' ) ) {
+	/**
+	 * Public plugin display name (translatable).
+	 *
+	 * @return string
+	 */
+	function fbs_plugin_display_name() {
+		return __( 'Flex Multiple Listing and Booking System', 'flex-booking-system' );
+	}
 }
 
-/**
- * Short admin menu label (translatable).
- *
- * @return string
- */
-function fbs_plugin_menu_label() {
-	return __( 'Flex MLS & Booking', 'flex-booking-system' );
+if ( ! function_exists( 'fbs_plugin_menu_label' ) ) {
+	/**
+	 * Short admin menu label (translatable).
+	 *
+	 * @return string
+	 */
+	function fbs_plugin_menu_label() {
+		return __( 'Flex MLS & Booking', 'flex-booking-system' );
+	}
 }
 
 /**
@@ -55,13 +59,15 @@ if ( is_readable( $fbs_autoload ) ) {
 	FlexBooking\Autoloader::register();
 }
 
-/**
- * Begins execution of the plugin.
- *
- * @return FlexBooking\Core\Plugin
- */
-function fbs_plugin() {
-	return FlexBooking\Core\Plugin::instance();
+if ( ! function_exists( 'fbs_plugin' ) ) {
+	/**
+	 * Begins execution of the plugin.
+	 *
+	 * @return FlexBooking\Core\Plugin
+	 */
+	function fbs_plugin() {
+		return FlexBooking\Core\Plugin::instance();
+	}
 }
 
 register_activation_hook( __FILE__, array( 'FlexBooking\Core\Activator', 'activate' ) );

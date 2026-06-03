@@ -356,7 +356,13 @@ $fbs_currency = PriceFormatter::currency_code();
 
 									<option value="<?php echo esc_attr( (string) $g ); ?>"<?php selected( 2, $g ); ?>>
 
-										<?php printf( esc_html( _n( '%d Guest', '%d Guests', $g, 'flex-booking-system' ) ), $g ); ?>
+										<?php
+										printf(
+											/* translators: %d: guest count */
+											esc_html( _n( '%d Guest', '%d Guests', $g, 'flex-booking-system' ) ),
+											(int) $g
+										);
+										?>
 
 									</option>
 

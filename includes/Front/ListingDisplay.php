@@ -175,15 +175,15 @@ final class ListingDisplay {
 		$count  = $data['count'];
 		$full   = (int) floor( $rating );
 		?>
-		<div class="fbs-card-rating" aria-label="<?php printf( esc_attr__( 'Rated %1$s out of 5', 'flex-booking-system' ), number_format_i18n( $rating, 1 ) ); ?>">
+		<div class="fbs-card-rating" aria-label="<?php echo esc_attr( self::grid_rating_aria_label( $rating ) ); ?>">
 			<span class="fbs-card-rating-stars" aria-hidden="true">
 				<?php for ( $i = 1; $i <= 5; $i++ ) : ?>
 					<i class="bi bi-star<?php echo $i <= $full ? '-fill' : ''; ?>"></i>
 				<?php endfor; ?>
 			</span>
-			<span class="fbs-card-rating-score"><?php echo esc_html( number_format_i18n( $rating, 1 ) ); ?></span>
+			<span class="fbs-card-rating-score"><?php echo esc_html( self::format_rating_score( $rating ) ); ?></span>
 			<?php if ( $count > 0 ) : ?>
-				<span class="fbs-card-rating-count">(<?php printf( esc_html__( '%d reviews', 'flex-booking-system' ), $count ); ?>)</span>
+				<span class="fbs-card-rating-count">(<?php echo esc_html( self::format_review_count( $count ) ); ?>)</span>
 			<?php endif; ?>
 		</div>
 		<?php
@@ -202,15 +202,15 @@ final class ListingDisplay {
 		}
 		$full = (int) floor( $rating );
 		?>
-		<div class="fbs-listing-stars" aria-label="<?php printf( esc_attr__( 'Rated %1$s out of 5 from %2$d reviews', 'flex-booking-system' ), number_format_i18n( $rating, 1 ), $count ); ?>">
+		<div class="fbs-listing-stars" aria-label="<?php echo esc_attr( self::stars_aria_label( $rating, $count ) ); ?>">
 			<span class="fbs-stars-icons" aria-hidden="true">
 				<?php for ( $i = 1; $i <= 5; $i++ ) : ?>
 					<i class="bi bi-star<?php echo $i <= $full ? '-fill' : ''; ?>"></i>
 				<?php endfor; ?>
 			</span>
-			<span class="fbs-stars-score"><?php echo esc_html( number_format_i18n( $rating, 1 ) ); ?></span>
+			<span class="fbs-stars-score"><?php echo esc_html( self::format_rating_score( $rating ) ); ?></span>
 			<?php if ( $count > 0 ) : ?>
-				<span class="fbs-stars-count">(<?php printf( esc_html__( '%d reviews', 'flex-booking-system' ), $count ); ?>)</span>
+				<span class="fbs-stars-count">(<?php echo esc_html( self::format_review_count( $count ) ); ?>)</span>
 			<?php endif; ?>
 		</div>
 		<?php
@@ -227,5 +227,59 @@ final class ListingDisplay {
 		$fbs_card_post_id = (int) $post_id;
 		$fbs_card_col     = $col_class;
 		include FBS_PLUGIN_DIR . 'templates/public/partials/grid-card.php';
+	}
+
+	/**
+	 * Aria label for grid star rating.
+	 *
+	 * @param float $rating Average rating.
+	 * @return string
+	 */
+	private static function grid_rating_aria_label( $rating ) {
+		return sprintf(
+			/* translators: 1: average rating, 2: max stars */
+			__( 'Rated %1$s out of 5', 'flex-booking-system' ),
+			number_format_i18n( $rating, 1 )
+		);
+	}
+
+	/**
+	 * Formatted rating for display.
+	 *
+	 * @param float $rating Rating value.
+	 * @return string
+	 */
+	private static function format_rating_score( $rating ) {
+		return number_format_i18n( $rating, 1 );
+	}
+
+	/**
+	 * Formatted review count for display.
+	 *
+	 * @param int $count Review count.
+	 * @return string
+	 */
+	private static function format_review_count( $count ) {
+		return sprintf(
+			/* translators: %d: number of reviews */
+			__( '%d reviews', 'flex-booking-system' ),
+			$count
+		);
+	}
+
+	/**
+	 * Aria label for full star row.
+	 *
+	 * @param float $rating Average rating.
+	 * @param int   $count  Review count.
+	 * @return string
+	 */
+	private static function stars_aria_label( $rating, $count ) {
+		return sprintf(
+			/* translators: 1: average rating, 2: review count */
+			__( 'Rated %1$s out of 5 from %2$d reviews', 'flex-booking-system' ),
+			number_format_i18n( $rating, 1 ),
+			$count
+		);
 	}
 }

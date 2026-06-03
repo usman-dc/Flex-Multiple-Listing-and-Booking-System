@@ -50,6 +50,7 @@ $showing_end = min( $per_page, $total );
 				<p class="fbs-grid-hero-sub">
 					<?php
 					printf(
+						/* translators: %s: booking type name (lowercase) */
 						esc_html__( 'Browse all %s listings and find your perfect match.', 'flex-booking-system' ),
 						esc_html( strtolower( $type_name ) )
 					);
@@ -93,9 +94,10 @@ $showing_end = min( $per_page, $total );
 					<?php
 					if ( $total > 0 ) {
 						printf(
+							/* translators: 1: number shown on page, 2: total listings */
 							esc_html__( 'Showing 1–%1$d of %2$d properties', 'flex-booking-system' ),
-							$showing_end,
-							$total
+							(int) $showing_end,
+							(int) $total
 						);
 					} else {
 						esc_html_e( 'No properties found', 'flex-booking-system' );

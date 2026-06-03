@@ -227,6 +227,7 @@ $edit_base = $list_url;
 		<p class="text-muted small mb-3">
 			<?php
 			printf(
+				/* translators: %d: number of booking types */
 				esc_html__( '%d booking type(s) configured. Each published type auto-creates a Custom Post Type (CPT) in the plugin menu.', 'flex-booking-system' ),
 				(int) $fbs_types_total
 			);

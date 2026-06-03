@@ -96,7 +96,11 @@ foreach ( $fbs_all_types_for_sc as $fbs_sc_type ) {
 	$tid = (int) $fbs_sc_type['id'];
 	$fbs_shortcodes_help[] = array(
 		'tag'         => 'fbs_booking_form id="' . $tid . '"',
-		'description' => sprintf( __( 'Form: %s', 'flex-booking-system' ), esc_html( (string) $fbs_sc_type['name'] ) ),
+		'description' => sprintf(
+			/* translators: %s: booking type name */
+			__( 'Form: %s', 'flex-booking-system' ),
+			esc_html( (string) $fbs_sc_type['name'] )
+		),
 		'example'     => '[fbs_booking_form id="' . $tid . '"]',
 		'attrs'       => '<code>id="' . $tid . '"</code>',
 	);
@@ -247,7 +251,13 @@ $fbs_shortcodes_help = apply_filters( 'fbs_settings_shortcodes_help', $fbs_short
 							<div class="border rounded p-3 bg-light small">
 								<strong><?php esc_html_e( 'Preview', 'flex-booking-system' ); ?></strong>
 								<div class="mt-2 mx-auto border border-primary border-2 bg-white text-center py-2" style="max-width:<?php echo esc_attr( (string) (int) ( $s['container_width'] ?? 1400 ) ); ?>px;width:100%;">
-									<?php printf( esc_html__( 'Content area — %d px max', 'flex-booking-system' ), (int) ( $s['container_width'] ?? 1400 ) ); ?>
+									<?php
+									printf(
+										/* translators: %d: container max width in pixels */
+										esc_html__( 'Content area — %d px max', 'flex-booking-system' ),
+										(int) ( $s['container_width'] ?? 1400 )
+									);
+									?>
 								</div>
 							</div>
 						</div>
@@ -611,7 +621,7 @@ $fbs_shortcodes_help = apply_filters( 'fbs_settings_shortcodes_help', $fbs_short
 								array(
 									'name'              => 'fbs_vendor_register_page',
 									'selected'          => (int) ( $s['vendor_register_page'] ?? 0 ),
-									'show_option_none'  => __( '— Select page —', 'flex-booking-system' ),
+									'show_option_none'  => esc_html__( '— Select page —', 'flex-booking-system' ),
 									'option_none_value' => '0',
 									'class'             => 'form-select',
 								)
@@ -625,7 +635,7 @@ $fbs_shortcodes_help = apply_filters( 'fbs_settings_shortcodes_help', $fbs_short
 								array(
 									'name'              => 'fbs_vendor_login_page',
 									'selected'          => (int) ( $s['vendor_login_page'] ?? 0 ),
-									'show_option_none'  => __( '— Select page —', 'flex-booking-system' ),
+									'show_option_none'  => esc_html__( '— Select page —', 'flex-booking-system' ),
 									'option_none_value' => '0',
 									'class'             => 'form-select',
 								)
@@ -639,7 +649,7 @@ $fbs_shortcodes_help = apply_filters( 'fbs_settings_shortcodes_help', $fbs_short
 								array(
 									'name'              => 'fbs_vendor_dashboard_page',
 									'selected'          => (int) ( $s['vendor_dashboard_page'] ?? 0 ),
-									'show_option_none'  => __( '— Select page —', 'flex-booking-system' ),
+									'show_option_none'  => esc_html__( '— Select page —', 'flex-booking-system' ),
 									'option_none_value' => '0',
 									'class'             => 'form-select',
 								)

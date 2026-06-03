@@ -135,7 +135,13 @@ while ( have_posts() ) :
 							<?php endif; ?>
 							<div class="fbs-quick-stats-specs">
 								<?php if ( $max_guests > 0 ) : ?>
-									<span class="fbs-quick-stat"><i class="bi bi-people" aria-hidden="true"></i><?php printf( esc_html__( '%d Guests', 'flex-booking-system' ), $max_guests ); ?></span>
+									<span class="fbs-quick-stat"><i class="bi bi-people" aria-hidden="true"></i><?php
+									printf(
+										/* translators: %d: maximum guest count */
+										esc_html__( '%d Guests', 'flex-booking-system' ),
+										(int) $max_guests
+									);
+									?></span>
 								<?php endif; ?>
 								<?php if ( $bedrooms ) : ?>
 									<span class="fbs-quick-stat"><i class="bi bi-bed" aria-hidden="true"></i><?php echo esc_html( $bedrooms ); ?></span>
@@ -218,7 +224,14 @@ while ( have_posts() ) :
 					<div class="fbs-section mb-4">
 						<h4 class="fw-bold mb-3"><i class="bi bi-play-circle me-2 text-primary"></i><?php esc_html_e( 'Video', 'flex-booking-system' ); ?></h4>
 						<div class="ratio ratio-16x9 rounded overflow-hidden">
-							<?php echo wp_oembed_get( $video_url ) ?: '<a href="' . esc_url( $video_url ) . '" target="_blank" class="btn btn-outline-primary">' . esc_html( $video_url ) . '</a>'; ?>
+							<?php
+							$fbs_oembed = wp_oembed_get( $video_url );
+							if ( $fbs_oembed ) {
+								echo wp_kses_post( $fbs_oembed );
+							} else {
+								echo '<a href="' . esc_url( $video_url ) . '" target="_blank" rel="noopener noreferrer" class="btn btn-outline-primary">' . esc_html( $video_url ) . '</a>';
+							}
+							?>
 						</div>
 					</div>
 				<?php endif; ?>

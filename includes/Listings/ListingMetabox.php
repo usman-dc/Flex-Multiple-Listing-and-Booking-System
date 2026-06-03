@@ -52,15 +52,7 @@ final class ListingMetabox {
 
 		wp_enqueue_media();
 
-		if ( ! wp_style_is( 'fbs-bootstrap', 'registered' ) ) {
-			wp_register_style( 'fbs-bootstrap', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css', array(), '5.3.3' );
-		}
-		if ( ! wp_style_is( 'fbs-bootstrap-icons', 'registered' ) ) {
-			wp_register_style( 'fbs-bootstrap-icons', 'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css', array(), '1.11.3' );
-		}
-		if ( ! wp_script_is( 'fbs-bootstrap', 'registered' ) ) {
-			wp_register_script( 'fbs-bootstrap', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js', array(), '5.3.3', true );
-		}
+		\FlexBooking\Assets\VendorAssets::register_bootstrap();
 
 		wp_enqueue_style( 'fbs-bootstrap' );
 		wp_enqueue_style( 'fbs-bootstrap-icons' );

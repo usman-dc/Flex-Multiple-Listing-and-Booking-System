@@ -226,13 +226,10 @@ $grid_style       = LayoutSettings::grid_inline_style( $fbs_grid_spacing );
 			if ( $total > 0 ) {
 
 				printf(
-
+					/* translators: 1: number shown on page, 2: total listings */
 					esc_html__( 'Showing 1–%1$d of %2$d properties', 'flex-booking-system' ),
-
-					$showing_end,
-
-					$total
-
+					(int) $showing_end,
+					(int) $total
 				);
 
 			} else {

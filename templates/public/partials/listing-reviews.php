@@ -40,7 +40,13 @@ $prefill_email = is_user_logged_in() ? $user->user_email : '';
 				<article class="fbs-review-item">
 					<header class="fbs-review-item-header">
 						<strong class="fbs-review-author"><?php echo esc_html( (string) $review['author_name'] ); ?></strong>
-						<span class="fbs-review-stars" aria-label="<?php printf( esc_attr__( 'Rated %d out of 5', 'flex-booking-system' ), (int) $review['rating'] ); ?>">
+						<span class="fbs-review-stars" aria-label="<?php
+						printf(
+							/* translators: %d: star rating 1-5 */
+							esc_attr__( 'Rated %d out of 5', 'flex-booking-system' ),
+							(int) $review['rating']
+						);
+						?>">
 							<?php for ( $i = 1; $i <= 5; $i++ ) : ?>
 								<i class="bi bi-star<?php echo $i <= (int) $review['rating'] ? '-fill' : ''; ?>" aria-hidden="true"></i>
 							<?php endfor; ?>

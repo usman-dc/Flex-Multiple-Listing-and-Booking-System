@@ -73,7 +73,13 @@ $rating_data = ListingDisplay::rating_data( $post_id );
 			<?php endif; ?>
 			<div class="fbs-card-specs">
 				<?php if ( $max_guests > 0 ) : ?>
-					<span><i class="bi bi-people" aria-hidden="true"></i><?php printf( esc_html__( '%d Guests', 'flex-booking-system' ), $max_guests ); ?></span>
+					<span><i class="bi bi-people" aria-hidden="true"></i><?php
+					printf(
+						/* translators: %d: maximum guest count */
+						esc_html__( '%d Guests', 'flex-booking-system' ),
+						(int) $max_guests
+					);
+					?></span>
 				<?php endif; ?>
 				<?php if ( $bedrooms ) : ?>
 					<span><i class="bi bi-door-closed" aria-hidden="true"></i><?php echo esc_html( $bedrooms ); ?></span>

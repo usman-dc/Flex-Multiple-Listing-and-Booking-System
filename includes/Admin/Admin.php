@@ -15,6 +15,7 @@ use FlexBooking\Front\ColorSettings;
 use FlexBooking\Core\Plugin;
 use FlexBooking\Database\Schema;
 use FlexBooking\Setup\IndustryCatalog;
+use FlexBooking\Assets\VendorAssets;
 use FlexBooking\Listings\ListingReviewRepository;
 
 defined( 'ABSPATH' ) || exit;
@@ -166,19 +167,10 @@ final class Admin {
 			return;
 		}
 
-		wp_enqueue_style(
-			'fbs-bootstrap',
-			'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css',
-			array(),
-			'5.3.3'
-		);
+		VendorAssets::register_bootstrap();
 
-		wp_enqueue_style(
-			'fbs-bootstrap-icons',
-			'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css',
-			array(),
-			'1.11.3'
-		);
+		wp_enqueue_style( 'fbs-bootstrap' );
+		wp_enqueue_style( 'fbs-bootstrap-icons' );
 
 		wp_enqueue_style(
 			'fbs-admin',
@@ -187,13 +179,7 @@ final class Admin {
 			FBS_VERSION
 		);
 
-		wp_enqueue_script(
-			'fbs-bootstrap',
-			'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js',
-			array(),
-			'5.3.3',
-			true
-		);
+		wp_enqueue_script( 'fbs-bootstrap' );
 
 		wp_enqueue_script(
 			'fbs-admin',
@@ -232,6 +218,14 @@ final class Admin {
 			$type_names[ (int) $t['id'] ] = (string) $t['name'];
 		}
 
+		$this->enqueue_dashboard_charts(
+			$booking_repo->daily_counts( 30 ),
+			$booking_repo->daily_revenue( 30 ),
+			$booking_repo->count_by_status(),
+			$booking_repo->count_by_type(),
+			$type_names
+		);
+
 		$this->render_view(
 			'dashboard',
 			array(
@@ -248,6 +242,94 @@ final class Admin {
 				'fbs_recent_bookings'     => $booking_repo->get_recent( 10 ),
 				'fbs_recent_activity'     => AdminActivityLog::get_recent( 10 ),
 				'fbs_activity_total'      => AdminActivityLog::count_all(),
+			)
+		);
+	}
+
+	/**
+	 * Enqueue Chart.js and dashboard chart script (late enqueue on dashboard screen).
+	 *
+	 * @param array<string, int>   $daily_bookings Bookings per day (Y-m-d => count).
+	 * @param array<string, float> $daily_revenue  Revenue per day.
+	 * @param array<string, int>   $count_by_status Status => count.
+	 * @param array<int, int>      $count_by_type   Type id => count.
+	 * @param array<int, string>   $type_names      Type id => label.
+	 * @return void
+	 */
+	private function enqueue_dashboard_charts( $daily_bookings, $daily_revenue, $count_by_status, $count_by_type, $type_names ) {
+		$labels   = array();
+		$bookings = array();
+		$revenue  = array();
+
+		for ( $i = 29; $i >= 0; $i-- ) {
+			$d          = wp_date( 'Y-m-d', strtotime( "-{$i} days", (int) current_time( 'timestamp' ) ) );
+			$labels[]   = wp_date( 'M j', strtotime( $d ) );
+			$bookings[] = isset( $daily_bookings[ $d ] ) ? (int) $daily_bookings[ $d ] : 0;
+			$revenue[]  = isset( $daily_revenue[ $d ] ) ? (float) $daily_revenue[ $d ] : 0;
+		}
+
+		$status_labels = array();
+		$status_counts = array();
+		$status_colors = array();
+		$color_map     = array(
+			'pending'   => '#ffc107',
+			'confirmed' => '#198754',
+			'completed' => '#0d6efd',
+			'cancelled' => '#dc3545',
+			'rejected'  => '#6c757d',
+			'on_hold'   => '#fd7e14',
+		);
+		foreach ( $count_by_status as $st => $cnt ) {
+			$status_labels[] = ucfirst( (string) $st );
+			$status_counts[] = (int) $cnt;
+			$status_colors[] = $color_map[ $st ] ?? '#adb5bd';
+		}
+
+		$type_labels = array();
+		$type_counts = array();
+		foreach ( $count_by_type as $tid => $cnt ) {
+			$type_labels[] = isset( $type_names[ $tid ] ) ? $type_names[ $tid ] : '#' . $tid;
+			$type_counts[] = (int) $cnt;
+		}
+
+		$general  = json_decode( (string) get_option( 'fbs_general_settings', '{}' ), true );
+		$currency = is_array( $general ) && ! empty( $general['currency'] ) ? (string) $general['currency'] : 'USD';
+
+		wp_enqueue_script(
+			'fbs-chartjs',
+			FBS_PLUGIN_URL . 'assets/vendor/chart.umd.min.js',
+			array(),
+			'4.4.4',
+			true
+		);
+
+		wp_enqueue_script(
+			'fbs-dashboard-charts',
+			FBS_PLUGIN_URL . 'assets/js/dashboard-charts.js',
+			array( 'fbs-chartjs' ),
+			FBS_VERSION,
+			true
+		);
+
+		wp_localize_script(
+			'fbs-dashboard-charts',
+			'fbsDashboardCharts',
+			array(
+				'labels'        => $labels,
+				'bookings'      => $bookings,
+				'revenue'       => $revenue,
+				'bookingsLabel' => __( 'Bookings', 'flex-booking-system' ),
+				'revenueLabel'  => sprintf(
+					/* translators: %s: currency code */
+					__( 'Revenue (%s)', 'flex-booking-system' ),
+					$currency
+				),
+				'currency'      => $currency,
+				'statusLabels'  => $status_labels,
+				'statusCounts'  => $status_counts,
+				'statusColors'  => $status_colors,
+				'typeLabels'    => $type_labels,
+				'typeCounts'    => $type_counts,
 			)
 		);
 	}

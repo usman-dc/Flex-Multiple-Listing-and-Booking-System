@@ -44,7 +44,13 @@ $fbs_gallery_embedded = ! empty( $fbs_gallery_embedded );
 						$image_index = $idx + 1;
 						$is_last     = ( $idx === count( $side ) - 1 ) && $extra > 0;
 						?>
-						<button type="button" class="fbs-gallery-open fbs-gallery-side-item border-0 p-0" data-index="<?php echo esc_attr( (string) $image_index ); ?>" aria-label="<?php printf( esc_attr__( 'View image %d', 'flex-booking-system' ), $image_index + 1 ); ?>">
+						<button type="button" class="fbs-gallery-open fbs-gallery-side-item border-0 p-0" data-index="<?php echo esc_attr( (string) $image_index ); ?>" aria-label="<?php
+						printf(
+							/* translators: %d: image number in gallery */
+							esc_attr__( 'View image %d', 'flex-booking-system' ),
+							(int) $image_index + 1
+						);
+						?>">
 							<img src="<?php echo esc_url( $img['large'] ); ?>" data-full="<?php echo esc_url( $img['full'] ); ?>" alt="<?php echo esc_attr( $img['alt'] ); ?>">
 							<?php if ( $is_last ) : ?>
 								<span class="fbs-gallery-more">+<?php echo esc_html( (string) $extra ); ?> <?php esc_html_e( 'Photos', 'flex-booking-system' ); ?></span>

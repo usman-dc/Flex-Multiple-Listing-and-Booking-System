@@ -41,7 +41,7 @@ final class Container {
 	 */
 	public function get( $id ) {
 		if ( ! isset( $this->entries[ $id ] ) ) {
-			throw new \InvalidArgumentException( 'Service not found: ' . $id );
+			throw new \InvalidArgumentException( 'Service not found: ' . esc_html( (string) $id ) );
 		}
 
 		$entry = $this->entries[ $id ];
