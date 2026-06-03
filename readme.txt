@@ -43,7 +43,11 @@ Source code (development, issues, releases): [GitHub repository](https://github.
 
 = External services =
 
-This plugin may load **Bootstrap 5** and **Bootstrap Icons** from jsDelivr CDN on pages that display booking UI. Demo content import may download sample images from picsum.photos. No personal data is sent to these services except standard HTTP requests for assets.
+**Bootstrap 5.3.3**, **Bootstrap Icons 1.11.3**, and **Chart.js 4.4.4** are bundled inside the plugin (`assets/vendor/`) and enqueued from the site only on admin and booking UI screens. No CDN is used for those libraries.
+
+**Optional:** The demo content importer (Settings → Demo Content, admin-only) may download placeholder images from `https://picsum.photos/` when an administrator runs the import. No visitor data is sent. Site owners can skip demo import.
+
+**Optional:** Listing video embeds use WordPress `wp_oembed_get()` for URLs the site owner adds (e.g. YouTube). WooCommerce integration loads only when WooCommerce is active.
 
 = Privacy =
 

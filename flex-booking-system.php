@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: Flex Multiple Listing and Booking System
- * Plugin URI: https://wprogers.com/
+ * Plugin URI: https://github.com/usman-dc/Flex-Multiple-Listing-and-Booking-System
  * Description: Multipurpose multiple-listing and booking engine for rentals, tours, appointments, and services — listing grids, calendars, partner portal, and REST API.
  * Version: 1.0.1
  * Requires at least: 6.0
