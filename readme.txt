@@ -16,6 +16,8 @@ Multiple listing grids and a full booking engine for property rentals, car hire,
 
 Developed by [Usman Ali](https://profiles.wordpress.org/usmanaliwpdeveloper/) at [WpRogers](https://wprogers.com/).
 
+Source code (development, issues, releases): [GitHub repository](https://github.com/usman-dc/Flex-Multiple-Listing-and-Booking-System)
+
 = Key features =
 
 * **Dynamic booking types** — create types for property, car, tour, or custom industries
@@ -61,7 +63,27 @@ Booking forms collect customer name, email, phone, and booking details stored in
 
 If you clone from Git, run `npm install && npm run build` before use so `/dist` CSS and JS exist.
 
+= Submitting to WordPress.org =
+
+WordPress.org does **not** install plugins directly from GitHub. Use this flow:
+
+1. Download or clone from [GitHub](https://github.com/usman-dc/Flex-Multiple-Listing-and-Booking-System).
+2. Create a ZIP of the **`flex-booking-system`** folder (plugin root must contain `flex-booking-system.php` and `readme.txt`).
+3. **Exclude** from the ZIP: `node_modules/`, `vendor/`, `.git/`, `.cursor/`, `.vscode/`, `.env` (the included `/dist` folder **must** stay in the ZIP).
+4. Submit the ZIP at [WordPress.org Add Plugin](https://wordpress.org/plugins/developers/add/) (requires a WordPress.org account).
+5. After approval, releases are published via WordPress.org SVN — keep GitHub and SVN versions in sync.
+
+Reviewers may read the GitHub repo for context; the ZIP upload is still required for review.
+
 == Frequently Asked Questions ==
+
+= Can I submit only my GitHub URL to WordPress.org? =
+
+No. You must upload a plugin ZIP through [wordpress.org/plugins/developers/add/](https://wordpress.org/plugins/developers/add/). Linking GitHub in this readme helps reviewers find source code and report issues.
+
+= How do I prepare the ZIP for WordPress.org? =
+
+Zip the `flex-booking-system` directory so the archive unpacks to one folder named `flex-booking-system`. Include `dist/`, `readme.txt`, and `LICENSE`. Do not include `node_modules`. Run [Plugin Check](https://wordpress.org/plugins/plugin-check/) on your site before submitting.
 
 = Does this work with any theme? =
 
@@ -97,6 +119,7 @@ Custom database tables and plugin options are removed on uninstall. Use the `fbs
 * Rebranded to Flex Multiple Listing and Booking System
 * Improved color settings save and scoped backgrounds to plugin UI only
 * WordPress.org readiness: security index files, uninstall hook, i18n
+* Added GitHub source link and WordPress.org ZIP submission instructions in readme
 
 = 1.0.0 =
 * Initial public release

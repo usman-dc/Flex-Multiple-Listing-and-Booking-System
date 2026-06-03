@@ -2,6 +2,8 @@
 
 WordPress plugin for **multiple listing grids** and **bookings** — rentals, tours, appointments, and services.
 
+**Source:** [github.com/usman-dc/Flex-Multiple-Listing-and-Booking-System](https://github.com/usman-dc/Flex-Multiple-Listing-and-Booking-System)
+
 ## Requirements
 
 - WordPress 6.0+
@@ -35,13 +37,26 @@ npm install
 npm run build
 ```
 
+## Submit to WordPress.org (not GitHub URL alone)
+
+WordPress.org hosts plugins on their directory after review. You **upload a ZIP**, not the GitHub link.
+
+1. Clone or download this repo.
+2. Zip the **`flex-booking-system`** folder (must contain `flex-booking-system.php` at the top level inside the zip).
+3. **Include:** `dist/`, `readme.txt`, `LICENSE`, all PHP/templates.
+4. **Exclude:** `node_modules/`, `vendor/`, `.git/`, `.env`, IDE folders.
+5. Submit at [wordpress.org/plugins/developers/add/](https://wordpress.org/plugins/developers/add/).
+6. Run [Plugin Check](https://wordpress.org/plugins/plugin-check/) on your site first.
+
+Put the GitHub URL in `readme.txt` (already added) so reviewers can browse source — the ZIP is still required.
+
 ## WordPress.org upload checklist
 
 - Folder name: `flex-booking-system` (do not rename — keeps updates stable)
 - Text domain: `flex-booking-system` (unchanged for translations)
+- `Stable tag` in readme.txt matches plugin version (1.0.1)
 - Include `/dist` built CSS/JS
 - Exclude `node_modules/`, `.git/`, dev-only files
-- `readme.txt` present with stable tag matching plugin version
 - GPL-compatible license
 
 ## QA
