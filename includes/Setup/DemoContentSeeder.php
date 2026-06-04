@@ -34,7 +34,9 @@ final class DemoContentSeeder {
 				'post_status'    => 'any',
 				'posts_per_page' => 1,
 				'fields'         => 'ids',
+				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- Demo marker lookup during setup only.
 				'meta_key'       => self::DEMO_META_KEY,
+				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
 				'meta_value'     => '1',
 			)
 		);
@@ -84,7 +86,10 @@ final class DemoContentSeeder {
 			);
 		}
 
-		@set_time_limit( 300 );
+		// phpcs:ignore Squiz.PHP.DiscouragedFunctions.Discouraged -- Batch demo import may exceed default PHP timeout.
+		if ( function_exists( 'set_time_limit' ) ) {
+			set_time_limit( 300 );
+		}
 
 		$pool    = self::ensure_attachment_pool();
 		$slug    = (string) $type_row['slug'];
@@ -155,7 +160,9 @@ final class DemoContentSeeder {
 				'post_status'    => 'any',
 				'posts_per_page' => -1,
 				'fields'         => 'ids',
+				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- Delete only plugin-seeded demo posts.
 				'meta_key'       => self::DEMO_META_KEY,
+				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
 				'meta_value'     => '1',
 			)
 		);

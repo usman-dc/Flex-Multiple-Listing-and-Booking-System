@@ -121,7 +121,6 @@ final class Plugin {
 			0
 		);
 
-		$this->load_textdomain();
 		$this->define_hooks();
 
 		$this->loader->register();
@@ -150,26 +149,6 @@ final class Plugin {
 		new \FlexBooking\Vendor\VendorController( $this );
 
 		\FlexBooking\Integrations\IntegrationLoader::register( $this );
-	}
-
-	/**
-	 * Load translations.
-	 *
-	 * @return void
-	 */
-	private function load_textdomain() {
-		$this->loader->add_action(
-			'plugins_loaded',
-			function () {
-				load_plugin_textdomain(
-					'flex-multiple-listing-and-booking-system',
-					false,
-					dirname( ULBM_PLUGIN_BASENAME ) . '/languages/'
-				);
-			},
-			5,
-			0
-		);
 	}
 
 	/**

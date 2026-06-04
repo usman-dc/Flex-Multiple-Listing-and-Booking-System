@@ -270,8 +270,8 @@ final class ListingReviewRepository {
 		$limit  = max( 1, min( 100, (int) $limit ) );
 		$offset = ( $page - 1 ) * $limit;
 
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		if ( '' !== $status && in_array( $status, array( 'pending', 'approved', 'rejected' ), true ) ) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 			$rows = $wpdb->get_results(
 				$wpdb->prepare(
 					'SELECT * FROM %i WHERE status = %s ORDER BY created_at DESC LIMIT %d OFFSET %d',
@@ -283,6 +283,7 @@ final class ListingReviewRepository {
 				ARRAY_A
 			);
 		} else {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 			$rows = $wpdb->get_results(
 				$wpdb->prepare(
 					'SELECT * FROM %i ORDER BY created_at DESC LIMIT %d OFFSET %d',

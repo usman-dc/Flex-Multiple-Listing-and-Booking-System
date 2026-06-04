@@ -116,12 +116,14 @@ final class BookingRepository {
 
 		$val = is_scalar( $value ) ? (string) $value : wp_json_encode( $value );
 
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$wpdb->insert(
 			$table,
 			array(
 				'booking_id' => $booking_id,
+				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- Custom ulbm_booking_meta table column, not postmeta.
 				'meta_key'   => $key,
+				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
 				'meta_value' => $val,
 			),
 			array( '%d', '%s', '%s' )
@@ -144,8 +146,8 @@ final class BookingRepository {
 		$st  = sanitize_key( (string) $status_filter );
 		$tid = absint( $booking_type_id );
 
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		if ( '' !== $st && $tid > 0 ) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 			return (int) $wpdb->get_var(
 				$wpdb->prepare(
 					'SELECT COUNT(*) FROM %i WHERE status = %s AND booking_type_id = %d',
@@ -156,6 +158,7 @@ final class BookingRepository {
 			);
 		}
 		if ( '' !== $st ) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 			return (int) $wpdb->get_var(
 				$wpdb->prepare(
 					'SELECT COUNT(*) FROM %i WHERE status = %s',
@@ -165,6 +168,7 @@ final class BookingRepository {
 			);
 		}
 		if ( $tid > 0 ) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 			return (int) $wpdb->get_var(
 				$wpdb->prepare(
 					'SELECT COUNT(*) FROM %i WHERE booking_type_id = %d',
@@ -174,6 +178,7 @@ final class BookingRepository {
 			);
 		}
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		return (int) $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM %i', $table ) );
 	}
 
@@ -223,8 +228,8 @@ final class BookingRepository {
 		$st  = sanitize_key( (string) $status_filter );
 		$tid = absint( $booking_type_id );
 
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		if ( '' !== $st && $tid > 0 ) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 			$rows = $wpdb->get_results(
 				$wpdb->prepare(
 					'SELECT * FROM %i WHERE status = %s AND booking_type_id = %d ORDER BY id DESC LIMIT %d OFFSET %d',
@@ -237,6 +242,7 @@ final class BookingRepository {
 				ARRAY_A
 			);
 		} elseif ( '' !== $st ) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 			$rows = $wpdb->get_results(
 				$wpdb->prepare(
 					'SELECT * FROM %i WHERE status = %s ORDER BY id DESC LIMIT %d OFFSET %d',
@@ -248,6 +254,7 @@ final class BookingRepository {
 				ARRAY_A
 			);
 		} elseif ( $tid > 0 ) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 			$rows = $wpdb->get_results(
 				$wpdb->prepare(
 					'SELECT * FROM %i WHERE booking_type_id = %d ORDER BY id DESC LIMIT %d OFFSET %d',
@@ -259,6 +266,7 @@ final class BookingRepository {
 				ARRAY_A
 			);
 		} else {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 			$rows = $wpdb->get_results(
 				$wpdb->prepare(
 					'SELECT * FROM %i ORDER BY id DESC LIMIT %d OFFSET %d',
@@ -325,14 +333,14 @@ final class BookingRepository {
 
 		$args = array_merge( array( $table ), $customer_ids );
 
-		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- IN clause uses one %d per absint() customer ID.
-		$prepared = $wpdb->prepare(
-			'SELECT id, email FROM %i WHERE id IN (' . implode( ',', array_fill( 0, count( $customer_ids ), '%d' ) ) . ')',
-			...$args
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared -- IN clause: one %d placeholder per absint() customer ID.
+		$rows = $wpdb->get_results(
+			$wpdb->prepare(
+				'SELECT id, email FROM %i WHERE id IN (' . implode( ',', array_fill( 0, count( $customer_ids ), '%d' ) ) . ')',
+				...$args
+			),
+			ARRAY_A
 		);
-
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-		$rows = $wpdb->get_results( $prepared, ARRAY_A );
 
 		$out = array();
 		if ( is_array( $rows ) ) {
@@ -546,14 +554,14 @@ final class BookingRepository {
 
 		$args = array_merge( array( $table, 'form_values' ), $booking_ids );
 
-		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- IN clause uses one %d per absint() booking ID.
-		$prepared = $wpdb->prepare(
-			'SELECT booking_id, meta_value FROM %i WHERE meta_key = %s AND booking_id IN (' . implode( ',', array_fill( 0, count( $booking_ids ), '%d' ) ) . ')',
-			...$args
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared -- IN clause: one %d placeholder per absint() booking ID.
+		$rows = $wpdb->get_results(
+			$wpdb->prepare(
+				'SELECT booking_id, meta_value FROM %i WHERE meta_key = %s AND booking_id IN (' . implode( ',', array_fill( 0, count( $booking_ids ), '%d' ) ) . ')',
+				...$args
+			),
+			ARRAY_A
 		);
-
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-		$rows = $wpdb->get_results( $prepared, ARRAY_A );
 		$out          = array();
 
 		if ( is_array( $rows ) ) {

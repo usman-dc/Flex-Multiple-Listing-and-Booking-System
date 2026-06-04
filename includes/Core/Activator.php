@@ -93,6 +93,7 @@ final class Activator {
 		}
 
 		$now = current_time( 'mysql' );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$wpdb->insert(
 			$table,
 			array(

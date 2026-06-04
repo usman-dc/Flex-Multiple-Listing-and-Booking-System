@@ -74,6 +74,7 @@ final class IndustryProvisioner {
 				'setup_seed' => true,
 			);
 
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 			$wpdb->insert(
 				$table,
 				array(

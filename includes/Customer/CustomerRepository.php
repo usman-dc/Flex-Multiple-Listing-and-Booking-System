@@ -58,6 +58,7 @@ final class CustomerRepository {
 			if ( $wp_user_id ) {
 				$formats[] = '%d';
 			}
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 			$wpdb->update(
 				$table,
 				$data,
@@ -81,6 +82,7 @@ final class CustomerRepository {
 			$formats = array_merge( array( '%d' ), $formats );
 		}
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$wpdb->insert( $table, $insert, $formats );
 
 		return $wpdb->insert_id ? (int) $wpdb->insert_id : null;

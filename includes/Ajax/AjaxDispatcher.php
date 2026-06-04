@@ -550,11 +550,13 @@ final class AjaxDispatcher {
 
 		switch ( $sort ) {
 			case 'price_asc':
+				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- Indexed listing price sort for grid AJAX.
 				$args['meta_key']  = '_ulbm_base_price';
 				$args['orderby']   = 'meta_value_num';
 				$args['order']     = 'ASC';
 				break;
 			case 'price_desc':
+				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
 				$args['meta_key']  = '_ulbm_base_price';
 				$args['orderby']   = 'meta_value_num';
 				$args['order']     = 'DESC';
@@ -580,6 +582,7 @@ final class AjaxDispatcher {
 		}
 		if ( ! empty( $meta_query ) ) {
 			$meta_query['relation'] = 'AND';
+			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Bounded listing filters on public grid.
 			$args['meta_query']     = $meta_query;
 		}
 

@@ -1,4 +1,5 @@
 <?php
+// phpcs:ignoreFile -- CLI-only test; not loaded by WordPress.
 /**
  * CLI-only QA for ColorSettings save merge (run: php tests/color-settings-save-test.php).
  *

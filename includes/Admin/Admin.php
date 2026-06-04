@@ -388,7 +388,8 @@ final class Admin {
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Admin edit screen routing.
 		$edit_id = isset( $_GET['ulbm_edit'] ) ? absint( wp_unslash( $_GET['ulbm_edit'] ) ) : 0;
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Admin new-item routing.
-		$is_new  = isset( $_GET['ulbm_new'] ) && '1' === (string) wp_unslash( $_GET['ulbm_new'] );
+		$ulbm_new_flag = isset( $_GET['ulbm_new'] ) ? sanitize_text_field( wp_unslash( $_GET['ulbm_new'] ) ) : '';
+		$is_new        = '1' === $ulbm_new_flag;
 
 		$editing = null;
 		if ( $edit_id > 0 ) {

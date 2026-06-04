@@ -37,7 +37,7 @@ final class Uninstaller {
 			if ( '' === $validated || $validated !== $table ) {
 				continue;
 			}
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.SchemaChange
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange
 			$wpdb->query( $wpdb->prepare( 'DROP TABLE IF EXISTS %i', $validated ) );
 		}
 

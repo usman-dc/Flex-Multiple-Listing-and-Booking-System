@@ -67,7 +67,7 @@ final class PostData {
 		if ( ! self::has( $key ) ) {
 			return $default;
 		}
-		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Gated by allow_processing().
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Key verified via has(); wp_unslash for caller sanitization.
 		return wp_unslash( $_POST[ $key ] );
 	}
 

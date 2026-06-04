@@ -1,0 +1,22 @@
+# Excluded from WordPress.org plugin zip and Plugin Check scans.
+/.git
+/.github
+.gitignore
+.distignore
+phpcs.xml.dist
+/tests/
+/node_modules/
+/vendor/
+/package.json
+/package-lock.json
+/vite.config.js
+/assets/src/
+.phpunit.xml
+.phpunit.result.cache
+/coverage/
+.env
+.env.*
+.cursor/
+.idea/
+.vscode/
+*.zip
