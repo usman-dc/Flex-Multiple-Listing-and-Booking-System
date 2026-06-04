@@ -112,8 +112,8 @@ final class Admin {
 
 		add_submenu_page(
 			'ulbm-dashboard',
-			__( 'Dashboard', 'flex-booking-system' ),
-			__( 'Dashboard', 'flex-booking-system' ),
+			__( 'Dashboard', 'flex-multiple-listing-and-booking-system' ),
+			__( 'Dashboard', 'flex-multiple-listing-and-booking-system' ),
 			$cap,
 			'ulbm-dashboard',
 			array( $this, 'render_dashboard' )
@@ -121,8 +121,8 @@ final class Admin {
 
 		add_submenu_page(
 			'ulbm-dashboard',
-			__( 'Booking Types', 'flex-booking-system' ),
-			__( 'Booking Types', 'flex-booking-system' ),
+			__( 'Booking Types', 'flex-multiple-listing-and-booking-system' ),
+			__( 'Booking Types', 'flex-multiple-listing-and-booking-system' ),
 			$cap,
 			'ulbm-booking-types',
 			array( $this, 'render_booking_types' )
@@ -130,8 +130,8 @@ final class Admin {
 
 		add_submenu_page(
 			'ulbm-dashboard',
-			__( 'All Bookings', 'flex-booking-system' ),
-			__( 'Bookings', 'flex-booking-system' ),
+			__( 'All Bookings', 'flex-multiple-listing-and-booking-system' ),
+			__( 'Bookings', 'flex-multiple-listing-and-booking-system' ),
 			$cap,
 			'ulbm-bookings',
 			array( $this, 'render_bookings' )
@@ -139,8 +139,8 @@ final class Admin {
 
 		add_submenu_page(
 			'ulbm-dashboard',
-			__( 'Listing Reviews', 'flex-booking-system' ),
-			__( 'Reviews', 'flex-booking-system' ),
+			__( 'Listing Reviews', 'flex-multiple-listing-and-booking-system' ),
+			__( 'Reviews', 'flex-multiple-listing-and-booking-system' ),
 			$cap,
 			'ulbm-reviews',
 			array( $this, 'render_reviews' )
@@ -148,8 +148,8 @@ final class Admin {
 
 		add_submenu_page(
 			'ulbm-dashboard',
-			__( 'Settings', 'flex-booking-system' ),
-			__( 'Settings', 'flex-booking-system' ),
+			__( 'Settings', 'flex-multiple-listing-and-booking-system' ),
+			__( 'Settings', 'flex-multiple-listing-and-booking-system' ),
 			$cap,
 			'ulbm-settings',
 			array( $this, 'render_settings' )
@@ -214,8 +214,8 @@ final class Admin {
 				array_merge(
 					$admin_localize,
 					array(
-						'quickAddCreating' => __( 'Creating...', 'flex-booking-system' ),
-						'quickAddFailed'   => __( 'Request failed.', 'flex-booking-system' ),
+						'quickAddCreating' => __( 'Creating...', 'flex-multiple-listing-and-booking-system' ),
+						'quickAddFailed'   => __( 'Request failed.', 'flex-multiple-listing-and-booking-system' ),
 					)
 				)
 			);
@@ -339,10 +339,10 @@ final class Admin {
 				'labels'        => $labels,
 				'bookings'      => $bookings,
 				'revenue'       => $revenue,
-				'bookingsLabel' => __( 'Bookings', 'flex-booking-system' ),
+				'bookingsLabel' => __( 'Bookings', 'flex-multiple-listing-and-booking-system' ),
 				'revenueLabel'  => sprintf(
 					/* translators: %s: currency code */
-					__( 'Revenue (%s)', 'flex-booking-system' ),
+					__( 'Revenue (%s)', 'flex-multiple-listing-and-booking-system' ),
 					$currency
 				),
 				'currency'      => $currency,
@@ -374,7 +374,7 @@ final class Admin {
 	 */
 	public function render_booking_types() {
 		if ( ! Capabilities::can_access_admin() ) {
-			wp_die( esc_html__( 'You do not have permission to access this page.', 'flex-booking-system' ) );
+			wp_die( esc_html__( 'You do not have permission to access this page.', 'flex-multiple-listing-and-booking-system' ) );
 		}
 
 		$type_repo = new BookingTypeRepository();
@@ -680,7 +680,7 @@ final class Admin {
 	 */
 	public function render_reviews() {
 		if ( ! Capabilities::can_access_admin() ) {
-			wp_die( esc_html__( 'You do not have permission to access this page.', 'flex-booking-system' ) );
+			wp_die( esc_html__( 'You do not have permission to access this page.', 'flex-multiple-listing-and-booking-system' ) );
 		}
 
 		$repo     = new ListingReviewRepository();
@@ -737,6 +737,6 @@ final class Admin {
 			include $path;
 			return;
 		}
-		echo '<div class="wrap"><h1>' . esc_html( ulbm_plugin_display_name() ) . '</h1><p>' . esc_html__( 'Missing template.', 'flex-booking-system' ) . '</p></div>';
+		echo '<div class="wrap"><h1>' . esc_html( ulbm_plugin_display_name() ) . '</h1><p>' . esc_html__( 'Missing template.', 'flex-multiple-listing-and-booking-system' ) . '</p></div>';
 	}
 }

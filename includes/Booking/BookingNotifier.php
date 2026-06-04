@@ -123,16 +123,16 @@ final class BookingNotifier {
 		$site   = wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES );
 		$uid    = isset( $booking['booking_uid'] ) ? (string) $booking['booking_uid'] : '';
 		/* translators: 1: site name, 2: booking reference */
-		$subject = sprintf( __( '[%1$s] Booking update: %2$s', 'flex-booking-system' ), $site, $uid );
+		$subject = sprintf( __( '[%1$s] Booking update: %2$s', 'flex-multiple-listing-and-booking-system' ), $site, $uid );
 		$subject = apply_filters( 'ulbm_booking_status_email_subject', $subject, $booking, $old_status, $new_status );
 
 		$labels = array(
-			'pending'   => __( 'Pending', 'flex-booking-system' ),
-			'confirmed' => __( 'Confirmed', 'flex-booking-system' ),
-			'on_hold'   => __( 'On hold', 'flex-booking-system' ),
-			'completed' => __( 'Completed', 'flex-booking-system' ),
-			'cancelled' => __( 'Cancelled', 'flex-booking-system' ),
-			'rejected'  => __( 'Rejected', 'flex-booking-system' ),
+			'pending'   => __( 'Pending', 'flex-multiple-listing-and-booking-system' ),
+			'confirmed' => __( 'Confirmed', 'flex-multiple-listing-and-booking-system' ),
+			'on_hold'   => __( 'On hold', 'flex-multiple-listing-and-booking-system' ),
+			'completed' => __( 'Completed', 'flex-multiple-listing-and-booking-system' ),
+			'cancelled' => __( 'Cancelled', 'flex-multiple-listing-and-booking-system' ),
+			'rejected'  => __( 'Rejected', 'flex-multiple-listing-and-booking-system' ),
 		);
 		$label_new = $labels[ sanitize_key( $new_status ) ] ?? $new_status;
 		$label_old = $labels[ sanitize_key( $old_status ) ] ?? $old_status;
@@ -143,16 +143,16 @@ final class BookingNotifier {
 		$cur   = isset( $booking['currency'] ) ? (string) $booking['currency'] : '';
 
 		$body_lines = array(
-			__( 'Hello,', 'flex-booking-system' ),
+			__( 'Hello,', 'flex-multiple-listing-and-booking-system' ),
 			'',
 			sprintf(
 				/* translators: 1: booking reference */
-				__( 'Your booking (reference %s) has been updated.', 'flex-booking-system' ),
+				__( 'Your booking (reference %s) has been updated.', 'flex-multiple-listing-and-booking-system' ),
 				$uid
 			),
 			sprintf(
 				/* translators: 1: previous status label, 2: new status label */
-				__( 'Status: %1$s → %2$s', 'flex-booking-system' ),
+				__( 'Status: %1$s → %2$s', 'flex-multiple-listing-and-booking-system' ),
 				$label_old,
 				$label_new
 			),
@@ -161,28 +161,28 @@ final class BookingNotifier {
 		if ( $start ) {
 			$body_lines[] = sprintf(
 				/* translators: %s: start datetime */
-				__( 'Start: %s', 'flex-booking-system' ),
+				__( 'Start: %s', 'flex-multiple-listing-and-booking-system' ),
 				$start
 			);
 		}
 		if ( $end ) {
 			$body_lines[] = sprintf(
 				/* translators: %s: end datetime */
-				__( 'End: %s', 'flex-booking-system' ),
+				__( 'End: %s', 'flex-multiple-listing-and-booking-system' ),
 				$end
 			);
 		}
 		if ( $total ) {
 			$body_lines[] = sprintf(
 				/* translators: 1: amount, 2: currency */
-				__( 'Total: %1$s %2$s', 'flex-booking-system' ),
+				__( 'Total: %1$s %2$s', 'flex-multiple-listing-and-booking-system' ),
 				$total,
 				$cur
 			);
 		}
 
 		$body_lines[] = '';
-		$body_lines[] = __( 'If you have questions, reply to this email.', 'flex-booking-system' );
+		$body_lines[] = __( 'If you have questions, reply to this email.', 'flex-multiple-listing-and-booking-system' );
 
 		$message = implode( "\n", $body_lines );
 		$message = apply_filters( 'ulbm_booking_status_email_body', $message, $booking, $old_status, $new_status );

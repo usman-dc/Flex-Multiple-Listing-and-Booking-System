@@ -16,17 +16,17 @@ defined( 'ABSPATH' ) || exit;
 
 $list_url = add_query_arg( 'page', 'ulbm-reviews', admin_url( 'admin.php' ) );
 $statuses = array(
-	''         => __( 'All', 'flex-booking-system' ),
-	'pending'  => __( 'Pending', 'flex-booking-system' ),
-	'approved' => __( 'Approved', 'flex-booking-system' ),
-	'rejected' => __( 'Rejected', 'flex-booking-system' ),
+	''         => __( 'All', 'flex-multiple-listing-and-booking-system' ),
+	'pending'  => __( 'Pending', 'flex-multiple-listing-and-booking-system' ),
+	'approved' => __( 'Approved', 'flex-multiple-listing-and-booking-system' ),
+	'rejected' => __( 'Rejected', 'flex-multiple-listing-and-booking-system' ),
 );
 ?>
 <div class="wrap ulbm-admin-wrap ulbm-reviews-page container-fluid py-3">
 	<div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-4">
 		<div>
-			<h1 class="h3 fw-bold mb-1"><?php esc_html_e( 'Listing Reviews', 'flex-booking-system' ); ?></h1>
-			<p class="text-muted mb-0 small"><?php esc_html_e( 'Approve or reject guest reviews before they appear on listing pages.', 'flex-booking-system' ); ?></p>
+			<h1 class="h3 fw-bold mb-1"><?php esc_html_e( 'Listing Reviews', 'flex-multiple-listing-and-booking-system' ); ?></h1>
+			<p class="text-muted mb-0 small"><?php esc_html_e( 'Approve or reject guest reviews before they appear on listing pages.', 'flex-multiple-listing-and-booking-system' ); ?></p>
 		</div>
 	</div>
 
@@ -36,7 +36,7 @@ $statuses = array(
 		<form method="get" class="row g-2 align-items-end">
 			<input type="hidden" name="page" value="ulbm-reviews" />
 			<div class="col-auto">
-				<label class="form-label small mb-1"><?php esc_html_e( 'Status', 'flex-booking-system' ); ?></label>
+				<label class="form-label small mb-1"><?php esc_html_e( 'Status', 'flex-multiple-listing-and-booking-system' ); ?></label>
 				<select name="ulbm_status" class="form-select form-select-sm">
 					<?php foreach ( $statuses as $key => $label ) : ?>
 						<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $ulbm_reviews_status_filter, $key ); ?>><?php echo esc_html( $label ); ?></option>
@@ -44,7 +44,7 @@ $statuses = array(
 				</select>
 			</div>
 			<div class="col-auto">
-				<button type="submit" class="btn btn-sm btn-primary"><?php esc_html_e( 'Filter', 'flex-booking-system' ); ?></button>
+				<button type="submit" class="btn btn-sm btn-primary"><?php esc_html_e( 'Filter', 'flex-multiple-listing-and-booking-system' ); ?></button>
 			</div>
 		</form>
 	</div>
@@ -54,19 +54,19 @@ $statuses = array(
 			<table class="table table-hover align-middle mb-0 ulbm-table">
 				<thead class="table-light">
 					<tr>
-						<th><?php esc_html_e( 'Listing', 'flex-booking-system' ); ?></th>
-						<th><?php esc_html_e( 'Guest', 'flex-booking-system' ); ?></th>
-						<th><?php esc_html_e( 'Rating', 'flex-booking-system' ); ?></th>
-						<th><?php esc_html_e( 'Review', 'flex-booking-system' ); ?></th>
-						<th><?php esc_html_e( 'Status', 'flex-booking-system' ); ?></th>
-						<th><?php esc_html_e( 'Date', 'flex-booking-system' ); ?></th>
-						<th class="text-end"><?php esc_html_e( 'Actions', 'flex-booking-system' ); ?></th>
+						<th><?php esc_html_e( 'Listing', 'flex-multiple-listing-and-booking-system' ); ?></th>
+						<th><?php esc_html_e( 'Guest', 'flex-multiple-listing-and-booking-system' ); ?></th>
+						<th><?php esc_html_e( 'Rating', 'flex-multiple-listing-and-booking-system' ); ?></th>
+						<th><?php esc_html_e( 'Review', 'flex-multiple-listing-and-booking-system' ); ?></th>
+						<th><?php esc_html_e( 'Status', 'flex-multiple-listing-and-booking-system' ); ?></th>
+						<th><?php esc_html_e( 'Date', 'flex-multiple-listing-and-booking-system' ); ?></th>
+						<th class="text-end"><?php esc_html_e( 'Actions', 'flex-multiple-listing-and-booking-system' ); ?></th>
 					</tr>
 				</thead>
 				<tbody>
 					<?php if ( empty( $ulbm_reviews ) ) : ?>
 						<tr>
-							<td colspan="7" class="text-center text-muted py-5"><?php esc_html_e( 'No reviews found.', 'flex-booking-system' ); ?></td>
+							<td colspan="7" class="text-center text-muted py-5"><?php esc_html_e( 'No reviews found.', 'flex-multiple-listing-and-booking-system' ); ?></td>
 						</tr>
 					<?php else : ?>
 						<?php foreach ( $ulbm_reviews as $review ) : ?>
@@ -101,12 +101,12 @@ $statuses = array(
 								<td class="small text-muted"><?php echo esc_html( mysql2date( 'Y-m-d H:i', (string) $review['created_at'] ) ); ?></td>
 								<td class="text-end text-nowrap">
 									<?php if ( 'pending' === $status || 'rejected' === $status ) : ?>
-										<button type="button" class="btn btn-sm btn-success ulbm-review-approve" data-id="<?php echo esc_attr( (string) $review['id'] ); ?>"><?php esc_html_e( 'Approve', 'flex-booking-system' ); ?></button>
+										<button type="button" class="btn btn-sm btn-success ulbm-review-approve" data-id="<?php echo esc_attr( (string) $review['id'] ); ?>"><?php esc_html_e( 'Approve', 'flex-multiple-listing-and-booking-system' ); ?></button>
 									<?php endif; ?>
 									<?php if ( 'pending' === $status || 'approved' === $status ) : ?>
-										<button type="button" class="btn btn-sm btn-outline-secondary ulbm-review-reject" data-id="<?php echo esc_attr( (string) $review['id'] ); ?>"><?php esc_html_e( 'Reject', 'flex-booking-system' ); ?></button>
+										<button type="button" class="btn btn-sm btn-outline-secondary ulbm-review-reject" data-id="<?php echo esc_attr( (string) $review['id'] ); ?>"><?php esc_html_e( 'Reject', 'flex-multiple-listing-and-booking-system' ); ?></button>
 									<?php endif; ?>
-									<button type="button" class="btn btn-sm btn-outline-danger ulbm-review-delete" data-id="<?php echo esc_attr( (string) $review['id'] ); ?>"><?php esc_html_e( 'Delete', 'flex-booking-system' ); ?></button>
+									<button type="button" class="btn btn-sm btn-outline-danger ulbm-review-delete" data-id="<?php echo esc_attr( (string) $review['id'] ); ?>"><?php esc_html_e( 'Delete', 'flex-multiple-listing-and-booking-system' ); ?></button>
 								</td>
 							</tr>
 						<?php endforeach; ?>
@@ -117,7 +117,7 @@ $statuses = array(
 	</div>
 
 	<?php if ( $ulbm_reviews_total_pages > 1 ) : ?>
-		<nav class="mt-3" aria-label="<?php esc_attr_e( 'Reviews pagination', 'flex-booking-system' ); ?>">
+		<nav class="mt-3" aria-label="<?php esc_attr_e( 'Reviews pagination', 'flex-multiple-listing-and-booking-system' ); ?>">
 			<ul class="pagination">
 				<?php for ( $p = 1; $p <= $ulbm_reviews_total_pages; $p++ ) : ?>
 					<li class="page-item <?php echo $p === $ulbm_reviews_paged ? 'active' : ''; ?>">

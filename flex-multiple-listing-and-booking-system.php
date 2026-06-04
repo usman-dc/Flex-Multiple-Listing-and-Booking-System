@@ -10,7 +10,7 @@
  * Author URI: https://wprogers.com/
  * License: GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain: flex-booking-system
+ * Text Domain: flex-multiple-listing-and-booking-system
  * Domain Path: /languages
  *
  * @package FlexBookingSystem
@@ -33,7 +33,7 @@ if ( ! function_exists( 'ulbm_plugin_display_name' ) ) {
 	 * @return string
 	 */
 	function ulbm_plugin_display_name() {
-		return __( 'Flex Listings and Booking Manager', 'flex-booking-system' );
+		return __( 'Flex Listings and Booking Manager', 'flex-multiple-listing-and-booking-system' );
 	}
 }
 
@@ -44,7 +44,7 @@ if ( ! function_exists( 'ulbm_plugin_menu_label' ) ) {
 	 * @return string
 	 */
 	function ulbm_plugin_menu_label() {
-		return __( 'Flex Listings & Booking', 'flex-booking-system' );
+		return __( 'Flex Listings & Booking', 'flex-multiple-listing-and-booking-system' );
 	}
 }
 

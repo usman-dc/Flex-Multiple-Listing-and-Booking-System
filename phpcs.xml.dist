@@ -8,6 +8,15 @@
 	<rule ref="WordPress">
 		<exclude name="WordPress.Files.FileName"/>
 	</rule>
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+		<properties>
+			<property name="prefixes" type="array">
+				<element value="ulbm"/>
+				<element value="ULBM"/>
+				<element value="FlexBooking"/>
+			</property>
+		</properties>
+	</rule>
 	<rule ref="WordPress.Security.NonceVerification">
 		<properties>
 			<property name="customNonceVerificationFunctions" type="array">

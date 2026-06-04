@@ -238,7 +238,7 @@ final class ListingDisplay {
 	private static function grid_rating_aria_label( $rating ) {
 		return sprintf(
 			/* translators: 1: average rating, 2: max stars */
-			__( 'Rated %1$s out of 5', 'flex-booking-system' ),
+			__( 'Rated %1$s out of 5', 'flex-multiple-listing-and-booking-system' ),
 			number_format_i18n( $rating, 1 )
 		);
 	}
@@ -262,7 +262,7 @@ final class ListingDisplay {
 	private static function format_review_count( $count ) {
 		return sprintf(
 			/* translators: %d: number of reviews */
-			__( '%d reviews', 'flex-booking-system' ),
+			__( '%d reviews', 'flex-multiple-listing-and-booking-system' ),
 			$count
 		);
 	}
@@ -277,7 +277,7 @@ final class ListingDisplay {
 	private static function stars_aria_label( $rating, $count ) {
 		return sprintf(
 			/* translators: 1: average rating, 2: review count */
-			__( 'Rated %1$s out of 5 from %2$d reviews', 'flex-booking-system' ),
+			__( 'Rated %1$s out of 5 from %2$d reviews', 'flex-multiple-listing-and-booking-system' ),
 			number_format_i18n( $rating, 1 ),
 			$count
 		);

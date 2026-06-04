@@ -162,7 +162,7 @@ final class Plugin {
 			'plugins_loaded',
 			function () {
 				load_plugin_textdomain(
-					'flex-booking-system',
+					'flex-multiple-listing-and-booking-system',
 					false,
 					dirname( ULBM_PLUGIN_BASENAME ) . '/languages/'
 				);

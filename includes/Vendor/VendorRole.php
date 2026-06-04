@@ -39,7 +39,7 @@ final class VendorRole {
 		if ( ! get_role( self::ROLE ) ) {
 			add_role(
 				self::ROLE,
-				__( 'Listings Booking Partner', 'flex-booking-system' ),
+				__( 'Listings Booking Partner', 'flex-multiple-listing-and-booking-system' ),
 				$caps
 			);
 		} else {

@@ -32,17 +32,17 @@ final class ListingPostType {
 	 */
 	public static function register_post_type() {
 		$labels = array(
-			'name'               => __( 'Listings', 'flex-booking-system' ),
-			'singular_name'      => __( 'Listing', 'flex-booking-system' ),
-			'add_new'            => __( 'Add Listing', 'flex-booking-system' ),
-			'add_new_item'       => __( 'Add New Listing', 'flex-booking-system' ),
-			'edit_item'          => __( 'Edit Listing', 'flex-booking-system' ),
-			'new_item'           => __( 'New Listing', 'flex-booking-system' ),
-			'view_item'          => __( 'View Listing', 'flex-booking-system' ),
-			'search_items'       => __( 'Search Listings', 'flex-booking-system' ),
-			'not_found'          => __( 'No listings found.', 'flex-booking-system' ),
-			'not_found_in_trash' => __( 'No listings in trash.', 'flex-booking-system' ),
-			'all_items'          => __( 'All Listings', 'flex-booking-system' ),
+			'name'               => __( 'Listings', 'flex-multiple-listing-and-booking-system' ),
+			'singular_name'      => __( 'Listing', 'flex-multiple-listing-and-booking-system' ),
+			'add_new'            => __( 'Add Listing', 'flex-multiple-listing-and-booking-system' ),
+			'add_new_item'       => __( 'Add New Listing', 'flex-multiple-listing-and-booking-system' ),
+			'edit_item'          => __( 'Edit Listing', 'flex-multiple-listing-and-booking-system' ),
+			'new_item'           => __( 'New Listing', 'flex-multiple-listing-and-booking-system' ),
+			'view_item'          => __( 'View Listing', 'flex-multiple-listing-and-booking-system' ),
+			'search_items'       => __( 'Search Listings', 'flex-multiple-listing-and-booking-system' ),
+			'not_found'          => __( 'No listings found.', 'flex-multiple-listing-and-booking-system' ),
+			'not_found_in_trash' => __( 'No listings in trash.', 'flex-multiple-listing-and-booking-system' ),
+			'all_items'          => __( 'All Listings', 'flex-multiple-listing-and-booking-system' ),
 		);
 
 		register_post_type(
@@ -75,9 +75,9 @@ final class ListingPostType {
 			self::POST_TYPE,
 			array(
 				'labels'            => array(
-					'name'          => __( 'Listing Categories', 'flex-booking-system' ),
-					'singular_name' => __( 'Category', 'flex-booking-system' ),
-					'add_new_item'  => __( 'Add Category', 'flex-booking-system' ),
+					'name'          => __( 'Listing Categories', 'flex-multiple-listing-and-booking-system' ),
+					'singular_name' => __( 'Category', 'flex-multiple-listing-and-booking-system' ),
+					'add_new_item'  => __( 'Add Category', 'flex-multiple-listing-and-booking-system' ),
 				),
 				'hierarchical'      => true,
 				'public'            => true,
@@ -92,9 +92,9 @@ final class ListingPostType {
 			self::POST_TYPE,
 			array(
 				'labels'            => array(
-					'name'          => __( 'Amenities', 'flex-booking-system' ),
-					'singular_name' => __( 'Amenity', 'flex-booking-system' ),
-					'add_new_item'  => __( 'Add Amenity', 'flex-booking-system' ),
+					'name'          => __( 'Amenities', 'flex-multiple-listing-and-booking-system' ),
+					'singular_name' => __( 'Amenity', 'flex-multiple-listing-and-booking-system' ),
+					'add_new_item'  => __( 'Add Amenity', 'flex-multiple-listing-and-booking-system' ),
 				),
 				'hierarchical'      => false,
 				'public'            => true,
@@ -109,9 +109,9 @@ final class ListingPostType {
 			self::POST_TYPE,
 			array(
 				'labels'            => array(
-					'name'          => __( 'Locations', 'flex-booking-system' ),
-					'singular_name' => __( 'Location', 'flex-booking-system' ),
-					'add_new_item'  => __( 'Add Location', 'flex-booking-system' ),
+					'name'          => __( 'Locations', 'flex-multiple-listing-and-booking-system' ),
+					'singular_name' => __( 'Location', 'flex-multiple-listing-and-booking-system' ),
+					'add_new_item'  => __( 'Add Location', 'flex-multiple-listing-and-booking-system' ),
 				),
 				'hierarchical'      => true,
 				'public'            => true,
@@ -126,9 +126,9 @@ final class ListingPostType {
 			self::POST_TYPE,
 			array(
 				'labels'            => array(
-					'name'          => __( 'Listing Types', 'flex-booking-system' ),
-					'singular_name' => __( 'Listing Type', 'flex-booking-system' ),
-					'add_new_item'  => __( 'Add Type', 'flex-booking-system' ),
+					'name'          => __( 'Listing Types', 'flex-multiple-listing-and-booking-system' ),
+					'singular_name' => __( 'Listing Type', 'flex-multiple-listing-and-booking-system' ),
+					'add_new_item'  => __( 'Add Type', 'flex-multiple-listing-and-booking-system' ),
 				),
 				'hierarchical'      => true,
 				'public'            => true,

@@ -49,34 +49,34 @@ final class IndustryPostTypeRegistry {
 				'name'               => $def['plural'],
 				'singular_name'      => $def['singular'],
 				'menu_name'          => $def['plural'],
-				'add_new'            => __( 'Add New', 'flex-booking-system' ),
+				'add_new'            => __( 'Add New', 'flex-multiple-listing-and-booking-system' ),
 				'add_new_item'       => sprintf(
 					/* translators: %s: singular entity name */
-					__( 'Add %s', 'flex-booking-system' ),
+					__( 'Add %s', 'flex-multiple-listing-and-booking-system' ),
 					$def['singular']
 				),
 				'edit_item'          => sprintf(
 					/* translators: %s: singular entity name */
-					__( 'Edit %s', 'flex-booking-system' ),
+					__( 'Edit %s', 'flex-multiple-listing-and-booking-system' ),
 					$def['singular']
 				),
 				'new_item'           => sprintf(
 					/* translators: %s: singular entity name */
-					__( 'New %s', 'flex-booking-system' ),
+					__( 'New %s', 'flex-multiple-listing-and-booking-system' ),
 					$def['singular']
 				),
 				'view_item'          => sprintf(
 					/* translators: %s: singular entity name */
-					__( 'View %s', 'flex-booking-system' ),
+					__( 'View %s', 'flex-multiple-listing-and-booking-system' ),
 					$def['singular']
 				),
 				'search_items'       => sprintf(
 					/* translators: %s: plural entity name */
-					__( 'Search %s', 'flex-booking-system' ),
+					__( 'Search %s', 'flex-multiple-listing-and-booking-system' ),
 					$def['plural']
 				),
-				'not_found'          => __( 'Nothing found.', 'flex-booking-system' ),
-				'not_found_in_trash' => __( 'Nothing found in Trash.', 'flex-booking-system' ),
+				'not_found'          => __( 'Nothing found.', 'flex-multiple-listing-and-booking-system' ),
+				'not_found_in_trash' => __( 'Nothing found in Trash.', 'flex-multiple-listing-and-booking-system' ),
 			);
 
 			$caps = array(

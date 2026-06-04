@@ -46,8 +46,8 @@ final class VendorController {
 			if ( VendorRole::can_manage_listings() ) {
 				return $this->redirect_notice(
 					VendorPages::dashboard_url(),
-					__( 'You are already a partner.', 'flex-booking-system' ),
-					__( 'Go to dashboard', 'flex-booking-system' )
+					__( 'You are already a partner.', 'flex-multiple-listing-and-booking-system' ),
+					__( 'Go to dashboard', 'flex-multiple-listing-and-booking-system' )
 				);
 			}
 
@@ -70,8 +70,8 @@ final class VendorController {
 		if ( is_user_logged_in() ) {
 			return $this->redirect_notice(
 				VendorPages::dashboard_url(),
-				__( 'You are already logged in.', 'flex-booking-system' ),
-				__( 'Go to dashboard', 'flex-booking-system' )
+				__( 'You are already logged in.', 'flex-multiple-listing-and-booking-system' ),
+				__( 'Go to dashboard', 'flex-multiple-listing-and-booking-system' )
 			);
 		}
 
@@ -89,14 +89,14 @@ final class VendorController {
 		if ( ! is_user_logged_in() ) {
 			return $this->redirect_notice(
 				VendorPages::login_url(),
-				__( 'Please log in to access your dashboard.', 'flex-booking-system' ),
-				__( 'Log in', 'flex-booking-system' )
+				__( 'Please log in to access your dashboard.', 'flex-multiple-listing-and-booking-system' ),
+				__( 'Log in', 'flex-multiple-listing-and-booking-system' )
 			);
 		}
 
 		if ( ! VendorRole::can_manage_listings() && ! current_user_can( 'manage_options' ) ) {
 			return $this->wrap_output(
-				'<div class="alert alert-warning">' . esc_html__( 'Your account does not have partner access. Contact the site administrator.', 'flex-booking-system' ) . '</div>',
+				'<div class="alert alert-warning">' . esc_html__( 'Your account does not have partner access. Contact the site administrator.', 'flex-multiple-listing-and-booking-system' ) . '</div>',
 				'ulbm-vendor-dashboard-wrap'
 			);
 		}
@@ -138,8 +138,8 @@ final class VendorController {
 	public function shortcode_become_partner( $atts ) {
 		$atts = shortcode_atts(
 			array(
-				'title' => __( 'Become a Partner', 'flex-booking-system' ),
-				'text'  => __( 'List your property, car, tour, or service and start receiving bookings.', 'flex-booking-system' ),
+				'title' => __( 'Become a Partner', 'flex-multiple-listing-and-booking-system' ),
+				'text'  => __( 'List your property, car, tour, or service and start receiving bookings.', 'flex-multiple-listing-and-booking-system' ),
 			),
 			$atts,
 			'ulbm_become_partner'
@@ -147,10 +147,10 @@ final class VendorController {
 
 		if ( is_user_logged_in() && VendorRole::can_manage_listings() ) {
 			$url   = VendorPages::dashboard_url();
-			$label = __( 'Go to Dashboard', 'flex-booking-system' );
+			$label = __( 'Go to Dashboard', 'flex-multiple-listing-and-booking-system' );
 		} else {
 			$url   = VendorPages::register_url();
-			$label = __( 'Register Now', 'flex-booking-system' );
+			$label = __( 'Register Now', 'flex-multiple-listing-and-booking-system' );
 		}
 
 		ob_start();
@@ -161,8 +161,8 @@ final class VendorController {
 			<a href="<?php echo esc_url( $url ); ?>" class="btn btn-primary btn-lg"><?php echo esc_html( $label ); ?></a>
 			<?php if ( ! is_user_logged_in() ) : ?>
 				<p class="small text-muted mt-3 mb-0">
-					<?php esc_html_e( 'Already registered?', 'flex-booking-system' ); ?>
-					<a href="<?php echo esc_url( VendorPages::login_url() ); ?>"><?php esc_html_e( 'Log in', 'flex-booking-system' ); ?></a>
+					<?php esc_html_e( 'Already registered?', 'flex-multiple-listing-and-booking-system' ); ?>
+					<a href="<?php echo esc_url( VendorPages::login_url() ); ?>"><?php esc_html_e( 'Log in', 'flex-multiple-listing-and-booking-system' ); ?></a>
 				</p>
 			<?php endif; ?>
 		</div>

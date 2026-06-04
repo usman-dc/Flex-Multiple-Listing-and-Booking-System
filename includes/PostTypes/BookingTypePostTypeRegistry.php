@@ -165,34 +165,34 @@ final class BookingTypePostTypeRegistry {
 				'name'          => $name,
 				'singular_name' => $name,
 				'menu_name'     => $name,
-				'add_new'       => __( 'Add New', 'flex-booking-system' ),
+				'add_new'       => __( 'Add New', 'flex-multiple-listing-and-booking-system' ),
 				'add_new_item'  => sprintf(
 					/* translators: %s: booking type name */
-					__( 'Add %s', 'flex-booking-system' ),
+					__( 'Add %s', 'flex-multiple-listing-and-booking-system' ),
 					$name
 				),
 				'edit_item'     => sprintf(
 					/* translators: %s: booking type name */
-					__( 'Edit %s', 'flex-booking-system' ),
+					__( 'Edit %s', 'flex-multiple-listing-and-booking-system' ),
 					$name
 				),
 				'new_item'      => sprintf(
 					/* translators: %s: booking type name */
-					__( 'New %s', 'flex-booking-system' ),
+					__( 'New %s', 'flex-multiple-listing-and-booking-system' ),
 					$name
 				),
 				'view_item'     => sprintf(
 					/* translators: %s: booking type name */
-					__( 'View %s', 'flex-booking-system' ),
+					__( 'View %s', 'flex-multiple-listing-and-booking-system' ),
 					$name
 				),
 				'search_items'  => sprintf(
 					/* translators: %s: booking type name */
-					__( 'Search %s', 'flex-booking-system' ),
+					__( 'Search %s', 'flex-multiple-listing-and-booking-system' ),
 					$name
 				),
-				'not_found'          => __( 'Nothing found.', 'flex-booking-system' ),
-				'not_found_in_trash' => __( 'Nothing found in Trash.', 'flex-booking-system' ),
+				'not_found'          => __( 'Nothing found.', 'flex-multiple-listing-and-booking-system' ),
+				'not_found_in_trash' => __( 'Nothing found in Trash.', 'flex-multiple-listing-and-booking-system' ),
 				'all_items'          => $name,
 			);
 

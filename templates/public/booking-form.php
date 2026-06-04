@@ -108,7 +108,7 @@ $ulbm_render_field = static function ( array $f, $compact = false ) use ( $prefi
 
 			<select class="<?php echo esc_attr( $select_class ); ?>" name="<?php echo esc_attr( $name ); ?>" id="<?php echo esc_attr( $id_attr ); ?>"<?php echo $req; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
 
-				<option value=""><?php esc_html_e( '— Select —', 'flex-booking-system' ); ?></option>
+				<option value=""><?php esc_html_e( '— Select —', 'flex-multiple-listing-and-booking-system' ); ?></option>
 
 				<?php foreach ( $f['options'] as $opt_val => $opt_label ) : ?>
 
@@ -280,7 +280,7 @@ $ulbm_currency = PriceFormatter::currency_code();
 
 		<?php if ( ! $ulbm_marketplace && ! $ulbm_is_embedded ) : ?>
 
-			<h2 class="h5 mb-1"><i class="bi bi-calendar-check me-1"></i><?php esc_html_e( 'Book Now', 'flex-booking-system' ); ?></h2>
+			<h2 class="h5 mb-1"><i class="bi bi-calendar-check me-1"></i><?php esc_html_e( 'Book Now', 'flex-multiple-listing-and-booking-system' ); ?></h2>
 
 			<?php if ( $ulbm_type_name ) : ?>
 
@@ -298,7 +298,7 @@ $ulbm_currency = PriceFormatter::currency_code();
 
 				<i class="bi bi-tag me-1 text-primary"></i>
 
-				<strong><?php esc_html_e( 'Booking type:', 'flex-booking-system' ); ?></strong> <?php echo esc_html( $ulbm_type_name ); ?>
+				<strong><?php esc_html_e( 'Booking type:', 'flex-multiple-listing-and-booking-system' ); ?></strong> <?php echo esc_html( $ulbm_type_name ); ?>
 
 			</div>
 
@@ -316,7 +316,7 @@ $ulbm_currency = PriceFormatter::currency_code();
 
 					<div class="ulbm-mp-field">
 
-						<label class="ulbm-mp-label" for="ulbm-checkin"><?php esc_html_e( 'Check-in', 'flex-booking-system' ); ?></label>
+						<label class="ulbm-mp-label" for="ulbm-checkin"><?php esc_html_e( 'Check-in', 'flex-multiple-listing-and-booking-system' ); ?></label>
 
 						<div class="ulbm-mp-input-wrap">
 
@@ -330,7 +330,7 @@ $ulbm_currency = PriceFormatter::currency_code();
 
 					<div class="ulbm-mp-field">
 
-						<label class="ulbm-mp-label" for="ulbm-checkout"><?php esc_html_e( 'Check-out', 'flex-booking-system' ); ?></label>
+						<label class="ulbm-mp-label" for="ulbm-checkout"><?php esc_html_e( 'Check-out', 'flex-multiple-listing-and-booking-system' ); ?></label>
 
 						<div class="ulbm-mp-input-wrap">
 
@@ -344,7 +344,7 @@ $ulbm_currency = PriceFormatter::currency_code();
 
 					<div class="ulbm-mp-field">
 
-						<label class="ulbm-mp-label" for="ulbm-guests"><?php esc_html_e( 'Guests', 'flex-booking-system' ); ?></label>
+						<label class="ulbm-mp-label" for="ulbm-guests"><?php esc_html_e( 'Guests', 'flex-multiple-listing-and-booking-system' ); ?></label>
 
 						<div class="ulbm-mp-input-wrap">
 
@@ -359,7 +359,7 @@ $ulbm_currency = PriceFormatter::currency_code();
 										<?php
 										printf(
 											/* translators: %d: guest count */
-											esc_html( _n( '%d Guest', '%d Guests', $g, 'flex-booking-system' ) ),
+											esc_html( _n( '%d Guest', '%d Guests', $g, 'flex-multiple-listing-and-booking-system' ) ),
 											(int) $g
 										);
 										?>
@@ -390,7 +390,7 @@ $ulbm_currency = PriceFormatter::currency_code();
 
 					<div class="ulbm-price-line ulbm-price-line--cleaning<?php echo $ulbm_cleaning_fee <= 0 ? ' d-none' : ''; ?>">
 
-						<span class="ulbm-price-line-label"><?php esc_html_e( 'Cleaning Fee', 'flex-booking-system' ); ?></span>
+						<span class="ulbm-price-line-label"><?php esc_html_e( 'Cleaning Fee', 'flex-multiple-listing-and-booking-system' ); ?></span>
 
 						<span class="ulbm-price-line-value"></span>
 
@@ -400,9 +400,9 @@ $ulbm_currency = PriceFormatter::currency_code();
 
 						<span class="ulbm-price-line-label">
 
-							<?php esc_html_e( 'Service Fee', 'flex-booking-system' ); ?>
+							<?php esc_html_e( 'Service Fee', 'flex-multiple-listing-and-booking-system' ); ?>
 
-							<i class="bi bi-info-circle ulbm-fee-info" title="<?php esc_attr_e( 'Platform service fee', 'flex-booking-system' ); ?>" aria-hidden="true"></i>
+							<i class="bi bi-info-circle ulbm-fee-info" title="<?php esc_attr_e( 'Platform service fee', 'flex-multiple-listing-and-booking-system' ); ?>" aria-hidden="true"></i>
 
 						</span>
 
@@ -412,7 +412,7 @@ $ulbm_currency = PriceFormatter::currency_code();
 
 					<div class="ulbm-price-total">
 
-						<span><?php esc_html_e( 'Total', 'flex-booking-system' ); ?></span>
+						<span><?php esc_html_e( 'Total', 'flex-multiple-listing-and-booking-system' ); ?></span>
 
 						<strong class="ulbm-price-total-value"></strong>
 
@@ -428,7 +428,7 @@ $ulbm_currency = PriceFormatter::currency_code();
 
 			<?php else : ?>
 
-				<div class="col-12"><p class="text-uppercase text-muted fw-bold mb-1" style="font-size:.7rem;letter-spacing:.05em;"><i class="bi bi-person me-1"></i><?php esc_html_e( 'Your details', 'flex-booking-system' ); ?></p></div>
+				<div class="col-12"><p class="text-uppercase text-muted fw-bold mb-1" style="font-size:.7rem;letter-spacing:.05em;"><i class="bi bi-person me-1"></i><?php esc_html_e( 'Your details', 'flex-multiple-listing-and-booking-system' ); ?></p></div>
 
 				<?php foreach ( $groups['contact'] as $field ) : ?>
 
@@ -438,11 +438,11 @@ $ulbm_currency = PriceFormatter::currency_code();
 
 
 
-				<div class="col-12 mt-2"><p class="text-uppercase text-muted fw-bold mb-1" style="font-size:.7rem;letter-spacing:.05em;"><i class="bi bi-calendar3 me-1"></i><?php esc_html_e( 'Schedule', 'flex-booking-system' ); ?></p></div>
+				<div class="col-12 mt-2"><p class="text-uppercase text-muted fw-bold mb-1" style="font-size:.7rem;letter-spacing:.05em;"><i class="bi bi-calendar3 me-1"></i><?php esc_html_e( 'Schedule', 'flex-multiple-listing-and-booking-system' ); ?></p></div>
 
 				<div class="col-md-6">
 
-					<label class="form-label small fw-semibold" for="ulbm-start"><?php esc_html_e( 'Start', 'flex-booking-system' ); ?> <span class="text-danger">*</span></label>
+					<label class="form-label small fw-semibold" for="ulbm-start"><?php esc_html_e( 'Start', 'flex-multiple-listing-and-booking-system' ); ?> <span class="text-danger">*</span></label>
 
 					<input type="datetime-local" class="form-control form-control-sm" name="start" id="ulbm-start" required>
 
@@ -450,7 +450,7 @@ $ulbm_currency = PriceFormatter::currency_code();
 
 				<div class="col-md-6">
 
-					<label class="form-label small fw-semibold" for="ulbm-end"><?php esc_html_e( 'End', 'flex-booking-system' ); ?> <span class="text-danger">*</span></label>
+					<label class="form-label small fw-semibold" for="ulbm-end"><?php esc_html_e( 'End', 'flex-multiple-listing-and-booking-system' ); ?> <span class="text-danger">*</span></label>
 
 					<input type="datetime-local" class="form-control form-control-sm" name="end" id="ulbm-end" required>
 
@@ -460,7 +460,7 @@ $ulbm_currency = PriceFormatter::currency_code();
 
 				<?php if ( ! empty( $groups['extra'] ) ) : ?>
 
-					<div class="col-12 mt-2"><p class="text-uppercase text-muted fw-bold mb-1" style="font-size:.7rem;letter-spacing:.05em;"><i class="bi bi-list-check me-1"></i><?php echo esc_html( $groups['title'] ?: __( 'Booking details', 'flex-booking-system' ) ); ?></p></div>
+					<div class="col-12 mt-2"><p class="text-uppercase text-muted fw-bold mb-1" style="font-size:.7rem;letter-spacing:.05em;"><i class="bi bi-list-check me-1"></i><?php echo esc_html( $groups['title'] ?: __( 'Booking details', 'flex-multiple-listing-and-booking-system' ) ); ?></p></div>
 
 					<?php foreach ( $groups['extra'] as $field ) : ?>
 
@@ -488,7 +488,7 @@ $ulbm_currency = PriceFormatter::currency_code();
 
 				<div class="ulbm-booking-contact-panel">
 
-					<p class="ulbm-contact-panel-title"><?php esc_html_e( 'Your details', 'flex-booking-system' ); ?></p>
+					<p class="ulbm-contact-panel-title"><?php esc_html_e( 'Your details', 'flex-multiple-listing-and-booking-system' ); ?></p>
 
 					<div class="row g-2">
 
@@ -523,7 +523,7 @@ $ulbm_currency = PriceFormatter::currency_code();
 
 				<button type="submit" class="btn ulbm-btn-request w-100">
 
-					<?php esc_html_e( 'Request to Book', 'flex-booking-system' ); ?>
+					<?php esc_html_e( 'Request to Book', 'flex-multiple-listing-and-booking-system' ); ?>
 
 				</button>
 
@@ -533,7 +533,7 @@ $ulbm_currency = PriceFormatter::currency_code();
 
 					<button type="submit" class="btn btn-primary w-100">
 
-						<i class="bi bi-check-circle me-1"></i><?php esc_html_e( 'Submit Booking', 'flex-booking-system' ); ?>
+						<i class="bi bi-check-circle me-1"></i><?php esc_html_e( 'Submit Booking', 'flex-multiple-listing-and-booking-system' ); ?>
 
 					</button>
 

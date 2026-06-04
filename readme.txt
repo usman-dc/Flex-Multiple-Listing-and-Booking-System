@@ -57,7 +57,7 @@ Booking forms collect customer name, email, phone, and booking details stored in
 
 == Installation ==
 
-1. Upload the `flex-booking-system` folder to `/wp-content/plugins/` or install via **Plugins → Add New**
+1. Upload the `flex-multiple-listing-and-booking-system` folder to `/wp-content/plugins/` or install via **Plugins → Add New**
 2. Activate **Flex Listings and Booking Manager** through the **Plugins** menu
 3. Go to **Flex Listings & Booking → Setup** (first run) and choose your industries
 4. Open **Flex Listings & Booking → Settings** to configure currency, colors, and layout
@@ -74,7 +74,7 @@ If you clone from Git, run `npm install && npm run build` before use so `/dist` 
 WordPress.org does **not** install plugins directly from GitHub. Use this flow:
 
 1. Download or clone from [GitHub](https://github.com/usman-dc/Flex-Multiple-Listing-and-Booking-System).
-2. Create a ZIP of the **`flex-booking-system`** folder (plugin root must contain `flex-booking-system.php` and `readme.txt`).
+2. Create a ZIP of the **`flex-multiple-listing-and-booking-system`** folder (plugin root must contain `flex-multiple-listing-and-booking-system.php` and `readme.txt`).
 3. **Exclude** from the ZIP: `node_modules/`, `vendor/`, `.git/`, `.cursor/`, `.vscode/`, `.env`, `tests/` (the included `/dist` folder **must** stay in the ZIP).
 4. Submit the ZIP at [WordPress.org Add Plugin](https://wordpress.org/plugins/developers/add/) (requires a WordPress.org account).
 5. After approval, releases are published via WordPress.org SVN — keep GitHub and SVN versions in sync.
@@ -89,11 +89,11 @@ No. You must upload a plugin ZIP through [wordpress.org/plugins/developers/add/]
 
 = How do I prepare the ZIP for WordPress.org? =
 
-Zip the `flex-booking-system` directory so the archive unpacks to one folder named `flex-booking-system`. Include `dist/`, `readme.txt`, and `LICENSE`. Do not include `node_modules`. Run [Plugin Check](https://wordpress.org/plugins/plugin-check/) on your site before submitting.
+Zip the `flex-multiple-listing-and-booking-system` directory so the archive unpacks to one folder named `flex-multiple-listing-and-booking-system`. Include `dist/`, `readme.txt`, and `LICENSE`. Do not include `node_modules`. Run [Plugin Check](https://wordpress.org/plugins/plugin-check/) on your site before submitting.
 
 = Why is the text domain different from the folder name? =
 
-WordPress.org requires the text domain to match the plugin slug (`flex-booking-system`). The install folder may remain `flex-booking-system` for compatibility with existing sites and GitHub releases.
+WordPress.org requires the text domain to match the plugin slug (`flex-multiple-listing-and-booking-system`). The install folder may remain `flex-multiple-listing-and-booking-system` for compatibility with existing sites and GitHub releases.
 
 = Does this work with any theme? =
 
@@ -126,7 +126,7 @@ Custom database tables and plugin options are removed on uninstall. Use the `ulb
 == Changelog ==
 
 = 1.0.2 =
-* Plugin slug and text domain: flex-booking-system
+* Plugin slug and text domain: flex-multiple-listing-and-booking-system
 * Partner registration: pending approval by default, no auto-login until approved
 * Google Maps embed opt-in; external services documented in readme
 * Sanitization and JSON decode hardening; admin scripts enqueued

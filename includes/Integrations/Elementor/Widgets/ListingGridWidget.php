@@ -66,7 +66,7 @@ final class ListingGridWidget extends Widget_Base {
 
 	public function get_title() {
 
-		return __( 'Usman Listing Grid', 'flex-booking-system' );
+		return __( 'Usman Listing Grid', 'flex-multiple-listing-and-booking-system' );
 
 	}
 
@@ -170,7 +170,7 @@ final class ListingGridWidget extends Widget_Base {
 
 		$all_types = $type_repo->get_all();
 
-		$type_opts = array( '' => __( 'All Types', 'flex-booking-system' ) );
+		$type_opts = array( '' => __( 'All Types', 'flex-multiple-listing-and-booking-system' ) );
 
 		foreach ( $all_types as $t ) {
 
@@ -186,7 +186,7 @@ final class ListingGridWidget extends Widget_Base {
 
 			array(
 
-				'label' => __( 'Grid Settings', 'flex-booking-system' ),
+				'label' => __( 'Grid Settings', 'flex-multiple-listing-and-booking-system' ),
 
 				'tab'   => Controls_Manager::TAB_CONTENT,
 
@@ -202,7 +202,7 @@ final class ListingGridWidget extends Widget_Base {
 
 			array(
 
-				'label'   => __( 'Booking Type', 'flex-booking-system' ),
+				'label'   => __( 'Booking Type', 'flex-multiple-listing-and-booking-system' ),
 
 				'type'    => Controls_Manager::SELECT,
 
@@ -222,7 +222,7 @@ final class ListingGridWidget extends Widget_Base {
 
 			array(
 
-				'label'   => __( 'Columns', 'flex-booking-system' ),
+				'label'   => __( 'Columns', 'flex-multiple-listing-and-booking-system' ),
 
 				'type'    => Controls_Manager::SELECT,
 
@@ -250,7 +250,7 @@ final class ListingGridWidget extends Widget_Base {
 
 			array(
 
-				'label'   => __( 'Listings per page', 'flex-booking-system' ),
+				'label'   => __( 'Listings per page', 'flex-multiple-listing-and-booking-system' ),
 
 				'type'    => Controls_Manager::NUMBER,
 
@@ -276,7 +276,7 @@ final class ListingGridWidget extends Widget_Base {
 
 			array(
 
-				'label' => __( 'Spacing', 'flex-booking-system' ),
+				'label' => __( 'Spacing', 'flex-multiple-listing-and-booking-system' ),
 
 				'tab'   => Controls_Manager::TAB_STYLE,
 
@@ -292,7 +292,7 @@ final class ListingGridWidget extends Widget_Base {
 
 			array(
 
-				'label'      => __( 'Column gap (px)', 'flex-booking-system' ),
+				'label'      => __( 'Column gap (px)', 'flex-multiple-listing-and-booking-system' ),
 
 				'type'       => Controls_Manager::SLIDER,
 
@@ -318,7 +318,7 @@ final class ListingGridWidget extends Widget_Base {
 
 			array(
 
-				'label'      => __( 'Padding left/right (px)', 'flex-booking-system' ),
+				'label'      => __( 'Padding left/right (px)', 'flex-multiple-listing-and-booking-system' ),
 
 				'type'       => Controls_Manager::SLIDER,
 
@@ -344,7 +344,7 @@ final class ListingGridWidget extends Widget_Base {
 
 			array(
 
-				'label'      => __( 'Padding top/bottom (px)', 'flex-booking-system' ),
+				'label'      => __( 'Padding top/bottom (px)', 'flex-multiple-listing-and-booking-system' ),
 
 				'type'       => Controls_Manager::SLIDER,
 
@@ -370,7 +370,7 @@ final class ListingGridWidget extends Widget_Base {
 
 			array(
 
-				'label'      => __( 'Margin top (px)', 'flex-booking-system' ),
+				'label'      => __( 'Margin top (px)', 'flex-multiple-listing-and-booking-system' ),
 
 				'type'       => Controls_Manager::SLIDER,
 
@@ -396,7 +396,7 @@ final class ListingGridWidget extends Widget_Base {
 
 			array(
 
-				'label'      => __( 'Margin bottom (px)', 'flex-booking-system' ),
+				'label'      => __( 'Margin bottom (px)', 'flex-multiple-listing-and-booking-system' ),
 
 				'type'       => Controls_Manager::SLIDER,
 
@@ -422,7 +422,7 @@ final class ListingGridWidget extends Widget_Base {
 
 			array(
 
-				'label'      => __( 'Card body padding (px)', 'flex-booking-system' ),
+				'label'      => __( 'Card body padding (px)', 'flex-multiple-listing-and-booking-system' ),
 
 				'type'       => Controls_Manager::SLIDER,
 
@@ -452,7 +452,7 @@ final class ListingGridWidget extends Widget_Base {
 
 			array(
 
-				'label' => __( 'Cards', 'flex-booking-system' ),
+				'label' => __( 'Cards', 'flex-multiple-listing-and-booking-system' ),
 
 				'tab'   => Controls_Manager::TAB_STYLE,
 
@@ -468,7 +468,7 @@ final class ListingGridWidget extends Widget_Base {
 
 			array(
 
-				'label'      => __( 'Card border radius (px)', 'flex-booking-system' ),
+				'label'      => __( 'Card border radius (px)', 'flex-multiple-listing-and-booking-system' ),
 
 				'type'       => Controls_Manager::SLIDER,
 
@@ -496,7 +496,7 @@ final class ListingGridWidget extends Widget_Base {
 
 			array(
 
-				'label'   => __( 'Hover shadow', 'flex-booking-system' ),
+				'label'   => __( 'Hover shadow', 'flex-multiple-listing-and-booking-system' ),
 
 				'type'    => Controls_Manager::SWITCHER,
 
@@ -514,11 +514,11 @@ final class ListingGridWidget extends Widget_Base {
 
 			array(
 
-				'label'       => __( 'Override primary color (optional)', 'flex-booking-system' ),
+				'label'       => __( 'Override primary color (optional)', 'flex-multiple-listing-and-booking-system' ),
 
 				'type'        => Controls_Manager::COLOR,
 
-				'description' => __( 'Leave empty to use Flex Listings & Booking → Settings → Colors.', 'flex-booking-system' ),
+				'description' => __( 'Leave empty to use Flex Listings & Booking → Settings → Colors.', 'flex-multiple-listing-and-booking-system' ),
 
 				'selectors'   => array(
 

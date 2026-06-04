@@ -130,12 +130,12 @@ final class AjaxDispatcher {
 		check_ajax_referer( Nonce::ACTION_AJAX, 'nonce' );
 		PostData::allow_processing();
 		if ( ! Capabilities::can_access_admin() ) {
-			wp_send_json_error( array( 'message' => __( 'Forbidden.', 'flex-booking-system' ) ), 403 );
+			wp_send_json_error( array( 'message' => __( 'Forbidden.', 'flex-multiple-listing-and-booking-system' ) ), 403 );
 		}
 
 		$booking_id = PostData::int( 'booking_id' );
 		if ( $booking_id < 1 ) {
-			wp_send_json_error( array( 'message' => __( 'Invalid booking.', 'flex-booking-system' ) ), 400 );
+			wp_send_json_error( array( 'message' => __( 'Invalid booking.', 'flex-multiple-listing-and-booking-system' ) ), 400 );
 		}
 
 		$status_in = PostData::has( 'status' ) ? PostData::raw( 'status' ) : null;
@@ -197,7 +197,7 @@ final class AjaxDispatcher {
 
 		$allowed = apply_filters( 'ulbm_allow_ajax_guest_booking', true );
 		if ( ! $allowed && ! is_user_logged_in() ) {
-			wp_send_json_error( array( 'message' => __( 'Login required.', 'flex-booking-system' ) ), 401 );
+			wp_send_json_error( array( 'message' => __( 'Login required.', 'flex-multiple-listing-and-booking-system' ) ), 401 );
 		}
 
 		$plugin = Plugin::instance();
@@ -252,7 +252,7 @@ final class AjaxDispatcher {
 		if ( ! empty( $result['errors'] ) && is_array( $result['errors'] ) ) {
 			$result['message'] = implode( ' ', $result['errors'] );
 		} elseif ( empty( $result['message'] ) ) {
-			$result['message'] = __( 'Booking could not be saved.', 'flex-booking-system' );
+			$result['message'] = __( 'Booking could not be saved.', 'flex-multiple-listing-and-booking-system' );
 		}
 
 		wp_send_json_error( $result, 400 );
@@ -267,14 +267,14 @@ final class AjaxDispatcher {
 		check_ajax_referer( Nonce::ACTION_AJAX, 'nonce' );
 		PostData::allow_processing();
 		if ( ! Capabilities::can_access_admin() ) {
-			wp_send_json_error( array( 'message' => __( 'Forbidden', 'flex-booking-system' ) ), 403 );
+			wp_send_json_error( array( 'message' => __( 'Forbidden', 'flex-multiple-listing-and-booking-system' ) ), 403 );
 		}
 
 		$type_id = PostData::int( 'booking_type_id' );
 		$count   = PostData::has( 'count' ) ? PostData::int( 'count' ) : DemoContentSeeder::POSTS_PER_TYPE;
 
 		if ( $type_id <= 0 ) {
-			wp_send_json_error( array( 'message' => __( 'Invalid booking type.', 'flex-booking-system' ) ), 400 );
+			wp_send_json_error( array( 'message' => __( 'Invalid booking type.', 'flex-multiple-listing-and-booking-system' ) ), 400 );
 		}
 
 		$result = DemoContentSeeder::import_for_type( $type_id, $count );
@@ -301,7 +301,7 @@ final class AjaxDispatcher {
 		check_ajax_referer( Nonce::ACTION_AJAX, 'nonce' );
 		PostData::allow_processing();
 		if ( ! Capabilities::can_access_admin() ) {
-			wp_send_json_error( array( 'message' => __( 'Forbidden', 'flex-booking-system' ) ), 403 );
+			wp_send_json_error( array( 'message' => __( 'Forbidden', 'flex-multiple-listing-and-booking-system' ) ), 403 );
 		}
 
 		$type_id = PostData::int( 'booking_type_id' );
@@ -312,7 +312,7 @@ final class AjaxDispatcher {
 				'deleted' => $deleted,
 				'message' => sprintf(
 					/* translators: %d: number of posts deleted */
-					_n( '%d demo listing removed.', '%d demo listings removed.', $deleted, 'flex-booking-system' ),
+					_n( '%d demo listing removed.', '%d demo listings removed.', $deleted, 'flex-multiple-listing-and-booking-system' ),
 					$deleted
 				),
 			)
@@ -380,7 +380,7 @@ final class AjaxDispatcher {
 		PostData::allow_processing();
 
 		if ( ! is_user_logged_in() ) {
-			wp_send_json_error( array( 'message' => __( 'Login required.', 'flex-booking-system' ) ), 403 );
+			wp_send_json_error( array( 'message' => __( 'Login required.', 'flex-multiple-listing-and-booking-system' ) ), 403 );
 		}
 
 		$result = VendorAuth::become_partner(
@@ -424,7 +424,7 @@ final class AjaxDispatcher {
 						'%d partner page created and linked in settings.',
 						'%d partner pages created and linked in settings.',
 						$result['created'],
-						'flex-booking-system'
+						'flex-multiple-listing-and-booking-system'
 					),
 					$result['created']
 				),
@@ -442,7 +442,7 @@ final class AjaxDispatcher {
 		PostData::allow_processing();
 
 		if ( ! is_user_logged_in() || ! VendorRole::can_manage_listings() ) {
-			wp_send_json_error( array( 'message' => __( 'Login required.', 'flex-booking-system' ) ), 403 );
+			wp_send_json_error( array( 'message' => __( 'Login required.', 'flex-multiple-listing-and-booking-system' ) ), 403 );
 		}
 
 		$data = array(
@@ -485,7 +485,7 @@ final class AjaxDispatcher {
 		PostData::allow_processing();
 
 		if ( ! is_user_logged_in() || ! VendorRole::can_manage_listings() ) {
-			wp_send_json_error( array( 'message' => __( 'Login required.', 'flex-booking-system' ) ), 403 );
+			wp_send_json_error( array( 'message' => __( 'Login required.', 'flex-multiple-listing-and-booking-system' ) ), 403 );
 		}
 
 		$post_id = PostData::int( 'post_id' );
@@ -525,7 +525,7 @@ final class AjaxDispatcher {
 		$post_types = array_values( array_unique( $post_types ) );
 
 		if ( empty( $post_types ) ) {
-			wp_send_json_success( array( 'html' => '<p class="text-muted">' . esc_html__( 'No listings found.', 'flex-booking-system' ) . '</p>', 'count' => 0 ) );
+			wp_send_json_success( array( 'html' => '<p class="text-muted">' . esc_html__( 'No listings found.', 'flex-multiple-listing-and-booking-system' ) . '</p>', 'count' => 0 ) );
 		}
 
 		$keyword   = PostData::string( 'keyword' );
@@ -595,7 +595,7 @@ final class AjaxDispatcher {
 				ListingDisplay::render_grid_card( get_the_ID(), $col_class );
 			}
 		} else {
-			echo '<div class="col-12"><p class="text-muted text-center py-5">' . esc_html__( 'No listings match your filters.', 'flex-booking-system' ) . '</p></div>';
+			echo '<div class="col-12"><p class="text-muted text-center py-5">' . esc_html__( 'No listings match your filters.', 'flex-multiple-listing-and-booking-system' ) . '</p></div>';
 		}
 		$html = ob_get_clean();
 		wp_reset_postdata();
@@ -651,7 +651,7 @@ final class AjaxDispatcher {
 		$action    = PostData::key( 'review_action' );
 
 		if ( $review_id < 1 || ! in_array( $action, array( 'approve', 'reject', 'delete' ), true ) ) {
-			wp_send_json_error( array( 'message' => __( 'Invalid request.', 'flex-booking-system' ) ), 400 );
+			wp_send_json_error( array( 'message' => __( 'Invalid request.', 'flex-multiple-listing-and-booking-system' ) ), 400 );
 		}
 
 		$service = new ListingReviewService();
@@ -669,12 +669,12 @@ final class AjaxDispatcher {
 		}
 
 		if ( ! $ok ) {
-			wp_send_json_error( array( 'message' => __( 'Review could not be updated.', 'flex-booking-system' ) ), 400 );
+			wp_send_json_error( array( 'message' => __( 'Review could not be updated.', 'flex-multiple-listing-and-booking-system' ) ), 400 );
 		}
 
 		wp_send_json_success(
 			array(
-				'message' => __( 'Review updated.', 'flex-booking-system' ),
+				'message' => __( 'Review updated.', 'flex-multiple-listing-and-booking-system' ),
 				'status'  => $status,
 				'deleted' => 'delete' === $action,
 			)

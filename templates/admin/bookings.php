@@ -109,8 +109,8 @@ $pagination = paginate_links(
 	array(
 		'base'      => $pagination_base,
 		'format'    => '',
-		'prev_text' => '&laquo; ' . __( 'Previous', 'flex-booking-system' ),
-		'next_text' => __( 'Next', 'flex-booking-system' ) . ' &raquo;',
+		'prev_text' => '&laquo; ' . __( 'Previous', 'flex-multiple-listing-and-booking-system' ),
+		'next_text' => __( 'Next', 'flex-multiple-listing-and-booking-system' ) . ' &raquo;',
 		'total'     => max( 1, (int) $ulbm_bookings_total_pages ),
 		'current'   => (int) $ulbm_bookings_paged,
 		'type'      => 'plain',
@@ -128,9 +128,9 @@ $payment_statuses = BookingAdminUpdater::payment_statuses();
 		<div>
 			<h1 class="h3 mb-1 ulbm-page-title d-flex align-items-center gap-2">
 				<i class="bi bi-calendar2-check text-primary" aria-hidden="true"></i>
-				<?php esc_html_e( 'Bookings', 'flex-booking-system' ); ?>
+				<?php esc_html_e( 'Bookings', 'flex-multiple-listing-and-booking-system' ); ?>
 			</h1>
-			<p class="text-muted small mb-0"><?php esc_html_e( 'Review reservations, change status, payment, and optionally email the customer.', 'flex-booking-system' ); ?></p>
+			<p class="text-muted small mb-0"><?php esc_html_e( 'Review reservations, change status, payment, and optionally email the customer.', 'flex-multiple-listing-and-booking-system' ); ?></p>
 		</div>
 	</div>
 
@@ -139,9 +139,9 @@ $payment_statuses = BookingAdminUpdater::payment_statuses();
 			<form method="get" class="d-flex flex-wrap align-items-end gap-2">
 				<input type="hidden" name="page" value="ulbm-bookings" />
 				<div>
-					<label class="form-label small text-muted mb-0" for="ulbm_status"><?php esc_html_e( 'Filter by status', 'flex-booking-system' ); ?></label>
+					<label class="form-label small text-muted mb-0" for="ulbm_status"><?php esc_html_e( 'Filter by status', 'flex-multiple-listing-and-booking-system' ); ?></label>
 					<select class="form-select form-select-sm" name="ulbm_status" id="ulbm_status">
-						<option value=""><?php esc_html_e( 'All statuses', 'flex-booking-system' ); ?></option>
+						<option value=""><?php esc_html_e( 'All statuses', 'flex-multiple-listing-and-booking-system' ); ?></option>
 						<?php foreach ( $statuses as $st ) : ?>
 							<option value="<?php echo esc_attr( $st ); ?>" <?php selected( $ulbm_status_filter, $st ); ?>>
 								<?php echo esc_html( $st ); ?>
@@ -150,9 +150,9 @@ $payment_statuses = BookingAdminUpdater::payment_statuses();
 					</select>
 				</div>
 				<div>
-					<label class="form-label small text-muted mb-0" for="ulbm_type"><?php esc_html_e( 'Booking type', 'flex-booking-system' ); ?></label>
+					<label class="form-label small text-muted mb-0" for="ulbm_type"><?php esc_html_e( 'Booking type', 'flex-multiple-listing-and-booking-system' ); ?></label>
 					<select class="form-select form-select-sm" name="ulbm_type" id="ulbm_type">
-						<option value="0"><?php esc_html_e( 'All types', 'flex-booking-system' ); ?></option>
+						<option value="0"><?php esc_html_e( 'All types', 'flex-multiple-listing-and-booking-system' ); ?></option>
 						<?php foreach ( $ulbm_booking_type_options as $tto ) : ?>
 							<option value="<?php echo esc_attr( (string) (int) $tto['id'] ); ?>" <?php selected( $ulbm_type_filter, (int) $tto['id'] ); ?>>
 								<?php echo esc_html( (string) $tto['name'] ); ?>
@@ -160,12 +160,12 @@ $payment_statuses = BookingAdminUpdater::payment_statuses();
 						<?php endforeach; ?>
 					</select>
 				</div>
-				<button type="submit" class="btn btn-sm btn-outline-primary"><?php esc_html_e( 'Apply', 'flex-booking-system' ); ?></button>
+				<button type="submit" class="btn btn-sm btn-outline-primary"><?php esc_html_e( 'Apply', 'flex-multiple-listing-and-booking-system' ); ?></button>
 			</form>
 			<div class="form-check ms-auto">
 				<input class="form-check-input" type="checkbox" id="ulbm-bookings-notify" checked />
 				<label class="form-check-label small" for="ulbm-bookings-notify">
-					<?php esc_html_e( 'Email customer when booking status changes (see Settings → notifications).', 'flex-booking-system' ); ?>
+					<?php esc_html_e( 'Email customer when booking status changes (see Settings → notifications).', 'flex-multiple-listing-and-booking-system' ); ?>
 				</label>
 			</div>
 		</div>
@@ -175,7 +175,7 @@ $payment_statuses = BookingAdminUpdater::payment_statuses();
 		<?php
 		printf(
 			/* translators: 1: total rows (filtered), 2: rows per page */
-			esc_html__( 'Showing %1$d record(s) total (per page: %2$d).', 'flex-booking-system' ),
+			esc_html__( 'Showing %1$d record(s) total (per page: %2$d).', 'flex-multiple-listing-and-booking-system' ),
 			(int) $ulbm_bookings_total,
 			(int) $ulbm_bookings_per_page
 		);
@@ -186,7 +186,7 @@ $payment_statuses = BookingAdminUpdater::payment_statuses();
 			<?php
 			printf(
 				/* translators: 1: first row index, 2: last row index */
-				esc_html__( 'Rows %1$d–%2$d on this page.', 'flex-booking-system' ),
+				esc_html__( 'Rows %1$d–%2$d on this page.', 'flex-multiple-listing-and-booking-system' ),
 				(int) $showing_from,
 				(int) $showing_to
 			);
@@ -198,32 +198,32 @@ $payment_statuses = BookingAdminUpdater::payment_statuses();
 
 	<div class="ulbm-admin-panel border rounded bg-white">
 		<div class="ulbm-admin-panel-head px-3 py-3 d-flex flex-wrap justify-content-between align-items-center gap-2 border-bottom bg-white">
-			<span class="fw-semibold"><?php esc_html_e( 'Booking records', 'flex-booking-system' ); ?></span>
-			<span class="badge text-bg-light border"><?php echo esc_html( (string) (int) $ulbm_bookings_total ); ?> <?php esc_html_e( 'rows', 'flex-booking-system' ); ?></span>
+			<span class="fw-semibold"><?php esc_html_e( 'Booking records', 'flex-multiple-listing-and-booking-system' ); ?></span>
+			<span class="badge text-bg-light border"><?php echo esc_html( (string) (int) $ulbm_bookings_total ); ?> <?php esc_html_e( 'rows', 'flex-multiple-listing-and-booking-system' ); ?></span>
 		</div>
 		<div class="p-0 ulbm-bookings-table-wrap">
 			<div class="table-responsive">
 				<table class="table ulbm-table mb-0 align-middle w-100">
 					<thead>
 						<tr>
-							<th scope="col"><?php esc_html_e( 'ID', 'flex-booking-system' ); ?></th>
-							<th scope="col"><?php esc_html_e( 'UID', 'flex-booking-system' ); ?></th>
-							<th scope="col"><?php esc_html_e( 'Booking type', 'flex-booking-system' ); ?></th>
-							<th scope="col"><?php esc_html_e( 'Guest email', 'flex-booking-system' ); ?></th>
-							<th scope="col" class="ulbm-col-form-answers"><?php esc_html_e( 'Form answers', 'flex-booking-system' ); ?></th>
-							<th scope="col"><?php esc_html_e( 'Status', 'flex-booking-system' ); ?></th>
-							<th scope="col"><?php esc_html_e( 'Payment', 'flex-booking-system' ); ?></th>
-							<th scope="col" class="text-end"><?php esc_html_e( 'Total', 'flex-booking-system' ); ?></th>
-							<th scope="col"><?php esc_html_e( 'Start', 'flex-booking-system' ); ?></th>
-							<th scope="col"><?php esc_html_e( 'End', 'flex-booking-system' ); ?></th>
-							<th scope="col"><?php esc_html_e( 'Created', 'flex-booking-system' ); ?></th>
-							<th scope="col" class="text-nowrap"><?php esc_html_e( 'Workflow', 'flex-booking-system' ); ?></th>
+							<th scope="col"><?php esc_html_e( 'ID', 'flex-multiple-listing-and-booking-system' ); ?></th>
+							<th scope="col"><?php esc_html_e( 'UID', 'flex-multiple-listing-and-booking-system' ); ?></th>
+							<th scope="col"><?php esc_html_e( 'Booking type', 'flex-multiple-listing-and-booking-system' ); ?></th>
+							<th scope="col"><?php esc_html_e( 'Guest email', 'flex-multiple-listing-and-booking-system' ); ?></th>
+							<th scope="col" class="ulbm-col-form-answers"><?php esc_html_e( 'Form answers', 'flex-multiple-listing-and-booking-system' ); ?></th>
+							<th scope="col"><?php esc_html_e( 'Status', 'flex-multiple-listing-and-booking-system' ); ?></th>
+							<th scope="col"><?php esc_html_e( 'Payment', 'flex-multiple-listing-and-booking-system' ); ?></th>
+							<th scope="col" class="text-end"><?php esc_html_e( 'Total', 'flex-multiple-listing-and-booking-system' ); ?></th>
+							<th scope="col"><?php esc_html_e( 'Start', 'flex-multiple-listing-and-booking-system' ); ?></th>
+							<th scope="col"><?php esc_html_e( 'End', 'flex-multiple-listing-and-booking-system' ); ?></th>
+							<th scope="col"><?php esc_html_e( 'Created', 'flex-multiple-listing-and-booking-system' ); ?></th>
+							<th scope="col" class="text-nowrap"><?php esc_html_e( 'Workflow', 'flex-multiple-listing-and-booking-system' ); ?></th>
 						</tr>
 					</thead>
 					<tbody>
 						<?php if ( empty( $ulbm_bookings ) ) : ?>
 							<tr>
-								<td colspan="12" class="text-muted p-4"><?php esc_html_e( 'No bookings match this filter.', 'flex-booking-system' ); ?></td>
+								<td colspan="12" class="text-muted p-4"><?php esc_html_e( 'No bookings match this filter.', 'flex-multiple-listing-and-booking-system' ); ?></td>
 							</tr>
 						<?php else : ?>
 							<?php foreach ( $ulbm_bookings as $b ) : ?>
@@ -280,16 +280,16 @@ $payment_statuses = BookingAdminUpdater::payment_statuses();
 									<td class="small"><?php echo esc_html( (string) $b['created_at'] ); ?></td>
 									<td class="small">
 										<div class="d-flex flex-column gap-1" style="min-width: 12rem;">
-											<span class="text-muted text-uppercase" style="font-size: 0.65rem;"><?php esc_html_e( 'Booking', 'flex-booking-system' ); ?></span>
+											<span class="text-muted text-uppercase" style="font-size: 0.65rem;"><?php esc_html_e( 'Booking', 'flex-multiple-listing-and-booking-system' ); ?></span>
 											<div class="btn-group btn-group-sm flex-wrap" role="group">
-												<button type="button" class="btn btn-outline-success ulbm-booking-action" data-field="status" data-value="confirmed" title="<?php esc_attr_e( 'Confirm / accept', 'flex-booking-system' ); ?>"><?php esc_html_e( 'Accept', 'flex-booking-system' ); ?></button>
-												<button type="button" class="btn btn-outline-warning ulbm-booking-action" data-field="status" data-value="on_hold" title="<?php esc_attr_e( 'On hold', 'flex-booking-system' ); ?>"><?php esc_html_e( 'Hold', 'flex-booking-system' ); ?></button>
-												<button type="button" class="btn btn-outline-primary ulbm-booking-action" data-field="status" data-value="completed" title="<?php esc_attr_e( 'Completed', 'flex-booking-system' ); ?>"><?php esc_html_e( 'Complete', 'flex-booking-system' ); ?></button>
-												<button type="button" class="btn btn-outline-danger ulbm-booking-action" data-field="status" data-value="cancelled" title="<?php esc_attr_e( 'Cancel', 'flex-booking-system' ); ?>"><?php esc_html_e( 'Cancel', 'flex-booking-system' ); ?></button>
-												<button type="button" class="btn btn-outline-danger ulbm-booking-action" data-field="status" data-value="rejected" title="<?php esc_attr_e( 'Reject', 'flex-booking-system' ); ?>"><?php esc_html_e( 'Reject', 'flex-booking-system' ); ?></button>
-												<button type="button" class="btn btn-outline-secondary ulbm-booking-action" data-field="status" data-value="pending" title="<?php esc_attr_e( 'Back to pending', 'flex-booking-system' ); ?>"><?php esc_html_e( 'Pending', 'flex-booking-system' ); ?></button>
+												<button type="button" class="btn btn-outline-success ulbm-booking-action" data-field="status" data-value="confirmed" title="<?php esc_attr_e( 'Confirm / accept', 'flex-multiple-listing-and-booking-system' ); ?>"><?php esc_html_e( 'Accept', 'flex-multiple-listing-and-booking-system' ); ?></button>
+												<button type="button" class="btn btn-outline-warning ulbm-booking-action" data-field="status" data-value="on_hold" title="<?php esc_attr_e( 'On hold', 'flex-multiple-listing-and-booking-system' ); ?>"><?php esc_html_e( 'Hold', 'flex-multiple-listing-and-booking-system' ); ?></button>
+												<button type="button" class="btn btn-outline-primary ulbm-booking-action" data-field="status" data-value="completed" title="<?php esc_attr_e( 'Completed', 'flex-multiple-listing-and-booking-system' ); ?>"><?php esc_html_e( 'Complete', 'flex-multiple-listing-and-booking-system' ); ?></button>
+												<button type="button" class="btn btn-outline-danger ulbm-booking-action" data-field="status" data-value="cancelled" title="<?php esc_attr_e( 'Cancel', 'flex-multiple-listing-and-booking-system' ); ?>"><?php esc_html_e( 'Cancel', 'flex-multiple-listing-and-booking-system' ); ?></button>
+												<button type="button" class="btn btn-outline-danger ulbm-booking-action" data-field="status" data-value="rejected" title="<?php esc_attr_e( 'Reject', 'flex-multiple-listing-and-booking-system' ); ?>"><?php esc_html_e( 'Reject', 'flex-multiple-listing-and-booking-system' ); ?></button>
+												<button type="button" class="btn btn-outline-secondary ulbm-booking-action" data-field="status" data-value="pending" title="<?php esc_attr_e( 'Back to pending', 'flex-multiple-listing-and-booking-system' ); ?>"><?php esc_html_e( 'Pending', 'flex-multiple-listing-and-booking-system' ); ?></button>
 											</div>
-											<span class="text-muted text-uppercase mt-1" style="font-size: 0.65rem;"><?php esc_html_e( 'Payment', 'flex-booking-system' ); ?></span>
+											<span class="text-muted text-uppercase mt-1" style="font-size: 0.65rem;"><?php esc_html_e( 'Payment', 'flex-multiple-listing-and-booking-system' ); ?></span>
 											<div class="btn-group btn-group-sm flex-wrap" role="group">
 												<?php foreach ( $payment_statuses as $ps ) : ?>
 													<button type="button" class="btn btn-outline-secondary ulbm-booking-action" data-field="payment_status" data-value="<?php echo esc_attr( $ps ); ?>">
@@ -308,8 +308,8 @@ $payment_statuses = BookingAdminUpdater::payment_statuses();
 		</div>
 		<?php if ( $pagination ) : ?>
 			<div class="ulbm-admin-panel-foot px-3 py-2 border-top bg-white d-flex flex-wrap justify-content-between align-items-center gap-2">
-				<span class="small text-muted"><?php esc_html_e( 'Use pagination to reach every row.', 'flex-booking-system' ); ?></span>
-				<nav class="ulbm-pagination" aria-label="<?php esc_attr_e( 'Bookings pagination', 'flex-booking-system' ); ?>">
+				<span class="small text-muted"><?php esc_html_e( 'Use pagination to reach every row.', 'flex-multiple-listing-and-booking-system' ); ?></span>
+				<nav class="ulbm-pagination" aria-label="<?php esc_attr_e( 'Bookings pagination', 'flex-multiple-listing-and-booking-system' ); ?>">
 					<?php echo wp_kses_post( $pagination ); ?>
 				</nav>
 			</div>

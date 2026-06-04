@@ -82,7 +82,7 @@ final class VendorListingService {
 		if ( ! VendorRole::can_manage_listings( $user_id ) ) {
 			return array(
 				'success' => false,
-				'message' => __( 'You do not have permission to manage listings.', 'flex-booking-system' ),
+				'message' => __( 'You do not have permission to manage listings.', 'flex-multiple-listing-and-booking-system' ),
 			);
 		}
 
@@ -90,7 +90,7 @@ final class VendorListingService {
 		if ( ! $repo->is_approved( $user_id ) ) {
 			return array(
 				'success' => false,
-				'message' => __( 'Your partner account is pending approval.', 'flex-booking-system' ),
+				'message' => __( 'Your partner account is pending approval.', 'flex-multiple-listing-and-booking-system' ),
 			);
 		}
 
@@ -105,7 +105,7 @@ final class VendorListingService {
 		if ( '' === $title ) {
 			return array(
 				'success' => false,
-				'message' => __( 'Title is required.', 'flex-booking-system' ),
+				'message' => __( 'Title is required.', 'flex-multiple-listing-and-booking-system' ),
 			);
 		}
 
@@ -113,7 +113,7 @@ final class VendorListingService {
 		if ( ! $cpt ) {
 			return array(
 				'success' => false,
-				'message' => __( 'Invalid listing type.', 'flex-booking-system' ),
+				'message' => __( 'Invalid listing type.', 'flex-multiple-listing-and-booking-system' ),
 			);
 		}
 
@@ -124,7 +124,7 @@ final class VendorListingService {
 			if ( ! self::user_owns_listing( $user_id, $post_id ) ) {
 				return array(
 					'success' => false,
-					'message' => __( 'Listing not found.', 'flex-booking-system' ),
+					'message' => __( 'Listing not found.', 'flex-multiple-listing-and-booking-system' ),
 				);
 			}
 			$result = wp_update_post(
@@ -175,8 +175,8 @@ final class VendorListingService {
 			'success' => true,
 			'post_id' => (int) $post_id,
 			'message' => $post_id > 0 && ! empty( $data['post_id'] ) && absint( $data['post_id'] ) > 0
-				? __( 'Listing updated.', 'flex-booking-system' )
-				: __( 'Listing submitted successfully.', 'flex-booking-system' ),
+				? __( 'Listing updated.', 'flex-multiple-listing-and-booking-system' )
+				: __( 'Listing submitted successfully.', 'flex-multiple-listing-and-booking-system' ),
 		);
 	}
 
@@ -191,19 +191,19 @@ final class VendorListingService {
 		if ( ! self::user_owns_listing( $user_id, $post_id ) ) {
 			return array(
 				'success' => false,
-				'message' => __( 'Listing not found.', 'flex-booking-system' ),
+				'message' => __( 'Listing not found.', 'flex-multiple-listing-and-booking-system' ),
 			);
 		}
 		$deleted = wp_delete_post( absint( $post_id ), true );
 		if ( ! $deleted ) {
 			return array(
 				'success' => false,
-				'message' => __( 'Could not delete listing.', 'flex-booking-system' ),
+				'message' => __( 'Could not delete listing.', 'flex-multiple-listing-and-booking-system' ),
 			);
 		}
 		return array(
 			'success' => true,
-			'message' => __( 'Listing deleted.', 'flex-booking-system' ),
+			'message' => __( 'Listing deleted.', 'flex-multiple-listing-and-booking-system' ),
 		);
 	}
 

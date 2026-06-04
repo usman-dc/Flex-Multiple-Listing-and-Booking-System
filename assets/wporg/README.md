@@ -4,7 +4,7 @@ PNG files in this folder are ready to upload (icons, banners, screenshots 1–5)
 
 Upload these files to the **SVN assets folder** for the plugin:
 
-`https://plugins.svn.wordpress.org/flex-booking-system/assets/`
+`https://plugins.svn.wordpress.org/flex-multiple-listing-and-booking-system/assets/`
 
 ## Required files
 
@@ -23,8 +23,8 @@ Upload these files to the **SVN assets folder** for the plugin:
 ## SVN commands (example)
 
 ```bash
-svn co https://plugins.svn.wordpress.org/flex-booking-system
-cd flex-booking-system/assets
+svn co https://plugins.svn.wordpress.org/flex-multiple-listing-and-booking-system
+cd flex-multiple-listing-and-booking-system/assets
 # copy PNG files here
 svn add *.png
 svn commit -m "Add plugin icons, banner, and screenshots"

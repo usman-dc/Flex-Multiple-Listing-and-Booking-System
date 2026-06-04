@@ -42,7 +42,7 @@ npm run build
 WordPress.org hosts plugins on their directory after review. You **upload a ZIP**, not the GitHub link.
 
 1. Clone or download this repo.
-2. Zip the **`flex-booking-system`** folder (must contain `flex-booking-system.php` at the top level inside the zip).
+2. Zip the **`flex-multiple-listing-and-booking-system`** folder (must contain `flex-multiple-listing-and-booking-system.php` at the top level inside the zip).
 3. **Include:** `dist/`, `readme.txt`, `LICENSE`, all PHP/templates.
 4. **Exclude:** `node_modules/`, `vendor/`, `.git/`, `.env`, IDE folders.
 5. Submit at [wordpress.org/plugins/developers/add/](https://wordpress.org/plugins/developers/add/).
@@ -52,9 +52,9 @@ Put the GitHub URL in `readme.txt` (already added) so reviewers can browse sourc
 
 ## WordPress.org upload checklist
 
-- Folder name for Git/local ZIP: `flex-booking-system` (keeps existing installs stable)
-- Text domain (all `__()`, `_e()`, etc.): `flex-booking-system` (must match WordPress.org plugin slug)
-- WordPress.org SVN slug: `flex-booking-system`
+- Folder name for Git/local ZIP: `flex-multiple-listing-and-booking-system` (keeps existing installs stable)
+- Text domain (all `__()`, `_e()`, etc.): `flex-multiple-listing-and-booking-system` (must match WordPress.org plugin slug)
+- WordPress.org SVN slug: `flex-multiple-listing-and-booking-system`
 - `Stable tag` in readme.txt matches plugin version (1.0.1)
 - Include `/dist` built CSS/JS
 - Exclude `node_modules/`, `.git/`, dev-only files

@@ -29,18 +29,18 @@ final class VendorAuth {
 		$business = isset( $data['business_name'] ) ? sanitize_text_field( $data['business_name'] ) : '';
 
 		if ( ! $email || ! is_email( $email ) ) {
-			return array( 'success' => false, 'message' => __( 'Valid email is required.', 'flex-booking-system' ) );
+			return array( 'success' => false, 'message' => __( 'Valid email is required.', 'flex-multiple-listing-and-booking-system' ) );
 		}
 		if ( strlen( $password ) < 6 ) {
-			return array( 'success' => false, 'message' => __( 'Password must be at least 6 characters.', 'flex-booking-system' ) );
+			return array( 'success' => false, 'message' => __( 'Password must be at least 6 characters.', 'flex-multiple-listing-and-booking-system' ) );
 		}
 		if ( '' === $first || '' === $last ) {
-			return array( 'success' => false, 'message' => __( 'First and last name are required.', 'flex-booking-system' ) );
+			return array( 'success' => false, 'message' => __( 'First and last name are required.', 'flex-multiple-listing-and-booking-system' ) );
 		}
 		if ( email_exists( $email ) ) {
 			return array(
 				'success'  => false,
-				'message'  => __( 'An account with this email already exists. Please log in.', 'flex-booking-system' ),
+				'message'  => __( 'An account with this email already exists. Please log in.', 'flex-multiple-listing-and-booking-system' ),
 				'redirect' => VendorPages::login_url(),
 			);
 		}
@@ -93,7 +93,7 @@ final class VendorAuth {
 				return array(
 					'success'  => true,
 					'user_id'  => (int) $user_id,
-					'message'  => __( 'Account created. Please log in.', 'flex-booking-system' ),
+					'message'  => __( 'Account created. Please log in.', 'flex-multiple-listing-and-booking-system' ),
 					'redirect' => VendorPages::login_url(),
 				);
 			}
@@ -103,8 +103,8 @@ final class VendorAuth {
 			'success'  => true,
 			'user_id'  => (int) $user_id,
 			'message'  => 'approved' === $status
-				? __( 'Welcome! Your partner account is ready.', 'flex-booking-system' )
-				: __( 'Registration received. Your account is pending approval. You can log in after an administrator approves your partner request.', 'flex-booking-system' ),
+				? __( 'Welcome! Your partner account is ready.', 'flex-multiple-listing-and-booking-system' )
+				: __( 'Registration received. Your account is pending approval. You can log in after an administrator approves your partner request.', 'flex-multiple-listing-and-booking-system' ),
 			'redirect' => 'approved' === $status ? VendorPages::dashboard_url() : VendorPages::login_url(),
 		);
 	}
@@ -121,7 +121,7 @@ final class VendorAuth {
 		$remember = ! empty( $data['remember'] );
 
 		if ( '' === $login || '' === $password ) {
-			return array( 'success' => false, 'message' => __( 'Email and password are required.', 'flex-booking-system' ) );
+			return array( 'success' => false, 'message' => __( 'Email and password are required.', 'flex-multiple-listing-and-booking-system' ) );
 		}
 
 		if ( is_email( $login ) ) {
@@ -141,7 +141,7 @@ final class VendorAuth {
 		if ( is_wp_error( $user ) ) {
 			return array(
 				'success' => false,
-				'message' => __( 'Invalid email or password.', 'flex-booking-system' ),
+				'message' => __( 'Invalid email or password.', 'flex-multiple-listing-and-booking-system' ),
 			);
 		}
 
@@ -150,7 +150,7 @@ final class VendorAuth {
 			wp_logout();
 			return array(
 				'success' => false,
-				'message' => __( 'Your partner account is pending approval.', 'flex-booking-system' ),
+				'message' => __( 'Your partner account is pending approval.', 'flex-multiple-listing-and-booking-system' ),
 			);
 		}
 
@@ -158,13 +158,13 @@ final class VendorAuth {
 			wp_logout();
 			return array(
 				'success' => false,
-				'message' => __( 'This account does not have partner access.', 'flex-booking-system' ),
+				'message' => __( 'This account does not have partner access.', 'flex-multiple-listing-and-booking-system' ),
 			);
 		}
 
 		return array(
 			'success'  => true,
-			'message'  => __( 'Logged in successfully.', 'flex-booking-system' ),
+			'message'  => __( 'Logged in successfully.', 'flex-multiple-listing-and-booking-system' ),
 			'redirect' => VendorPages::dashboard_url(),
 		);
 	}
@@ -179,20 +179,20 @@ final class VendorAuth {
 	public static function become_partner( $user_id, array $data = array() ) {
 		$user_id = absint( $user_id );
 		if ( $user_id < 1 ) {
-			return array( 'success' => false, 'message' => __( 'You must be logged in.', 'flex-booking-system' ) );
+			return array( 'success' => false, 'message' => __( 'You must be logged in.', 'flex-multiple-listing-and-booking-system' ) );
 		}
 
 		if ( VendorRole::can_manage_listings( $user_id ) ) {
 			return array(
 				'success'  => true,
-				'message'  => __( 'You already have partner access.', 'flex-booking-system' ),
+				'message'  => __( 'You already have partner access.', 'flex-multiple-listing-and-booking-system' ),
 				'redirect' => VendorPages::dashboard_url(),
 			);
 		}
 
 		$user = get_userdata( $user_id );
 		if ( ! $user ) {
-			return array( 'success' => false, 'message' => __( 'User not found.', 'flex-booking-system' ) );
+			return array( 'success' => false, 'message' => __( 'User not found.', 'flex-multiple-listing-and-booking-system' ) );
 		}
 
 		$business = isset( $data['business_name'] ) ? sanitize_text_field( $data['business_name'] ) : '';
@@ -219,8 +219,8 @@ final class VendorAuth {
 		return array(
 			'success'  => true,
 			'message'  => 'approved' === $status
-				? __( 'Partner access enabled! You can now add listings.', 'flex-booking-system' )
-				: __( 'Partner request submitted. Your account is pending approval.', 'flex-booking-system' ),
+				? __( 'Partner access enabled! You can now add listings.', 'flex-multiple-listing-and-booking-system' )
+				: __( 'Partner request submitted. Your account is pending approval.', 'flex-multiple-listing-and-booking-system' ),
 			'redirect' => 'approved' === $status ? VendorPages::add_listing_url() : VendorPages::dashboard_url(),
 		);
 	}
