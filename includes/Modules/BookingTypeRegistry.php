@@ -39,7 +39,7 @@ final class BookingTypeRegistry {
 			 *
 			 * @param array<string, BookingTypeInterface> $defaults Built-ins.
 			 */
-			$this->modules = apply_filters( 'fbs_register_booking_modules', $defaults );
+			$this->modules = apply_filters( 'ulbm_register_booking_modules', $defaults );
 		}
 
 		return $this->modules;

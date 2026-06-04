@@ -1,6 +1,6 @@
 <?php
 /**
- * First-run setup wizard — driven by option fbs_setup_completed.
+ * First-run setup wizard — driven by option ulbm_setup_completed.
  *
  * @package FlexBookingSystem
  */
@@ -27,16 +27,16 @@ final class SetupWizard {
 		add_action(
 			'admin_menu',
 			function () {
-				$label = get_option( 'fbs_setup_completed', false )
-					? __( 'Add Industries', 'flex-multiple-listing-and-booking-system' )
-					: __( 'Setup Wizard', 'flex-multiple-listing-and-booking-system' );
+				$label = get_option( 'ulbm_setup_completed', false )
+					? __( 'Add Industries', 'flex-booking-system' )
+					: __( 'Setup Wizard', 'flex-booking-system' );
 
 				add_submenu_page(
-					'fbs-dashboard',
+					'ulbm-dashboard',
 					$label,
 					$label,
 					Capabilities::menu_capability(),
-					'fbs-setup',
+					'ulbm-setup',
 					array( $this, 'render' )
 				);
 			},
@@ -52,7 +52,7 @@ final class SetupWizard {
 	 * @return void
 	 */
 	public function incomplete_notice() {
-		if ( get_option( 'fbs_setup_completed', false ) ) {
+		if ( get_option( 'ulbm_setup_completed', false ) ) {
 			return;
 		}
 
@@ -61,17 +61,17 @@ final class SetupWizard {
 		}
 
 		$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
-		if ( $screen && isset( $screen->id ) && false !== strpos( (string) $screen->id, 'fbs-setup' ) ) {
+		if ( $screen && isset( $screen->id ) && false !== strpos( (string) $screen->id, 'ulbm-setup' ) ) {
 			return;
 		}
 
-		$url = admin_url( 'admin.php?page=fbs-setup' );
+		$url = admin_url( 'admin.php?page=ulbm-setup' );
 
 		echo '<div class="notice notice-warning is-dismissible"><p>';
 		printf(
 			wp_kses(
 				/* translators: %s: URL to setup wizard */
-				__( 'Flex MLS & Booking needs a quick setup: <a href="%s">choose your booking industries</a> (cars, hotels, appointments, …) and finish.', 'flex-multiple-listing-and-booking-system' ),
+				__( 'Flex Listings & Booking needs a quick setup: <a href="%s">choose your booking industries</a> (cars, hotels, appointments, …) and finish.', 'flex-booking-system' ),
 				array(
 					'a' => array(
 						'href' => array(),
@@ -89,14 +89,14 @@ final class SetupWizard {
 	 * @return void
 	 */
 	public function render() {
-		$fbs_industry_catalog      = IndustryCatalog::definitions();
-		$fbs_professional_links    = IndustryCatalog::professional_integrations();
-		$fbs_enabled_industries    = get_option( 'fbs_enabled_industries', array() );
-		if ( ! is_array( $fbs_enabled_industries ) ) {
-			$fbs_enabled_industries = array();
+		$ulbm_industry_catalog      = IndustryCatalog::definitions();
+		$ulbm_professional_links    = IndustryCatalog::professional_integrations();
+		$ulbm_enabled_industries    = get_option( 'ulbm_enabled_industries', array() );
+		if ( ! is_array( $ulbm_enabled_industries ) ) {
+			$ulbm_enabled_industries = array();
 		}
 
-		$path = FBS_PLUGIN_DIR . 'templates/admin/setup-wizard.php';
+		$path = ULBM_PLUGIN_DIR . 'templates/admin/setup-wizard.php';
 		if ( is_readable( $path ) ) {
 			include $path;
 			return;

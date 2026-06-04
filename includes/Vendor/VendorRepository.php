@@ -1,6 +1,6 @@
 <?php
 /**
- * Vendor records in fbs_vendors table.
+ * Vendor records in ulbm_vendors table.
  *
  * @package FlexBookingSystem
  */
@@ -44,7 +44,7 @@ final class VendorRepository {
 
 		$id = (int) $wpdb->insert_id;
 		if ( $id ) {
-			update_user_meta( absint( $user_id ), '_fbs_vendor_id', $id );
+			update_user_meta( absint( $user_id ), '_ulbm_vendor_id', $id );
 		}
 
 		return $id;
@@ -80,7 +80,7 @@ final class VendorRepository {
 		if ( $row ) {
 			return (int) $row['id'];
 		}
-		return (int) get_user_meta( absint( $user_id ), '_fbs_vendor_id', true );
+		return (int) get_user_meta( absint( $user_id ), '_ulbm_vendor_id', true );
 	}
 
 	/**

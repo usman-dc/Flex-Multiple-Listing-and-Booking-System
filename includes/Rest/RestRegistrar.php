@@ -19,7 +19,7 @@ final class RestRegistrar {
 	/**
 	 * API namespace.
 	 */
-	public const NS = 'flex-booking/v1';
+	public const NS = 'ulbm/v1';
 
 	/**
 	 * Constructor.
@@ -42,6 +42,6 @@ final class RestRegistrar {
 		$settings = new Controllers\SettingsController();
 		$settings->register_routes();
 
-		do_action( 'fbs_rest_register_routes', self::NS );
+		do_action( 'ulbm_rest_register_routes', self::NS );
 	}
 }

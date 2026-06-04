@@ -1,27 +1,27 @@
 /**
- * Admin bundle — dashboard pings, setup wizard, future SPA mounts.
+ * Admin bundle � dashboard pings, setup wizard, future SPA mounts.
  */
 import './admin.scss';
 
 ( function ( $ ) {
 	$( function () {
-		$( '#fbs-wizard-finish' ).on( 'click', function () {
-			if ( typeof fbsAdmin === 'undefined' ) {
+		$( '#ulbm-wizard-finish' ).on( 'click', function () {
+			if ( typeof ulbmAdmin === 'undefined' ) {
 				return;
 			}
 			const $btn = $( this );
-			const $status = $( '#fbs-wizard-status' );
+			const $status = $( '#ulbm-wizard-status' );
 			const industries = [];
-			$( '.fbs-industry-cb:checked' ).each( function () {
+			$( '.ulbm-industry-cb:checked' ).each( function () {
 				industries.push( $( this ).val() );
 			} );
 
 			$btn.prop( 'disabled', true );
 			$status.text( '' );
 
-			$.post( fbsAdmin.ajaxUrl, {
-				action: 'fbs_setup_finish',
-				nonce: fbsAdmin.nonce,
+			$.post( ulbmAdmin.ajaxUrl, {
+				action: 'ulbm_setup_finish',
+				nonce: ulbmAdmin.nonce,
 				industries: industries,
 			} )
 				.done( function ( res ) {
@@ -44,13 +44,13 @@ import './admin.scss';
 		} );
 
 		// Legacy single-step completion (older cached bundles).
-		$( '#fbs-wizard-complete' ).on( 'click', function () {
-			if ( typeof fbsAdmin === 'undefined' ) {
+		$( '#ulbm-wizard-complete' ).on( 'click', function () {
+			if ( typeof ulbmAdmin === 'undefined' ) {
 				return;
 			}
-			$.post( fbsAdmin.ajaxUrl, {
-				action: 'fbs_setup_finish',
-				nonce: fbsAdmin.nonce,
+			$.post( ulbmAdmin.ajaxUrl, {
+				action: 'ulbm_setup_finish',
+				nonce: ulbmAdmin.nonce,
 				industries: [],
 			} ).done( function ( res ) {
 				if ( res && res.success && res.data && res.data.redirect ) {
@@ -59,7 +59,7 @@ import './admin.scss';
 			} );
 		} );
 
-		const $bookFeedback = $( '#fbs-bookings-feedback' );
+		const $bookFeedback = $( '#ulbm-bookings-feedback' );
 		function showBookMsg( text, isError ) {
 			if ( ! $bookFeedback.length ) {
 				return;
@@ -96,9 +96,9 @@ import './admin.scss';
 			return 'secondary';
 		}
 
-		$( document ).on( 'click', '.fbs-booking-action', function ( e ) {
+		$( document ).on( 'click', '.ulbm-booking-action', function ( e ) {
 			e.preventDefault();
-			if ( typeof fbsAdmin === 'undefined' ) {
+			if ( typeof ulbmAdmin === 'undefined' ) {
 				return;
 			}
 			const $btn = $( this );
@@ -110,10 +110,10 @@ import './admin.scss';
 				return;
 			}
 			const payload = {
-				action: 'fbs_booking_update',
-				nonce: fbsAdmin.nonce,
+				action: 'ulbm_booking_update',
+				nonce: ulbmAdmin.nonce,
 				booking_id: id,
-				send_notification: $( '#fbs-bookings-notify' ).is( ':checked' ) ? '1' : '0',
+				send_notification: $( '#ulbm-bookings-notify' ).is( ':checked' ) ? '1' : '0',
 			};
 			if ( field === 'status' ) {
 				payload.status = value;
@@ -123,23 +123,23 @@ import './admin.scss';
 				return;
 			}
 			$btn.prop( 'disabled', true );
-			$.post( fbsAdmin.ajaxUrl, payload )
+			$.post( ulbmAdmin.ajaxUrl, payload )
 				.done( function ( res ) {
 					if ( res && res.success && res.data && res.data.booking ) {
 						const b = res.data.booking;
 						const st = fbsBookingBadgeTone( b.status );
 						const pt = fbsPaymentBadgeTone( b.payment_status );
 						$row
-							.find( '.fbs-cell-status' )
-							.attr( 'class', 'badge rounded-pill text-bg-' + st + ' fbs-cell-status' )
+							.find( '.ulbm-cell-status' )
+							.attr( 'class', 'badge rounded-pill text-bg-' + st + ' ulbm-cell-status' )
 							.text( b.status );
 						$row
-							.find( '.fbs-cell-payment' )
-							.attr( 'class', 'badge rounded-pill text-bg-' + pt + ' fbs-cell-payment' )
+							.find( '.ulbm-cell-payment' )
+							.attr( 'class', 'badge rounded-pill text-bg-' + pt + ' ulbm-cell-payment' )
 							.text( b.payment_status );
-						$row.addClass( 'fbs-row-updated' );
+						$row.addClass( 'ulbm-row-updated' );
 						setTimeout( function () {
-							$row.removeClass( 'fbs-row-updated' );
+							$row.removeClass( 'ulbm-row-updated' );
 						}, 1400 );
 						let msg = 'Booking updated.';
 						if ( res.data.emailed ) {
@@ -166,18 +166,18 @@ import './admin.scss';
 				} );
 		} );
 
-		/* ─── Demo content import / delete ─── */
-		const $demoImport   = $( '#fbs-demo-import' );
-		const $demoDelete   = $( '#fbs-demo-delete-all' );
-		const $demoSpinner  = $( '#fbs-demo-spinner' );
-		const $demoStatus   = $( '#fbs-demo-status' );
-		const $demoProgress = $( '#fbs-demo-progress' );
-		const $demoProgressWrap = $( '#fbs-demo-progress-wrap' );
-		const $demoSelectAll = $( '#fbs-demo-select-all' );
+		/* --- Demo content import / delete --- */
+		const $demoImport   = $( '#ulbm-demo-import' );
+		const $demoDelete   = $( '#ulbm-demo-delete-all' );
+		const $demoSpinner  = $( '#ulbm-demo-spinner' );
+		const $demoStatus   = $( '#ulbm-demo-status' );
+		const $demoProgress = $( '#ulbm-demo-progress' );
+		const $demoProgressWrap = $( '#ulbm-demo-progress-wrap' );
+		const $demoSelectAll = $( '#ulbm-demo-select-all' );
 
 		if ( $demoSelectAll.length ) {
 			$demoSelectAll.on( 'change', function () {
-				$( '.fbs-demo-type-cb' ).prop( 'checked', $( this ).is( ':checked' ) );
+				$( '.ulbm-demo-type-cb' ).prop( 'checked', $( this ).is( ':checked' ) );
 			} );
 		}
 
@@ -193,10 +193,10 @@ import './admin.scss';
 
 		if ( $demoImport.length ) {
 			$demoImport.on( 'click', async function () {
-				if ( typeof fbsAdmin === 'undefined' ) return;
+				if ( typeof ulbmAdmin === 'undefined' ) return;
 
 				const ids = [];
-				$( '.fbs-demo-type-cb:checked' ).each( function () {
+				$( '.ulbm-demo-type-cb:checked' ).each( function () {
 					ids.push( parseInt( $( this ).val(), 10 ) );
 				} );
 				if ( ! ids.length ) {
@@ -204,12 +204,12 @@ import './admin.scss';
 					return;
 				}
 
-				const count = parseInt( $( '#fbs-demo-count' ).val(), 10 ) || 20;
+				const count = parseInt( $( '#ulbm-demo-count' ).val(), 10 ) || 20;
 				$demoImport.prop( 'disabled', true );
 				$demoDelete.prop( 'disabled', true );
 				$demoSpinner.removeClass( 'd-none' );
 				$demoProgressWrap.removeClass( 'd-none' );
-				demoShowStatus( 'Importing demo content…', 'info' );
+				demoShowStatus( 'Importing demo content�', 'info' );
 
 				let done = 0;
 				let totalCreated = 0;
@@ -217,16 +217,16 @@ import './admin.scss';
 
 				for ( const typeId of ids ) {
 					try {
-						const res = await $.post( fbsAdmin.ajaxUrl, {
-							action: 'fbs_import_demo_content',
-							nonce: fbsAdmin.nonce,
+						const res = await $.post( ulbmAdmin.ajaxUrl, {
+							action: 'ulbm_import_demo_content',
+							nonce: ulbmAdmin.nonce,
 							booking_type_id: typeId,
 							count: count,
 						} );
 						if ( res && res.success && res.data ) {
 							totalCreated += res.data.created || 0;
 							const tid = typeId;
-							const $badge = $( '.fbs-demo-count-' + tid );
+							const $badge = $( '.ulbm-demo-count-' + tid );
 							if ( $badge.length ) {
 								const cur = parseInt( $badge.text(), 10 ) || 0;
 								$badge.text( cur + ( res.data.created || 0 ) );
@@ -255,22 +255,22 @@ import './admin.scss';
 
 		if ( $demoDelete.length ) {
 			$demoDelete.on( 'click', function () {
-				if ( typeof fbsAdmin === 'undefined' ) return;
+				if ( typeof ulbmAdmin === 'undefined' ) return;
 				if ( ! window.confirm( 'Remove ALL demo listings for every booking type? This cannot be undone.' ) ) {
 					return;
 				}
 				$demoDelete.prop( 'disabled', true );
 				$demoImport.prop( 'disabled', true );
 				$demoSpinner.removeClass( 'd-none' );
-				$.post( fbsAdmin.ajaxUrl, {
-					action: 'fbs_delete_demo_content',
-					nonce: fbsAdmin.nonce,
+				$.post( ulbmAdmin.ajaxUrl, {
+					action: 'ulbm_delete_demo_content',
+					nonce: ulbmAdmin.nonce,
 					booking_type_id: 0,
 				} )
 					.done( function ( res ) {
 						if ( res && res.success ) {
 							demoShowStatus( res.data.message || 'Demo content removed.', 'success' );
-							$( '[class*="fbs-demo-count-"]' ).text( '0' );
+							$( '[class*="ulbm-demo-count-"]' ).text( '0' );
 						} else {
 							demoShowStatus( res?.data?.message || 'Delete failed.', 'danger' );
 						}
@@ -286,9 +286,9 @@ import './admin.scss';
 			} );
 		}
 
-		const $provisionBtn = $( '#fbs-provision-vendor-pages' );
-		const $provisionSpinner = $( '#fbs-provision-spinner' );
-		const $provisionStatus = $( '#fbs-provision-status' );
+		const $provisionBtn = $( '#ulbm-provision-vendor-pages' );
+		const $provisionSpinner = $( '#ulbm-provision-spinner' );
+		const $provisionStatus = $( '#ulbm-provision-status' );
 
 		function provisionShowStatus( msg, type ) {
 			if ( ! $provisionStatus.length ) return;
@@ -302,17 +302,17 @@ import './admin.scss';
 			if ( ! rows ) return;
 			Object.keys( rows ).forEach( ( key ) => {
 				const row = rows[ key ];
-				const $tr = $( '#fbs-vendor-pages-table tr[data-page-key="' + key + '"]' );
+				const $tr = $( '#ulbm-vendor-pages-table tr[data-page-key="' + key + '"]' );
 				if ( ! $tr.length ) return;
-				const $urlCell = $tr.find( '.fbs-vendor-page-url' );
-				const $actions = $tr.find( '.fbs-vendor-page-actions' );
+				const $urlCell = $tr.find( '.ulbm-vendor-page-url' );
+				const $actions = $tr.find( '.ulbm-vendor-page-actions' );
 				if ( row.url ) {
 					$urlCell.html( '<a href="' + row.url + '" target="_blank" rel="noopener">' + row.url + '</a>' );
 				}
 				if ( row.edit_url ) {
 					$actions.html( '<a href="' + row.edit_url + '" class="btn btn-sm btn-outline-secondary">Edit</a>' );
 				}
-				const $select = $( '[name="fbs_' + key + '"]' );
+				const $select = $( '[name="ulbm_' + key + '"]' );
 				if ( $select.length && row.page_id ) {
 					$select.val( String( row.page_id ) );
 				}
@@ -321,13 +321,13 @@ import './admin.scss';
 
 		if ( $provisionBtn.length ) {
 			$provisionBtn.on( 'click', function () {
-				if ( typeof fbsAdmin === 'undefined' ) return;
+				if ( typeof ulbmAdmin === 'undefined' ) return;
 				$provisionBtn.prop( 'disabled', true );
 				$provisionSpinner.removeClass( 'd-none' );
-				provisionShowStatus( 'Creating partner pages…', 'info' );
-				$.post( fbsAdmin.ajaxUrl, {
-					action: 'fbs_provision_vendor_pages',
-					nonce: fbsAdmin.nonce,
+				provisionShowStatus( 'Creating partner pages�', 'info' );
+				$.post( ulbmAdmin.ajaxUrl, {
+					action: 'ulbm_provision_vendor_pages',
+					nonce: ulbmAdmin.nonce,
 				} )
 					.done( function ( res ) {
 						if ( res && res.success && res.data ) {
@@ -366,11 +366,11 @@ import './admin.scss';
 		}
 
 		function fbsSyncColorPair( $source ) {
-			const targetId = $source.data( 'fbs-target' );
-			const settingsKey = $source.data( 'fbs-settings-key' );
+			const targetId = $source.data( 'ulbm-target' );
+			const settingsKey = $source.data( 'ulbm-settings-key' );
 			let hex = '';
 
-			if ( $source.hasClass( 'fbs-color-picker' ) ) {
+			if ( $source.hasClass( 'ulbm-color-picker' ) ) {
 				hex = fbsNormalizeHex( $source.val() );
 				if ( targetId && hex ) {
 					$( '#' + targetId ).val( hex );
@@ -381,35 +381,35 @@ import './admin.scss';
 					$source.val( hex );
 				}
 				if ( settingsKey ) {
-					$( '.fbs-color-picker[data-fbs-settings-key="' + settingsKey + '"]' ).val( hex || $source.val() );
+					$( '.ulbm-color-picker[data-ulbm-settings-key="' + settingsKey + '"]' ).val( hex || $source.val() );
 				}
 			}
 		}
 
 		function fbsUpdateColorPreview() {
-			const $preview = $( '#fbs-color-preview' );
+			const $preview = $( '#ulbm-color-preview' );
 			if ( ! $preview.length ) {
 				return;
 			}
 			const colors = {};
 			const cssVars = {};
-			$( '.fbs-color-hex-input' ).each( function () {
-				const key = $( this ).data( 'fbs-color-key' );
+			$( '.ulbm-color-hex-input' ).each( function () {
+				const key = $( this ).data( 'ulbm-color-key' );
 				const val = fbsNormalizeHex( $( this ).val() );
 				if ( key && val ) {
 					colors[ key ] = val;
-					cssVars[ '--fbs-preview-' + key ] = val;
+					cssVars[ '--ulbm-preview-' + key ] = val;
 				}
 			} );
 			$preview.css( cssVars );
 		}
 
-		$( document ).on( 'input change', '.fbs-color-picker', function () {
+		$( document ).on( 'input change', '.ulbm-color-picker', function () {
 			fbsSyncColorPair( $( this ) );
 			fbsUpdateColorPreview();
 		} );
 
-		$( document ).on( 'input change', '.fbs-color-hex-input', function () {
+		$( document ).on( 'input change', '.ulbm-color-hex-input', function () {
 			fbsSyncColorPair( $( this ) );
 			fbsUpdateColorPreview();
 		} );
@@ -418,13 +418,13 @@ import './admin.scss';
 
 		function fbsCollectColorPayload() {
 			const defs =
-				typeof fbsAdmin !== 'undefined' && fbsAdmin.colorDefaults
-					? fbsAdmin.colorDefaults
+				typeof ulbmAdmin !== 'undefined' && ulbmAdmin.colorDefaults
+					? ulbmAdmin.colorDefaults
 					: {};
 			const colors = {};
 
-			$( '.fbs-color-hex-input' ).each( function () {
-				const settingsKey = $( this ).data( 'fbs-settings-key' );
+			$( '.ulbm-color-hex-input' ).each( function () {
+				const settingsKey = $( this ).data( 'ulbm-settings-key' );
 				if ( ! settingsKey ) {
 					return;
 				}
@@ -443,17 +443,17 @@ import './admin.scss';
 
 		function fbsSyncColorsJsonField() {
 			const colors = fbsCollectColorPayload();
-			$( '#fbs_colors_json' ).val( JSON.stringify( colors ) );
+			$( '#ulbm_colors_json' ).val( JSON.stringify( colors ) );
 		}
 
-		$( '#fbs-reset-colors' ).on( 'click', function ( e ) {
+		$( '#ulbm-reset-colors' ).on( 'click', function ( e ) {
 			e.preventDefault();
 			const defs =
-				typeof fbsAdmin !== 'undefined' && fbsAdmin.colorDefaults
-					? fbsAdmin.colorDefaults
+				typeof ulbmAdmin !== 'undefined' && ulbmAdmin.colorDefaults
+					? ulbmAdmin.colorDefaults
 					: {};
-			$( '.fbs-color-hex-input' ).each( function () {
-				const settingsKey = $( this ).data( 'fbs-settings-key' );
+			$( '.ulbm-color-hex-input' ).each( function () {
+				const settingsKey = $( this ).data( 'ulbm-settings-key' );
 				if ( settingsKey && defs[ settingsKey ] ) {
 					$( this ).val( defs[ settingsKey ] ).trigger( 'input' );
 				}
@@ -461,9 +461,9 @@ import './admin.scss';
 			fbsSyncColorsJsonField();
 		} );
 
-		$( '#fbs-fix-page-bg' ).on( 'click', function ( e ) {
+		$( '#ulbm-fix-page-bg' ).on( 'click', function ( e ) {
 			e.preventDefault();
-			const $pageBg = $( '#fbs_color_page_bg' );
+			const $pageBg = $( '#ulbm_color_page_bg' );
 			if ( $pageBg.length ) {
 				$pageBg.val( '#f5f6f8' ).trigger( 'input' );
 			}
@@ -472,18 +472,18 @@ import './admin.scss';
 
 		fbsSyncColorsJsonField();
 
-		$( '#fbs-settings-form' ).on( 'submit', function () {
+		$( '#ulbm-settings-form' ).on( 'submit', function () {
 			fbsSyncColorsJsonField();
 		} );
 
-		$( '#fbs-settings-tabs [data-fbs-tab]' ).on( 'shown.bs.tab', function ( e ) {
-			const tab = $( e.target ).data( 'fbs-tab' );
+		$( '#ulbm-settings-tabs [data-ulbm-tab]' ).on( 'shown.bs.tab', function ( e ) {
+			const tab = $( e.target ).data( 'ulbm-tab' );
 			if ( tab ) {
-				$( '#fbs_settings_tab' ).val( tab );
+				$( '#ulbm_settings_tab' ).val( tab );
 			}
 		} );
 
-		const $reviewsFeedback = $( '#fbs-reviews-feedback' );
+		const $reviewsFeedback = $( '#ulbm-reviews-feedback' );
 		function fbsReviewsFeedback( msg, ok ) {
 			if ( ! $reviewsFeedback.length ) return;
 			$reviewsFeedback
@@ -493,10 +493,10 @@ import './admin.scss';
 		}
 
 		function fbsReviewModerate( reviewId, action, $row ) {
-			if ( typeof fbsAdmin === 'undefined' ) return;
-			$.post( fbsAdmin.ajaxUrl, {
-				action: 'fbs_review_moderate',
-				nonce: fbsAdmin.nonce,
+			if ( typeof ulbmAdmin === 'undefined' ) return;
+			$.post( ulbmAdmin.ajaxUrl, {
+				action: 'ulbm_review_moderate',
+				nonce: ulbmAdmin.nonce,
 				review_id: reviewId,
 				review_action: action,
 			} )
@@ -508,7 +508,7 @@ import './admin.scss';
 							return;
 						}
 						const status = res.data && res.data.status ? res.data.status : '';
-						const $badge = $row.find( '.fbs-review-status-badge' );
+						const $badge = $row.find( '.ulbm-review-status-badge' );
 						if ( $badge.length && status ) {
 							$badge
 								.removeClass( 'text-bg-success text-bg-warning text-bg-secondary' )
@@ -521,7 +521,7 @@ import './admin.scss';
 								)
 								.text( status.charAt( 0 ).toUpperCase() + status.slice( 1 ) );
 						}
-						$row.find( '.fbs-review-approve, .fbs-review-reject, .fbs-review-delete' ).prop( 'disabled', false );
+						$row.find( '.ulbm-review-approve, .ulbm-review-reject, .ulbm-review-delete' ).prop( 'disabled', false );
 						fbsReviewsFeedback( res.data.message || 'Updated.', true );
 						setTimeout( () => window.location.reload(), 600 );
 					} else {
@@ -536,15 +536,15 @@ import './admin.scss';
 				} );
 		}
 
-		$( document ).on( 'click', '.fbs-review-approve, .fbs-review-reject, .fbs-review-delete', function ( e ) {
+		$( document ).on( 'click', '.ulbm-review-approve, .ulbm-review-reject, .ulbm-review-delete', function ( e ) {
 			e.preventDefault();
 			const $btn = $( this );
 			const id = parseInt( $btn.data( 'id' ), 10 );
 			const $row = $btn.closest( '[data-review-id]' );
 			let action = 'approve';
-			if ( $btn.hasClass( 'fbs-review-reject' ) ) {
+			if ( $btn.hasClass( 'ulbm-review-reject' ) ) {
 				action = 'reject';
-			} else if ( $btn.hasClass( 'fbs-review-delete' ) ) {
+			} else if ( $btn.hasClass( 'ulbm-review-delete' ) ) {
 				if ( ! window.confirm( 'Delete this review permanently?' ) ) {
 					return;
 				}

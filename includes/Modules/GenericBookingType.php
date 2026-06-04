@@ -27,7 +27,7 @@ final class GenericBookingType implements BookingTypeInterface {
 	 * {@inheritdoc}
 	 */
 	public function get_label() {
-		return __( 'Generic / Custom', 'flex-multiple-listing-and-booking-system' );
+		return __( 'Generic / Custom', 'flex-booking-system' );
 	}
 
 	/**

@@ -1,12 +1,15 @@
 <?php
 /**
- * Standalone QA for ColorSettings save merge (run: php tests/color-settings-save-test.php).
+ * CLI-only QA for ColorSettings save merge (run: php tests/color-settings-save-test.php).
  *
  * @package FlexBookingSystem
  */
 
 declare( strict_types=1 );
 
+if ( 'cli' !== php_sapi_name() ) {
+	exit;
+}
 if ( ! defined( 'ABSPATH' ) ) {
 	if ( 'cli' !== php_sapi_name() ) {
 		exit;
@@ -46,7 +49,7 @@ if ( ! function_exists( '__' ) ) {
  * @param string $message Message.
  * @return void
  */
-function fbs_test_line( $message ) {
+function ulbm_test_line( $message ) {
 	echo esc_html( (string) $message ) . "\n";
 }
 
@@ -57,61 +60,61 @@ $prev = array(
 );
 
 $post = array(
-	'fbs_colors_json'   => wp_json_encode(
+	'ulbm_colors_json'   => wp_json_encode(
 		array(
 			'color_primary' => '#112233',
 			'color_page_bg' => '#f5f6f8',
 		)
 	),
-	'fbs_color_primary' => '#112233',
-	'fbs_color_page_bg' => '#f5f6f8',
+	'ulbm_color_primary' => '#112233',
+	'ulbm_color_page_bg' => '#f5f6f8',
 );
 
 $merged = ColorSettings::merge_from_post( $prev, $post );
 $fail   = 0;
 
 if ( '#112233' !== $merged['color_primary'] ) {
-	fbs_test_line( 'FAIL: color_primary expected #112233 got ' . $merged['color_primary'] );
+	ulbm_test_line( 'FAIL: color_primary expected #112233 got ' . $merged['color_primary'] );
 	++$fail;
 }
 
 if ( '#f5f6f8' !== $merged['color_page_bg'] ) {
-	fbs_test_line( 'FAIL: color_page_bg expected #f5f6f8 got ' . $merged['color_page_bg'] );
+	ulbm_test_line( 'FAIL: color_page_bg expected #f5f6f8 got ' . $merged['color_page_bg'] );
 	++$fail;
 }
 
 if ( count( ColorSettings::fields() ) !== count( array_intersect_key( $merged, ColorSettings::fields() ) ) ) {
-	fbs_test_line( 'FAIL: not all color fields returned in merge' );
+	ulbm_test_line( 'FAIL: not all color fields returned in merge' );
 	++$fail;
 }
 
 $post_partial = array(
-	'fbs_color_primary' => '#abcdef',
+	'ulbm_color_primary' => '#abcdef',
 );
 
 $merged_partial = ColorSettings::merge_from_post( $prev, $post_partial );
 if ( '#abcdef' !== $merged_partial['color_primary'] ) {
-	fbs_test_line( 'FAIL: partial save primary expected #abcdef got ' . $merged_partial['color_primary'] );
+	ulbm_test_line( 'FAIL: partial save primary expected #abcdef got ' . $merged_partial['color_primary'] );
 	++$fail;
 }
 
 if ( '#ff0000' !== $merged_partial['color_page_bg'] ) {
-	fbs_test_line( 'FAIL: partial save without page bg should keep previous #ff0000 got ' . $merged_partial['color_page_bg'] );
+	ulbm_test_line( 'FAIL: partial save without page bg should keep previous #ff0000 got ' . $merged_partial['color_page_bg'] );
 	++$fail;
 }
 
 $post_no_hash = array(
-	'fbs_colors_json' => wp_json_encode( array( 'color_page_bg' => 'f5f6f8' ) ),
+	'ulbm_colors_json' => wp_json_encode( array( 'color_page_bg' => 'f5f6f8' ) ),
 );
 
 $merged_no_hash = ColorSettings::merge_from_post( $prev, $post_no_hash );
 if ( '#f5f6f8' !== $merged_no_hash['color_page_bg'] ) {
-	fbs_test_line( 'FAIL: hex without hash should save as #f5f6f8 got ' . $merged_no_hash['color_page_bg'] );
+	ulbm_test_line( 'FAIL: hex without hash should save as #f5f6f8 got ' . $merged_no_hash['color_page_bg'] );
 	++$fail;
 }
 
 if ( 0 === $fail ) {
-	fbs_test_line( 'OK: ColorSettings merge_from_post QA passed (' . count( ColorSettings::fields() ) . ' fields)' );
+	ulbm_test_line( 'OK: ColorSettings merge_from_post QA passed (' . count( ColorSettings::fields() ) . ' fields)' );
 	exit( 0 );
 }
 

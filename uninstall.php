@@ -7,13 +7,13 @@
 
 defined( 'WP_UNINSTALL_PLUGIN' ) || exit;
 
-define( 'FBS_PLUGIN_DIR', dirname( __FILE__ ) . '/' );
+define( 'ULBM_PLUGIN_DIR', dirname( __FILE__ ) . '/' );
 
-$fbs_autoload = FBS_PLUGIN_DIR . 'vendor/autoload.php';
-if ( is_readable( $fbs_autoload ) ) {
-	require_once $fbs_autoload;
+$ulbm_autoload = ULBM_PLUGIN_DIR . 'vendor/autoload.php';
+if ( is_readable( $ulbm_autoload ) ) {
+	require_once $ulbm_autoload;
 } else {
-	require_once FBS_PLUGIN_DIR . 'includes/Autoloader.php';
+	require_once ULBM_PLUGIN_DIR . 'includes/Autoloader.php';
 	FlexBooking\Autoloader::register();
 }
 

@@ -19,7 +19,7 @@ final class Schema {
 
 	public const VERSION = '1.1.1';
 
-	public const PREFIX = 'fbs_';
+	public const PREFIX = 'ulbm_';
 
 	/**
 	 * Fully qualified table names for current site prefix.

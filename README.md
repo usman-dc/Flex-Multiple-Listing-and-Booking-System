@@ -1,4 +1,4 @@
-# Flex Multiple Listing and Booking System
+# Flex Listings and Booking Manager
 
 WordPress plugin for **multiple listing grids** and **bookings** — rentals, tours, appointments, and services.
 
@@ -13,8 +13,8 @@ WordPress plugin for **multiple listing grids** and **bookings** — rentals, to
 ## Quick start
 
 1. Install and activate the plugin.
-2. Complete **Flex MLS & Booking → Setup** wizard (choose industries).
-3. Configure **Flex MLS & Booking → Settings** (currency, colors, layout).
+2. Complete **Flex Listings & Booking → Setup** wizard (choose industries).
+3. Configure **Flex Listings & Booking → Settings** (currency, colors, layout).
 4. Import demo listings (**Settings → Demo Content**) or add listings manually.
 5. Place shortcodes, blocks, or Elementor widgets on pages.
 
@@ -22,13 +22,13 @@ WordPress plugin for **multiple listing grids** and **bookings** — rentals, to
 
 | Shortcode | Description |
 |-----------|-------------|
-| `[fbs_booking_form id="1"]` | Booking form for booking type ID |
-| `[fbs_listing_grid type="car-rental" columns="3" limit="12"]` | Filterable listing grid |
-| `[fbs_search]` | Search UI |
-| `[fbs_register]` | Partner registration |
-| `[fbs_login]` | Partner login |
-| `[fbs_dashboard]` | Partner dashboard |
-| `[fbs_become_partner]` | Partner signup CTA |
+| `[ulbm_booking_form id="1"]` | Booking form for booking type ID |
+| `[ulbm_listing_grid type="car-rental" columns="3" limit="12"]` | Filterable listing grid |
+| `[ulbm_search]` | Search UI |
+| `[ulbm_register]` | Partner registration |
+| `[ulbm_login]` | Partner login |
+| `[ulbm_dashboard]` | Partner dashboard |
+| `[ulbm_become_partner]` | Partner signup CTA |
 
 ## Build assets (required before upload if `dist/` is missing)
 
@@ -53,8 +53,8 @@ Put the GitHub URL in `readme.txt` (already added) so reviewers can browse sourc
 ## WordPress.org upload checklist
 
 - Folder name for Git/local ZIP: `flex-booking-system` (keeps existing installs stable)
-- Text domain (all `__()`, `_e()`, etc.): `flex-multiple-listing-and-booking-system` (must match WordPress.org plugin slug)
-- WordPress.org SVN slug: `flex-multiple-listing-and-booking-system`
+- Text domain (all `__()`, `_e()`, etc.): `flex-booking-system` (must match WordPress.org plugin slug)
+- WordPress.org SVN slug: `flex-booking-system`
 - `Stable tag` in readme.txt matches plugin version (1.0.1)
 - Include `/dist` built CSS/JS
 - Exclude `node_modules/`, `.git/`, dev-only files
@@ -71,4 +71,4 @@ npm run build
 
 Usman Ali — [WpRogers](https://wprogers.com/) — [WordPress profile](https://profiles.wordpress.org/usmanaliwpdeveloper/)
 
-Documentation: this file and **Flex MLS & Booking → Settings → Shortcodes** in wp-admin.
+Documentation: this file and **Flex Listings & Booking → Settings → Shortcodes** in wp-admin.

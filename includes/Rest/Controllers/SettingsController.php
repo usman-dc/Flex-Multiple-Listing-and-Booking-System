@@ -71,7 +71,7 @@ final class SettingsController {
 	 * @return WP_REST_Response
 	 */
 	public function get_public() {
-		$general = json_decode( (string) get_option( 'fbs_general_settings', '{}' ), true );
+		$general = json_decode( (string) get_option( 'ulbm_general_settings', '{}' ), true );
 		if ( ! is_array( $general ) ) {
 			$general = array();
 		}
@@ -94,9 +94,9 @@ final class SettingsController {
 	public function get_all() {
 		return new WP_REST_Response(
 			array(
-				'general' => json_decode( (string) get_option( 'fbs_general_settings', '{}' ), true ),
-				'payment' => json_decode( (string) get_option( 'fbs_payment_settings', '{}' ), true ),
-				'email'   => json_decode( (string) get_option( 'fbs_email_settings', '{}' ), true ),
+				'general' => json_decode( (string) get_option( 'ulbm_general_settings', '{}' ), true ),
+				'payment' => json_decode( (string) get_option( 'ulbm_payment_settings', '{}' ), true ),
+				'email'   => json_decode( (string) get_option( 'ulbm_email_settings', '{}' ), true ),
 			),
 			200
 		);
@@ -112,13 +112,13 @@ final class SettingsController {
 		$params = $request->get_json_params() ?: array();
 
 		if ( isset( $params['general'] ) && is_array( $params['general'] ) ) {
-			update_option( 'fbs_general_settings', wp_json_encode( $params['general'] ), false );
+			update_option( 'ulbm_general_settings', wp_json_encode( $params['general'] ), false );
 		}
 		if ( isset( $params['payment'] ) && is_array( $params['payment'] ) ) {
-			update_option( 'fbs_payment_settings', wp_json_encode( $params['payment'] ), false );
+			update_option( 'ulbm_payment_settings', wp_json_encode( $params['payment'] ), false );
 		}
 		if ( isset( $params['email'] ) && is_array( $params['email'] ) ) {
-			update_option( 'fbs_email_settings', wp_json_encode( $params['email'] ), false );
+			update_option( 'ulbm_email_settings', wp_json_encode( $params['email'] ), false );
 		}
 
 		return new WP_REST_Response( array( 'success' => true ), 200 );

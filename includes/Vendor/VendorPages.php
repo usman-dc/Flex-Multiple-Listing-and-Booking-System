@@ -20,7 +20,11 @@ final class VendorPages {
 	 * @return array<string,mixed>
 	 */
 	public static function settings() {
-		$raw = json_decode( (string) get_option( 'fbs_general_settings', '{}' ), true );
+		$settings_json = get_option( 'ulbm_general_settings', false );
+		if ( false === $settings_json ) {
+			$settings_json = get_option( 'fbs_general_settings', '{}' );
+		}
+		$raw = json_decode( (string) $settings_json, true );
 		if ( ! is_array( $raw ) ) {
 			$raw = array();
 		}
@@ -29,7 +33,8 @@ final class VendorPages {
 			'vendor_register_page'  => 0,
 			'vendor_login_page'     => 0,
 			'vendor_dashboard_page' => 0,
-			'vendor_auto_approve'   => true,
+			'vendor_auto_approve'   => false,
+			'enable_google_maps_embed' => false,
 			'vendor_auto_publish'   => true,
 		);
 
@@ -92,7 +97,7 @@ final class VendorPages {
 	 * @return string
 	 */
 	public static function dashboard_tab_url( $tab = 'overview' ) {
-		return add_query_arg( 'fbs_tab', sanitize_key( $tab ), self::dashboard_url() );
+		return add_query_arg( 'ulbm_tab', sanitize_key( $tab ), self::dashboard_url() );
 	}
 
 	/**
@@ -149,9 +154,9 @@ final class VendorPages {
 		if ( ! $post || empty( $post->post_content ) ) {
 			return false;
 		}
-		return has_shortcode( $post->post_content, 'fbs_register' )
-			|| has_shortcode( $post->post_content, 'fbs_login' )
-			|| has_shortcode( $post->post_content, 'fbs_dashboard' )
-			|| has_shortcode( $post->post_content, 'fbs_become_partner' );
+		return has_shortcode( $post->post_content, 'ulbm_register' )
+			|| has_shortcode( $post->post_content, 'ulbm_login' )
+			|| has_shortcode( $post->post_content, 'ulbm_dashboard' )
+			|| has_shortcode( $post->post_content, 'ulbm_become_partner' );
 	}
 }

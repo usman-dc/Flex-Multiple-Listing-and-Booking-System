@@ -103,13 +103,13 @@ final class FrontController {
 
 		wp_register_style(
 
-			'fbs-public',
+			'ulbm-public',
 
-			FBS_PLUGIN_URL . 'dist/public.css',
+			ULBM_PLUGIN_URL . 'dist/public.css',
 
-			array( 'fbs-bootstrap', 'fbs-bootstrap-icons' ),
+			array( 'ulbm-bootstrap', 'ulbm-bootstrap-icons' ),
 
-			FBS_VERSION
+			ULBM_VERSION
 
 		);
 
@@ -120,13 +120,13 @@ final class FrontController {
 
 		wp_register_script(
 
-			'fbs-public',
+			'ulbm-public',
 
-			FBS_PLUGIN_URL . 'dist/public.js',
+			ULBM_PLUGIN_URL . 'dist/public.js',
 
-			array( 'fbs-bootstrap', 'jquery' ),
+			array( 'ulbm-bootstrap', 'jquery' ),
 
-			FBS_VERSION,
+			ULBM_VERSION,
 
 			true
 
@@ -150,13 +150,13 @@ final class FrontController {
 
 		self::register_public_assets();
 
-		wp_enqueue_style( 'fbs-public' );
+		wp_enqueue_style( 'ulbm-public' );
 
 		$inline = ColorSettings::inline_css();
 
 		if ( '' !== $inline ) {
 
-			wp_add_inline_style( 'fbs-public', $inline );
+			wp_add_inline_style( 'ulbm-public', $inline );
 
 		}
 
@@ -175,8 +175,8 @@ final class FrontController {
 			$classes = array();
 		}
 
-		if ( self::is_fbs_frontend_page() ) {
-			$classes[] = 'fbs-flex-booking-active';
+		if ( self::is_ulbm_frontend_page() ) {
+			$classes[] = 'ulbm-booking-active';
 		}
 
 		return $classes;
@@ -196,7 +196,7 @@ final class FrontController {
 
 	public function enqueue() {
 
-		if ( ! apply_filters( 'fbs_enqueue_public_assets', self::is_fbs_frontend_page() ) ) {
+		if ( ! apply_filters( 'ulbm_enqueue_public_assets', self::is_ulbm_frontend_page() ) ) {
 
 			return;
 
@@ -208,11 +208,11 @@ final class FrontController {
 
 
 
-		wp_enqueue_style( 'fbs-bootstrap' );
+		wp_enqueue_style( 'ulbm-bootstrap' );
 
-		wp_enqueue_style( 'fbs-bootstrap-icons' );
+		wp_enqueue_style( 'ulbm-bootstrap-icons' );
 
-		wp_enqueue_style( 'fbs-public' );
+		wp_enqueue_style( 'ulbm-public' );
 
 
 
@@ -220,33 +220,33 @@ final class FrontController {
 
 		if ( '' !== $inline ) {
 
-			wp_add_inline_style( 'fbs-public', $inline );
+			wp_add_inline_style( 'ulbm-public', $inline );
 
 		}
 
 
 
-		wp_enqueue_script( 'fbs-bootstrap' );
+		wp_enqueue_script( 'ulbm-bootstrap' );
 
-		wp_enqueue_script( 'fbs-public' );
+		wp_enqueue_script( 'ulbm-public' );
 
 
 
 		wp_localize_script(
 
-			'fbs-public',
+			'ulbm-public',
 
-			'fbsPublic',
+			'ulbmPublic',
 
 			array(
 
-				'restUrl'       => esc_url_raw( rest_url( 'flex-booking/v1' ) ),
+				'restUrl'       => esc_url_raw( rest_url( 'ulbm/v1' ) ),
 
 				'nonce'         => wp_create_nonce( 'wp_rest' ),
 
 				'ajaxUrl'       => admin_url( 'admin-ajax.php' ),
 
-				'bookingNonce'  => wp_create_nonce( 'fbs_public_booking' ),
+				'bookingNonce'  => wp_create_nonce( 'ulbm_public_booking' ),
 
 			)
 
@@ -271,7 +271,7 @@ final class FrontController {
 	 *
 	 * @return bool
 	 */
-	public static function is_fbs_frontend_page() {
+	public static function is_ulbm_frontend_page() {
 		$post = get_post();
 
 		$post_type = '';
@@ -280,7 +280,7 @@ final class FrontController {
 			$post_type  = $queried_id ? (string) get_post_type( $queried_id ) : (string) get_post_type();
 		}
 
-		if ( is_singular() && 0 === strpos( $post_type, 'fbs_' ) ) {
+		if ( is_singular() && \FlexBooking\PostTypes\BookingTypePostTypeRegistry::is_listing_post_type( $post_type ) ) {
 			return true;
 		}
 
@@ -289,7 +289,7 @@ final class FrontController {
 			if ( is_array( $archive_type ) ) {
 				$archive_type = reset( $archive_type );
 			}
-			if ( is_string( $archive_type ) && 0 === strpos( $archive_type, 'fbs_' ) ) {
+			if ( is_string( $archive_type ) && \FlexBooking\PostTypes\BookingTypePostTypeRegistry::is_listing_post_type( $archive_type ) ) {
 				return true;
 			}
 		}
@@ -298,7 +298,7 @@ final class FrontController {
 			return true;
 		}
 
-		if ( self::page_has_elementor_fbs_widgets() ) {
+		if ( self::page_has_elementor_ulbm_widgets() ) {
 			return true;
 		}
 
@@ -310,14 +310,14 @@ final class FrontController {
 			return false;
 		}
 
-		return has_shortcode( $post->post_content, 'fbs_booking_form' )
-			|| has_shortcode( $post->post_content, 'fbs_search' )
-			|| has_shortcode( $post->post_content, 'fbs_listing_grid' )
-			|| has_shortcode( $post->post_content, 'fbs_register' )
-			|| has_shortcode( $post->post_content, 'fbs_login' )
-			|| has_shortcode( $post->post_content, 'fbs_dashboard' )
-			|| has_shortcode( $post->post_content, 'fbs_become_partner' )
-			|| ( function_exists( 'has_block' ) && ( has_block( 'flex-booking/form', $post ) || has_block( 'flex-booking/search', $post ) || has_block( 'flex-booking/grid', $post ) ) );
+		return has_shortcode( $post->post_content, 'ulbm_booking_form' )
+			|| has_shortcode( $post->post_content, 'ulbm_search' )
+			|| has_shortcode( $post->post_content, 'ulbm_listing_grid' )
+			|| has_shortcode( $post->post_content, 'ulbm_register' )
+			|| has_shortcode( $post->post_content, 'ulbm_login' )
+			|| has_shortcode( $post->post_content, 'ulbm_dashboard' )
+			|| has_shortcode( $post->post_content, 'ulbm_become_partner' )
+			|| ( function_exists( 'has_block' ) && ( has_block( 'ulbm-booking/form', $post ) || has_block( 'ulbm-booking/search', $post ) || has_block( 'ulbm-booking/grid', $post ) ) );
 	}
 
 	/**
@@ -325,7 +325,7 @@ final class FrontController {
 	 *
 	 * @return bool
 	 */
-	private static function page_has_elementor_fbs_widgets() {
+	private static function page_has_elementor_ulbm_widgets() {
 
 		if ( ! is_singular() || ! class_exists( '\Elementor\Plugin' ) ) {
 
@@ -365,9 +365,9 @@ final class FrontController {
 
 
 
-		return false !== strpos( $data, 'fbs_listing_grid' )
+		return false !== strpos( $data, 'ulbm_listing_grid' )
 
-			|| false !== strpos( $data, 'fbs_booking_form' );
+			|| false !== strpos( $data, 'ulbm_booking_form' );
 
 	}
 

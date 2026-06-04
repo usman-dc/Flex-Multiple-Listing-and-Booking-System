@@ -22,14 +22,14 @@ final class FilterHooks {
 	 * @param Plugin $plugin Kernel.
 	 */
 	public function __construct( Plugin $plugin ) {
-		add_filter( 'fbs_calculate_booking_total', array( $this, 'default_total' ), 5, 2 );
+		add_filter( 'ulbm_calculate_booking_total', array( $this, 'default_total' ), 5, 2 );
 
 		/**
 		 * Allow addons to register filters early.
 		 *
 		 * @param Plugin $plugin Kernel instance.
 		 */
-		do_action( 'fbs_register_filters', $plugin );
+		do_action( 'ulbm_register_filters', $plugin );
 	}
 
 	/**

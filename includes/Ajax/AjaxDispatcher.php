@@ -12,8 +12,10 @@ use FlexBooking\Core\Capabilities;
 use FlexBooking\Core\Plugin;
 use FlexBooking\Front\ListingDisplay;
 use FlexBooking\Front\PriceFormatter;
+use FlexBooking\Listings\ListingMeta;
 use FlexBooking\Listings\ListingReviewService;
 use FlexBooking\Security\Nonce;
+use FlexBooking\Security\PostData;
 use FlexBooking\Setup\DemoContentSeeder;
 use FlexBooking\Setup\IndustryProvisioner;
 use FlexBooking\Vendor\VendorAuth;
@@ -34,35 +36,36 @@ final class AjaxDispatcher {
 	 * @param Plugin $plugin Kernel.
 	 */
 	public function __construct( Plugin $plugin ) {
-		add_action( 'wp_ajax_fbs_admin_ping', array( $this, 'admin_ping' ) );
-		add_action( 'wp_ajax_fbs_setup_complete', array( $this, 'setup_complete' ) );
-		add_action( 'wp_ajax_fbs_setup_finish', array( $this, 'setup_finish' ) );
-		add_action( 'wp_ajax_fbs_booking_update', array( $this, 'booking_update' ) );
-		add_action( 'wp_ajax_nopriv_fbs_public_search', array( $this, 'public_search' ) );
-		add_action( 'wp_ajax_fbs_public_search', array( $this, 'public_search' ) );
+		add_action( 'wp_ajax_ulbm_admin_ping', array( $this, 'admin_ping' ) );
+		add_action( 'wp_ajax_ulbm_setup_complete', array( $this, 'setup_complete' ) );
+		add_action( 'wp_ajax_ulbm_setup_finish', array( $this, 'setup_finish' ) );
+		add_action( 'wp_ajax_ulbm_booking_update', array( $this, 'booking_update' ) );
+		add_action( 'wp_ajax_nopriv_ulbm_public_search', array( $this, 'public_search' ) );
+		add_action( 'wp_ajax_ulbm_public_search', array( $this, 'public_search' ) );
 
-		add_action( 'wp_ajax_nopriv_fbs_create_booking', array( $this, 'create_booking' ) );
-		add_action( 'wp_ajax_fbs_create_booking', array( $this, 'create_booking' ) );
+		add_action( 'wp_ajax_nopriv_ulbm_create_booking', array( $this, 'create_booking' ) );
+		add_action( 'wp_ajax_ulbm_create_booking', array( $this, 'create_booking' ) );
 
-		add_action( 'wp_ajax_nopriv_fbs_grid_filter', array( $this, 'grid_filter' ) );
-		add_action( 'wp_ajax_fbs_grid_filter', array( $this, 'grid_filter' ) );
+		add_action( 'wp_ajax_nopriv_ulbm_grid_filter', array( $this, 'grid_filter' ) );
+		add_action( 'wp_ajax_ulbm_grid_filter', array( $this, 'grid_filter' ) );
 
-		add_action( 'wp_ajax_fbs_import_demo_content', array( $this, 'import_demo_content' ) );
-		add_action( 'wp_ajax_fbs_delete_demo_content', array( $this, 'delete_demo_content' ) );
+		add_action( 'wp_ajax_ulbm_import_demo_content', array( $this, 'import_demo_content' ) );
+		add_action( 'wp_ajax_ulbm_delete_demo_content', array( $this, 'delete_demo_content' ) );
 
-		add_action( 'wp_ajax_nopriv_fbs_vendor_register', array( $this, 'vendor_register' ) );
-		add_action( 'wp_ajax_fbs_vendor_register', array( $this, 'vendor_register' ) );
-		add_action( 'wp_ajax_nopriv_fbs_vendor_login', array( $this, 'vendor_login' ) );
-		add_action( 'wp_ajax_fbs_vendor_login', array( $this, 'vendor_login' ) );
-		add_action( 'wp_ajax_fbs_vendor_save_listing', array( $this, 'vendor_save_listing' ) );
-		add_action( 'wp_ajax_fbs_vendor_delete_listing', array( $this, 'vendor_delete_listing' ) );
-		add_action( 'wp_ajax_fbs_provision_vendor_pages', array( $this, 'provision_vendor_pages' ) );
+		add_action( 'wp_ajax_nopriv_ulbm_vendor_register', array( $this, 'vendor_register' ) );
+		add_action( 'wp_ajax_ulbm_vendor_register', array( $this, 'vendor_register' ) );
+		add_action( 'wp_ajax_nopriv_ulbm_vendor_login', array( $this, 'vendor_login' ) );
+		add_action( 'wp_ajax_ulbm_vendor_login', array( $this, 'vendor_login' ) );
+		add_action( 'wp_ajax_ulbm_vendor_become_partner', array( $this, 'vendor_become_partner' ) );
+		add_action( 'wp_ajax_ulbm_vendor_save_listing', array( $this, 'vendor_save_listing' ) );
+		add_action( 'wp_ajax_ulbm_vendor_delete_listing', array( $this, 'vendor_delete_listing' ) );
+		add_action( 'wp_ajax_ulbm_provision_vendor_pages', array( $this, 'provision_vendor_pages' ) );
 
-		add_action( 'wp_ajax_nopriv_fbs_submit_review', array( $this, 'submit_review' ) );
-		add_action( 'wp_ajax_fbs_submit_review', array( $this, 'submit_review' ) );
-		add_action( 'wp_ajax_fbs_review_moderate', array( $this, 'review_moderate' ) );
+		add_action( 'wp_ajax_nopriv_ulbm_submit_review', array( $this, 'submit_review' ) );
+		add_action( 'wp_ajax_ulbm_submit_review', array( $this, 'submit_review' ) );
+		add_action( 'wp_ajax_ulbm_review_moderate', array( $this, 'review_moderate' ) );
 
-		do_action( 'fbs_register_ajax_actions', $plugin );
+		do_action( 'ulbm_register_ajax_actions', $plugin );
 	}
 
 	/**
@@ -88,7 +91,7 @@ final class AjaxDispatcher {
 		if ( ! Capabilities::can_access_admin() ) {
 			wp_send_json_error( array( 'message' => 'Forbidden' ), 403 );
 		}
-		update_option( 'fbs_setup_completed', true, false );
+		update_option( 'ulbm_setup_completed', true, false );
 		wp_send_json_success( array( 'completed' => true ) );
 	}
 
@@ -99,23 +102,21 @@ final class AjaxDispatcher {
 	 */
 	public function setup_finish() {
 		check_ajax_referer( Nonce::ACTION_AJAX, 'nonce' );
+		PostData::allow_processing();
 		if ( ! Capabilities::can_access_admin() ) {
 			wp_send_json_error( array( 'message' => 'Forbidden' ), 403 );
 		}
 
-		$raw = isset( $_POST['industries'] ) ? wp_unslash( $_POST['industries'] ) : array();
-		if ( ! is_array( $raw ) ) {
-			$raw = array();
-		}
+		$raw = PostData::array( 'industries' );
 
 		$summary = IndustryProvisioner::provision( $raw );
-		update_option( 'fbs_setup_completed', true, false );
+		update_option( 'ulbm_setup_completed', true, false );
 
 		wp_send_json_success(
 			array(
 				'completed' => true,
 				'summary'   => $summary,
-				'redirect'  => admin_url( 'admin.php?page=fbs-dashboard' ),
+				'redirect'  => admin_url( 'admin.php?page=ulbm-dashboard' ),
 			)
 		);
 	}
@@ -127,17 +128,18 @@ final class AjaxDispatcher {
 	 */
 	public function booking_update() {
 		check_ajax_referer( Nonce::ACTION_AJAX, 'nonce' );
+		PostData::allow_processing();
 		if ( ! Capabilities::can_access_admin() ) {
-			wp_send_json_error( array( 'message' => __( 'Forbidden.', 'flex-multiple-listing-and-booking-system' ) ), 403 );
+			wp_send_json_error( array( 'message' => __( 'Forbidden.', 'flex-booking-system' ) ), 403 );
 		}
 
-		$booking_id = isset( $_POST['booking_id'] ) ? absint( wp_unslash( $_POST['booking_id'] ) ) : 0;
+		$booking_id = PostData::int( 'booking_id' );
 		if ( $booking_id < 1 ) {
-			wp_send_json_error( array( 'message' => __( 'Invalid booking.', 'flex-multiple-listing-and-booking-system' ) ), 400 );
+			wp_send_json_error( array( 'message' => __( 'Invalid booking.', 'flex-booking-system' ) ), 400 );
 		}
 
-		$status_in = isset( $_POST['status'] ) ? wp_unslash( $_POST['status'] ) : null;
-		$pay_in    = isset( $_POST['payment_status'] ) ? wp_unslash( $_POST['payment_status'] ) : null;
+		$status_in = PostData::has( 'status' ) ? PostData::raw( 'status' ) : null;
+		$pay_in    = PostData::has( 'payment_status' ) ? PostData::raw( 'payment_status' ) : null;
 
 		$new_status = null;
 		if ( null !== $status_in && '' !== $status_in ) {
@@ -149,7 +151,7 @@ final class AjaxDispatcher {
 			$new_payment = sanitize_key( (string) $pay_in );
 		}
 
-		$send = ! isset( $_POST['send_notification'] ) || '0' !== (string) wp_unslash( $_POST['send_notification'] );
+		$send = ! PostData::has( 'send_notification' ) || '0' !== (string) PostData::raw( 'send_notification' );
 
 		$result = BookingAdminUpdater::update( $booking_id, $new_status, $new_payment, $send );
 
@@ -172,13 +174,14 @@ final class AjaxDispatcher {
 	 */
 	public function public_search() {
 		check_ajax_referer( 'wp_rest', 'nonce' );
+		PostData::allow_processing();
 
-		$query = isset( $_POST['q'] ) ? sanitize_text_field( wp_unslash( $_POST['q'] ) ) : '';
+		$query = PostData::string( 'q' );
 
 		wp_send_json_success(
 			array(
 				'query'   => $query,
-				'results' => apply_filters( 'fbs_ajax_search_results', array(), $query ),
+				'results' => apply_filters( 'ulbm_ajax_search_results', array(), $query ),
 			)
 		);
 	}
@@ -189,36 +192,34 @@ final class AjaxDispatcher {
 	 * @return void
 	 */
 	public function create_booking() {
-		check_ajax_referer( 'fbs_public_booking', 'nonce' );
+		check_ajax_referer( 'ulbm_public_booking', 'nonce' );
+		PostData::allow_processing();
 
-		$allowed = apply_filters( 'fbs_allow_ajax_guest_booking', true );
+		$allowed = apply_filters( 'ulbm_allow_ajax_guest_booking', true );
 		if ( ! $allowed && ! is_user_logged_in() ) {
-			wp_send_json_error( array( 'message' => __( 'Login required.', 'flex-multiple-listing-and-booking-system' ) ), 401 );
+			wp_send_json_error( array( 'message' => __( 'Login required.', 'flex-booking-system' ) ), 401 );
 		}
 
 		$plugin = Plugin::instance();
 		$engine = $plugin->container()->get( 'booking.engine' );
 
 		$form_values = array();
-		if ( isset( $_POST['form_values_json'] ) ) {
-			$raw = wp_unslash( $_POST['form_values_json'] );
-			$dec = is_string( $raw ) ? json_decode( $raw, true ) : null;
-			if ( is_array( $dec ) ) {
-				$form_values = $this->sanitize_public_form_values( $dec );
-			}
+		$dec = \FlexBooking\Security\JsonInput::decode_post_array( 'form_values_json' );
+		if ( ! empty( $dec ) ) {
+			$form_values = $this->sanitize_public_form_values( $dec );
 		}
 
 		$payload = array(
-			'booking_type_id'      => isset( $_POST['booking_type_id'] ) ? absint( wp_unslash( $_POST['booking_type_id'] ) ) : 0,
-			'start'                => isset( $_POST['start'] ) ? sanitize_text_field( wp_unslash( $_POST['start'] ) ) : '',
-			'end'                  => isset( $_POST['end'] ) ? sanitize_text_field( wp_unslash( $_POST['end'] ) ) : '',
-			'base_price'           => isset( $_POST['base_price'] ) ? (float) wp_unslash( $_POST['base_price'] ) : 0,
-			'currency'             => isset( $_POST['currency'] ) ? sanitize_text_field( wp_unslash( $_POST['currency'] ) ) : 'USD',
+			'booking_type_id'      => PostData::int( 'booking_type_id' ),
+			'start'                => PostData::string( 'start' ),
+			'end'                  => PostData::string( 'end' ),
+			'base_price'           => PostData::float( 'base_price' ),
+			'currency'             => PostData::string( 'currency', 'USD' ),
 			'source'               => 'ajax',
-			'customer_email'       => isset( $_POST['customer_email'] ) ? sanitize_email( wp_unslash( $_POST['customer_email'] ) ) : '',
-			'customer_phone'       => isset( $_POST['customer_phone'] ) ? sanitize_text_field( wp_unslash( $_POST['customer_phone'] ) ) : '',
-			'customer_first_name'  => isset( $_POST['customer_first_name'] ) ? sanitize_text_field( wp_unslash( $_POST['customer_first_name'] ) ) : '',
-			'customer_last_name'   => isset( $_POST['customer_last_name'] ) ? sanitize_text_field( wp_unslash( $_POST['customer_last_name'] ) ) : '',
+			'customer_email'       => PostData::email( 'customer_email' ),
+			'customer_phone'       => PostData::string( 'customer_phone' ),
+			'customer_first_name'  => PostData::string( 'customer_first_name' ),
+			'customer_last_name'   => PostData::string( 'customer_last_name' ),
 			'form_values'          => $form_values,
 		);
 
@@ -226,7 +227,7 @@ final class AjaxDispatcher {
 			$payload['wp_user_id'] = get_current_user_id();
 		}
 
-		$listing_id = isset( $_POST['listing_id'] ) ? absint( wp_unslash( $_POST['listing_id'] ) ) : 0;
+		$listing_id = PostData::int( 'listing_id' );
 		if ( $listing_id > 0 ) {
 			$payload['listing_id'] = $listing_id;
 		}
@@ -248,6 +249,12 @@ final class AjaxDispatcher {
 			wp_send_json_success( $result );
 		}
 
+		if ( ! empty( $result['errors'] ) && is_array( $result['errors'] ) ) {
+			$result['message'] = implode( ' ', $result['errors'] );
+		} elseif ( empty( $result['message'] ) ) {
+			$result['message'] = __( 'Booking could not be saved.', 'flex-booking-system' );
+		}
+
 		wp_send_json_error( $result, 400 );
 	}
 
@@ -258,15 +265,16 @@ final class AjaxDispatcher {
 	 */
 	public function import_demo_content() {
 		check_ajax_referer( Nonce::ACTION_AJAX, 'nonce' );
+		PostData::allow_processing();
 		if ( ! Capabilities::can_access_admin() ) {
-			wp_send_json_error( array( 'message' => __( 'Forbidden', 'flex-multiple-listing-and-booking-system' ) ), 403 );
+			wp_send_json_error( array( 'message' => __( 'Forbidden', 'flex-booking-system' ) ), 403 );
 		}
 
-		$type_id = isset( $_POST['booking_type_id'] ) ? absint( $_POST['booking_type_id'] ) : 0;
-		$count   = isset( $_POST['count'] ) ? absint( $_POST['count'] ) : DemoContentSeeder::POSTS_PER_TYPE;
+		$type_id = PostData::int( 'booking_type_id' );
+		$count   = PostData::has( 'count' ) ? PostData::int( 'count' ) : DemoContentSeeder::POSTS_PER_TYPE;
 
 		if ( $type_id <= 0 ) {
-			wp_send_json_error( array( 'message' => __( 'Invalid booking type.', 'flex-multiple-listing-and-booking-system' ) ), 400 );
+			wp_send_json_error( array( 'message' => __( 'Invalid booking type.', 'flex-booking-system' ) ), 400 );
 		}
 
 		$result = DemoContentSeeder::import_for_type( $type_id, $count );
@@ -291,11 +299,12 @@ final class AjaxDispatcher {
 	 */
 	public function delete_demo_content() {
 		check_ajax_referer( Nonce::ACTION_AJAX, 'nonce' );
+		PostData::allow_processing();
 		if ( ! Capabilities::can_access_admin() ) {
-			wp_send_json_error( array( 'message' => __( 'Forbidden', 'flex-multiple-listing-and-booking-system' ) ), 403 );
+			wp_send_json_error( array( 'message' => __( 'Forbidden', 'flex-booking-system' ) ), 403 );
 		}
 
-		$type_id = isset( $_POST['booking_type_id'] ) ? absint( $_POST['booking_type_id'] ) : 0;
+		$type_id = PostData::int( 'booking_type_id' );
 		$deleted = DemoContentSeeder::delete_demo( $type_id );
 
 		wp_send_json_success(
@@ -303,7 +312,7 @@ final class AjaxDispatcher {
 				'deleted' => $deleted,
 				'message' => sprintf(
 					/* translators: %d: number of posts deleted */
-					_n( '%d demo listing removed.', '%d demo listings removed.', $deleted, 'flex-multiple-listing-and-booking-system' ),
+					_n( '%d demo listing removed.', '%d demo listings removed.', $deleted, 'flex-booking-system' ),
 					$deleted
 				),
 			)
@@ -316,16 +325,17 @@ final class AjaxDispatcher {
 	 * @return void
 	 */
 	public function vendor_register() {
-		check_ajax_referer( 'fbs_public_booking', 'nonce' );
+		check_ajax_referer( 'ulbm_public_booking', 'nonce' );
+		PostData::allow_processing();
 
 		$result = VendorAuth::register(
 			array(
-				'email'         => isset( $_POST['email'] ) ? wp_unslash( $_POST['email'] ) : '',
-				'password'      => isset( $_POST['password'] ) ? wp_unslash( $_POST['password'] ) : '',
-				'first_name'    => isset( $_POST['first_name'] ) ? wp_unslash( $_POST['first_name'] ) : '',
-				'last_name'     => isset( $_POST['last_name'] ) ? wp_unslash( $_POST['last_name'] ) : '',
-				'phone'         => isset( $_POST['phone'] ) ? wp_unslash( $_POST['phone'] ) : '',
-				'business_name' => isset( $_POST['business_name'] ) ? wp_unslash( $_POST['business_name'] ) : '',
+				'email'         => PostData::email( 'email' ),
+				'password'      => (string) PostData::raw( 'password' ),
+				'first_name'    => PostData::string( 'first_name' ),
+				'last_name'     => PostData::string( 'last_name' ),
+				'phone'         => PostData::string( 'phone' ),
+				'business_name' => PostData::string( 'business_name' ),
 			)
 		);
 
@@ -342,13 +352,14 @@ final class AjaxDispatcher {
 	 * @return void
 	 */
 	public function vendor_login() {
-		check_ajax_referer( 'fbs_public_booking', 'nonce' );
+		check_ajax_referer( 'ulbm_public_booking', 'nonce' );
+		PostData::allow_processing();
 
 		$result = VendorAuth::login(
 			array(
-				'login'    => isset( $_POST['login'] ) ? wp_unslash( $_POST['login'] ) : '',
-				'password' => isset( $_POST['password'] ) ? wp_unslash( $_POST['password'] ) : '',
-				'remember' => ! empty( $_POST['remember'] ),
+				'login'    => PostData::has( 'login' ) ? PostData::string( 'login' ) : PostData::email( 'email' ),
+				'password' => (string) PostData::raw( 'password' ),
+				'remember' => PostData::bool( 'remember' ),
 			)
 		);
 
@@ -365,17 +376,18 @@ final class AjaxDispatcher {
 	 * @return void
 	 */
 	public function vendor_become_partner() {
-		check_ajax_referer( 'fbs_public_booking', 'nonce' );
+		check_ajax_referer( 'ulbm_public_booking', 'nonce' );
+		PostData::allow_processing();
 
 		if ( ! is_user_logged_in() ) {
-			wp_send_json_error( array( 'message' => __( 'Login required.', 'flex-multiple-listing-and-booking-system' ) ), 403 );
+			wp_send_json_error( array( 'message' => __( 'Login required.', 'flex-booking-system' ) ), 403 );
 		}
 
 		$result = VendorAuth::become_partner(
 			get_current_user_id(),
 			array(
-				'business_name' => isset( $_POST['business_name'] ) ? wp_unslash( $_POST['business_name'] ) : '',
-				'phone'         => isset( $_POST['phone'] ) ? wp_unslash( $_POST['phone'] ) : '',
+				'business_name' => PostData::string( 'business_name' ),
+				'phone'         => PostData::string( 'phone' ),
 			)
 		);
 
@@ -393,11 +405,12 @@ final class AjaxDispatcher {
 	 */
 	public function provision_vendor_pages() {
 		check_ajax_referer( Nonce::ACTION_AJAX, 'nonce' );
+		PostData::allow_processing();
 		if ( ! Capabilities::can_access_admin() ) {
 			wp_send_json_error( array( 'message' => 'Forbidden' ), 403 );
 		}
 
-		$force  = ! empty( $_POST['force'] );
+		$force = PostData::bool( 'force' );
 		$result = VendorPageProvisioner::ensure_pages( $force );
 
 		wp_send_json_success(
@@ -411,7 +424,7 @@ final class AjaxDispatcher {
 						'%d partner page created and linked in settings.',
 						'%d partner pages created and linked in settings.',
 						$result['created'],
-						'flex-multiple-listing-and-booking-system'
+						'flex-booking-system'
 					),
 					$result['created']
 				),
@@ -425,22 +438,24 @@ final class AjaxDispatcher {
 	 * @return void
 	 */
 	public function vendor_save_listing() {
-		check_ajax_referer( 'fbs_public_booking', 'nonce' );
+		check_ajax_referer( 'ulbm_public_booking', 'nonce' );
+		PostData::allow_processing();
 
 		if ( ! is_user_logged_in() || ! VendorRole::can_manage_listings() ) {
-			wp_send_json_error( array( 'message' => __( 'Login required.', 'flex-multiple-listing-and-booking-system' ) ), 403 );
+			wp_send_json_error( array( 'message' => __( 'Login required.', 'flex-booking-system' ) ), 403 );
 		}
 
 		$data = array(
-			'post_id'         => isset( $_POST['post_id'] ) ? absint( $_POST['post_id'] ) : 0,
-			'booking_type_id' => isset( $_POST['booking_type_id'] ) ? absint( $_POST['booking_type_id'] ) : 0,
-			'title'           => isset( $_POST['title'] ) ? wp_unslash( $_POST['title'] ) : '',
-			'content'         => isset( $_POST['content'] ) ? wp_unslash( $_POST['content'] ) : '',
-			'base_price'      => isset( $_POST['base_price'] ) ? wp_unslash( $_POST['base_price'] ) : '',
-			'address'         => isset( $_POST['address'] ) ? wp_unslash( $_POST['address'] ) : '',
-			'max_guests'      => isset( $_POST['max_guests'] ) ? absint( $_POST['max_guests'] ) : 1,
+			'post_id'         => PostData::int( 'post_id' ),
+			'booking_type_id' => PostData::int( 'booking_type_id' ),
+			'title'           => PostData::string( 'title' ),
+			'content'         => PostData::has( 'content' ) ? wp_kses_post( (string) PostData::raw( 'content' ) ) : '',
+			'base_price'      => PostData::string( 'base_price' ),
+			'address'         => PostData::string( 'address' ),
+			'max_guests'      => PostData::has( 'max_guests' ) ? PostData::int( 'max_guests', 1 ) : 1,
 		);
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Same request; nonce verified above.
 		if ( ! empty( $_FILES['featured_image']['name'] ) ) {
 			require_once ABSPATH . 'wp-admin/includes/file.php';
 			require_once ABSPATH . 'wp-admin/includes/media.php';
@@ -466,13 +481,14 @@ final class AjaxDispatcher {
 	 * @return void
 	 */
 	public function vendor_delete_listing() {
-		check_ajax_referer( 'fbs_public_booking', 'nonce' );
+		check_ajax_referer( 'ulbm_public_booking', 'nonce' );
+		PostData::allow_processing();
 
 		if ( ! is_user_logged_in() || ! VendorRole::can_manage_listings() ) {
-			wp_send_json_error( array( 'message' => __( 'Login required.', 'flex-multiple-listing-and-booking-system' ) ), 403 );
+			wp_send_json_error( array( 'message' => __( 'Login required.', 'flex-booking-system' ) ), 403 );
 		}
 
-		$post_id = isset( $_POST['post_id'] ) ? absint( $_POST['post_id'] ) : 0;
+		$post_id = PostData::int( 'post_id' );
 		$result  = VendorListingService::delete_listing( get_current_user_id(), $post_id );
 
 		if ( empty( $result['success'] ) ) {
@@ -488,36 +504,37 @@ final class AjaxDispatcher {
 	 * @return void
 	 */
 	public function grid_filter() {
-		check_ajax_referer( 'fbs_public_booking', 'nonce' );
+		check_ajax_referer( 'ulbm_public_booking', 'nonce' );
+		PostData::allow_processing();
 
 		$post_types = array();
-		$type_slug  = isset( $_POST['type'] ) ? sanitize_key( wp_unslash( $_POST['type'] ) ) : '';
+		$type_slug  = PostData::key( 'type' );
 		$all_types  = \FlexBooking\PostTypes\BookingTypePostTypeRegistry::get_registered_types();
 
 		if ( $type_slug ) {
 			foreach ( $all_types as $bt ) {
 				if ( (string) $bt['slug'] === $type_slug ) {
 					$post_types[] = \FlexBooking\PostTypes\BookingTypePostTypeRegistry::cpt_name_from_slug( $bt['slug'] );
+					$post_types[] = \FlexBooking\PostTypes\BookingTypePostTypeRegistry::legacy_cpt_name_from_slug( $bt['slug'] );
 					break;
 				}
 			}
 		} else {
-			foreach ( $all_types as $bt ) {
-				$post_types[] = \FlexBooking\PostTypes\BookingTypePostTypeRegistry::cpt_name_from_slug( $bt['slug'] );
-			}
+			$post_types = \FlexBooking\PostTypes\BookingTypePostTypeRegistry::listing_post_types_for_query();
 		}
+		$post_types = array_values( array_unique( $post_types ) );
 
 		if ( empty( $post_types ) ) {
-			wp_send_json_success( array( 'html' => '<p class="text-muted">' . esc_html__( 'No listings found.', 'flex-multiple-listing-and-booking-system' ) . '</p>', 'count' => 0 ) );
+			wp_send_json_success( array( 'html' => '<p class="text-muted">' . esc_html__( 'No listings found.', 'flex-booking-system' ) . '</p>', 'count' => 0 ) );
 		}
 
-		$keyword   = isset( $_POST['keyword'] ) ? sanitize_text_field( wp_unslash( $_POST['keyword'] ) ) : '';
-		$min_price = isset( $_POST['min_price'] ) ? (float) $_POST['min_price'] : 0;
-		$max_price = isset( $_POST['max_price'] ) ? (float) $_POST['max_price'] : 0;
-		$guests    = isset( $_POST['guests'] ) ? absint( $_POST['guests'] ) : 0;
-		$sort      = isset( $_POST['sort'] ) ? sanitize_key( wp_unslash( $_POST['sort'] ) ) : 'date';
-		$page      = isset( $_POST['page'] ) ? max( 1, absint( $_POST['page'] ) ) : 1;
-		$per_page  = isset( $_POST['per_page'] ) ? max( 1, min( 50, absint( $_POST['per_page'] ) ) ) : 12;
+		$keyword   = PostData::string( 'keyword' );
+		$min_price = PostData::float( 'min_price' );
+		$max_price = PostData::float( 'max_price' );
+		$guests    = PostData::int( 'guests' );
+		$sort      = PostData::has( 'sort' ) ? PostData::key( 'sort', 'date' ) : 'date';
+		$page      = max( 1, PostData::int( 'page', 1 ) );
+		$per_page  = max( 1, min( 50, PostData::int( 'per_page', 12 ) ) );
 
 		$args = array(
 			'post_type'      => $post_types,
@@ -532,12 +549,12 @@ final class AjaxDispatcher {
 
 		switch ( $sort ) {
 			case 'price_asc':
-				$args['meta_key']  = '_fbs_base_price';
+				$args['meta_key']  = '_ulbm_base_price';
 				$args['orderby']   = 'meta_value_num';
 				$args['order']     = 'ASC';
 				break;
 			case 'price_desc':
-				$args['meta_key']  = '_fbs_base_price';
+				$args['meta_key']  = '_ulbm_base_price';
 				$args['orderby']   = 'meta_value_num';
 				$args['order']     = 'DESC';
 				break;
@@ -552,28 +569,13 @@ final class AjaxDispatcher {
 
 		$meta_query = array();
 		if ( $min_price > 0 ) {
-			$meta_query[] = array(
-				'key'     => '_fbs_base_price',
-				'value'   => $min_price,
-				'compare' => '>=',
-				'type'    => 'NUMERIC',
-			);
+			$meta_query[] = self::meta_numeric_or_legacy( ListingMeta::KEY_BASE_PRICE, $min_price, '>=' );
 		}
 		if ( $max_price > 0 ) {
-			$meta_query[] = array(
-				'key'     => '_fbs_base_price',
-				'value'   => $max_price,
-				'compare' => '<=',
-				'type'    => 'NUMERIC',
-			);
+			$meta_query[] = self::meta_numeric_or_legacy( ListingMeta::KEY_BASE_PRICE, $max_price, '<=' );
 		}
 		if ( $guests > 0 ) {
-			$meta_query[] = array(
-				'key'     => '_fbs_max_guests',
-				'value'   => $guests,
-				'compare' => '>=',
-				'type'    => 'NUMERIC',
-			);
+			$meta_query[] = self::meta_numeric_or_legacy( ListingMeta::KEY_MAX_GUESTS, $guests, '>=' );
 		}
 		if ( ! empty( $meta_query ) ) {
 			$meta_query['relation'] = 'AND';
@@ -582,7 +584,7 @@ final class AjaxDispatcher {
 
 		$query = new \WP_Query( $args );
 
-		$general  = json_decode( (string) get_option( 'fbs_general_settings', '{}' ), true );
+		$general  = json_decode( (string) get_option( 'ulbm_general_settings', '{}' ), true );
 		$currency = is_array( $general ) && ! empty( $general['currency'] ) ? $general['currency'] : 'USD';
 
 		ob_start();
@@ -593,7 +595,7 @@ final class AjaxDispatcher {
 				ListingDisplay::render_grid_card( get_the_ID(), $col_class );
 			}
 		} else {
-			echo '<div class="col-12"><p class="text-muted text-center py-5">' . esc_html__( 'No listings match your filters.', 'flex-multiple-listing-and-booking-system' ) . '</p></div>';
+			echo '<div class="col-12"><p class="text-muted text-center py-5">' . esc_html__( 'No listings match your filters.', 'flex-booking-system' ) . '</p></div>';
 		}
 		$html = ob_get_clean();
 		wp_reset_postdata();
@@ -614,13 +616,14 @@ final class AjaxDispatcher {
 	 * @return void
 	 */
 	public function submit_review() {
-		check_ajax_referer( 'fbs_public_booking', 'nonce' );
+		check_ajax_referer( 'ulbm_public_booking', 'nonce' );
+		PostData::allow_processing();
 
-		$listing_id = isset( $_POST['listing_id'] ) ? absint( $_POST['listing_id'] ) : 0;
-		$name       = isset( $_POST['author_name'] ) ? wp_unslash( $_POST['author_name'] ) : '';
-		$email      = isset( $_POST['author_email'] ) ? wp_unslash( $_POST['author_email'] ) : '';
-		$rating     = isset( $_POST['rating'] ) ? absint( $_POST['rating'] ) : 5;
-		$content    = isset( $_POST['content'] ) ? wp_unslash( $_POST['content'] ) : '';
+		$listing_id = PostData::int( 'listing_id' );
+		$name       = PostData::string( 'author_name' );
+		$email      = PostData::email( 'author_email' );
+		$rating     = PostData::has( 'rating' ) ? PostData::int( 'rating', 5 ) : 5;
+		$content    = PostData::has( 'content' ) ? sanitize_textarea_field( (string) PostData::raw( 'content' ) ) : '';
 
 		$service = new ListingReviewService();
 		$result  = $service->submit( $listing_id, $name, $email, $rating, $content );
@@ -639,15 +642,16 @@ final class AjaxDispatcher {
 	 */
 	public function review_moderate() {
 		check_ajax_referer( Nonce::ACTION_AJAX, 'nonce' );
+		PostData::allow_processing();
 		if ( ! Capabilities::can_access_admin() ) {
 			wp_send_json_error( array( 'message' => 'Forbidden' ), 403 );
 		}
 
-		$review_id = isset( $_POST['review_id'] ) ? absint( $_POST['review_id'] ) : 0;
-		$action    = isset( $_POST['review_action'] ) ? sanitize_key( wp_unslash( $_POST['review_action'] ) ) : '';
+		$review_id = PostData::int( 'review_id' );
+		$action    = PostData::key( 'review_action' );
 
 		if ( $review_id < 1 || ! in_array( $action, array( 'approve', 'reject', 'delete' ), true ) ) {
-			wp_send_json_error( array( 'message' => __( 'Invalid request.', 'flex-multiple-listing-and-booking-system' ) ), 400 );
+			wp_send_json_error( array( 'message' => __( 'Invalid request.', 'flex-booking-system' ) ), 400 );
 		}
 
 		$service = new ListingReviewService();
@@ -665,15 +669,48 @@ final class AjaxDispatcher {
 		}
 
 		if ( ! $ok ) {
-			wp_send_json_error( array( 'message' => __( 'Review could not be updated.', 'flex-multiple-listing-and-booking-system' ) ), 400 );
+			wp_send_json_error( array( 'message' => __( 'Review could not be updated.', 'flex-booking-system' ) ), 400 );
 		}
 
 		wp_send_json_success(
 			array(
-				'message' => __( 'Review updated.', 'flex-multiple-listing-and-booking-system' ),
+				'message' => __( 'Review updated.', 'flex-booking-system' ),
 				'status'  => $status,
 				'deleted' => 'delete' === $action,
 			)
+		);
+	}
+
+	/**
+	 * Sanitize dynamic booking form key/value pairs from JSON.
+	 *
+	 * @param array<mixed, mixed> $input Raw decoded array.
+	 * @return array<string, string>
+	 */
+	/**
+	 * Meta query clause matching ulbm or legacy fbs meta keys.
+	 *
+	 * @param string $ulbm_key Meta key.
+	 * @param float  $value  Value.
+	 * @param string $compare Compare operator.
+	 * @return array<string, mixed>
+	 */
+	private static function meta_numeric_or_legacy( $ulbm_key, $value, $compare ) {
+		$legacy_key = '_fbs_' . substr( (string) $ulbm_key, 6 );
+		return array(
+			'relation' => 'OR',
+			array(
+				'key'     => $ulbm_key,
+				'value'   => $value,
+				'compare' => $compare,
+				'type'    => 'NUMERIC',
+			),
+			array(
+				'key'     => $legacy_key,
+				'value'   => $value,
+				'compare' => $compare,
+				'type'    => 'NUMERIC',
+			),
 		);
 	}
 

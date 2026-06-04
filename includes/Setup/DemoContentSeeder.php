@@ -17,8 +17,8 @@ defined( 'ABSPATH' ) || exit;
  */
 final class DemoContentSeeder {
 
-	public const DEMO_META_KEY   = '_fbs_is_demo';
-	public const POOL_OPTION_KEY = 'fbs_demo_attachment_pool';
+	public const DEMO_META_KEY   = '_ulbm_is_demo';
+	public const POOL_OPTION_KEY = 'ulbm_demo_attachment_pool';
 	public const POSTS_PER_TYPE  = 20;
 
 	/**
@@ -59,7 +59,7 @@ final class DemoContentSeeder {
 				'skipped'    => 0,
 				'type_name'  => '',
 				'cpt'        => '',
-				'error'      => __( 'Booking type not found.', 'flex-multiple-listing-and-booking-system' ),
+				'error'      => __( 'Booking type not found.', 'flex-booking-system' ),
 			);
 		}
 
@@ -70,7 +70,7 @@ final class DemoContentSeeder {
 				'skipped'    => 0,
 				'type_name'  => (string) $type_row['name'],
 				'cpt'        => $cpt,
-				'error'      => __( 'Post type is not registered yet. Save permalinks or reload admin.', 'flex-multiple-listing-and-booking-system' ),
+				'error'      => __( 'Post type is not registered yet. Save permalinks or reload admin.', 'flex-booking-system' ),
 			);
 		}
 
@@ -80,7 +80,7 @@ final class DemoContentSeeder {
 				'skipped'    => 0,
 				'type_name'  => (string) $type_row['name'],
 				'cpt'        => $cpt,
-				'error'      => __( 'Permission denied.', 'flex-multiple-listing-and-booking-system' ),
+				'error'      => __( 'Permission denied.', 'flex-booking-system' ),
 			);
 		}
 
@@ -208,7 +208,7 @@ final class DemoContentSeeder {
 		$seeds = array( 101, 102, 103, 104, 105, 106, 107, 108 );
 		foreach ( $seeds as $seed ) {
 			$url = 'https://picsum.photos/seed/fbs' . $seed . '/1200/800.jpg';
-			$id  = self::sideload_image( $url, 'fbs-demo-' . $seed );
+			$id  = self::sideload_image( $url, 'ulbm-demo-' . $seed );
 			if ( $id ) {
 				$pool[] = $id;
 			}
@@ -332,14 +332,14 @@ final class DemoContentSeeder {
 			'title'         => $title,
 			'content'       => sprintf(
 				/* translators: 1: listing title, 2: booking type name, 3: city */
-				__( 'This is demo content for <strong>%1$s</strong> — a sample %2$s listing in %3$s. Use it to preview your grid, single page layout, filters, and booking form before adding real listings.', 'flex-multiple-listing-and-booking-system' ),
+				__( 'This is demo content for <strong>%1$s</strong> — a sample %2$s listing in %3$s. Use it to preview your grid, single page layout, filters, and booking form before adding real listings.', 'flex-booking-system' ),
 				$title,
 				strtolower( $type_name ),
 				$city
 			),
 			'excerpt'       => sprintf(
 				/* translators: 1: booking type name, 2: city */
-				__( 'Demo %1$s in %2$s with full pricing, gallery, FAQ, and amenities.', 'flex-multiple-listing-and-booking-system' ),
+				__( 'Demo %1$s in %2$s with full pricing, gallery, FAQ, and amenities.', 'flex-booking-system' ),
 				strtolower( $type_name ),
 				$city
 			),
@@ -550,7 +550,7 @@ final class DemoContentSeeder {
 				array(
 					array( 'Is this demo content?', 'Yes — generated for preview. Replace with your real listings anytime.' ),
 					array( 'How do I book?', 'Use the booking form on the right side of the listing page.' ),
-					array( 'Can I delete demo posts?', 'Yes, from Flex MLS & Booking → Settings → Demo Content.' ),
+					array( 'Can I delete demo posts?', 'Yes, from Flex Listings & Booking → Settings → Demo Content.' ),
 				)
 			),
 			'services'     => self::services(

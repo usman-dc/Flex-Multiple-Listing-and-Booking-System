@@ -16,7 +16,7 @@ defined( 'ABSPATH' ) || exit;
  */
 final class VendorPageProvisioner {
 
-	public const PAGE_META = '_fbs_vendor_portal_page';
+	public const PAGE_META = '_ulbm_vendor_portal_page';
 
 	/**
 	 * Page definitions keyed by settings field.
@@ -26,21 +26,21 @@ final class VendorPageProvisioner {
 	public static function definitions() {
 		return array(
 			'vendor_register_page'  => array(
-				'title'     => __( 'Partner Register', 'flex-multiple-listing-and-booking-system' ),
+				'title'     => __( 'Partner Register', 'flex-booking-system' ),
 				'slug'      => 'partner-register',
-				'shortcode' => '[fbs_register]',
+				'shortcode' => '[ulbm_register]',
 				'meta'      => 'register',
 			),
 			'vendor_login_page'     => array(
-				'title'     => __( 'Partner Login', 'flex-multiple-listing-and-booking-system' ),
+				'title'     => __( 'Partner Login', 'flex-booking-system' ),
 				'slug'      => 'partner-login',
-				'shortcode' => '[fbs_login]',
+				'shortcode' => '[ulbm_login]',
 				'meta'      => 'login',
 			),
 			'vendor_dashboard_page' => array(
-				'title'     => __( 'Partner Dashboard', 'flex-multiple-listing-and-booking-system' ),
+				'title'     => __( 'Partner Dashboard', 'flex-booking-system' ),
 				'slug'      => 'partner-dashboard',
-				'shortcode' => '[fbs_dashboard]',
+				'shortcode' => '[ulbm_dashboard]',
 				'meta'      => 'dashboard',
 			),
 		);
@@ -75,7 +75,7 @@ final class VendorPageProvisioner {
 	 * @return array{pages:array<string,int>,created:int,updated:bool,messages:array<int,string>}
 	 */
 	public static function ensure_pages( $force = false ) {
-		$raw = json_decode( (string) get_option( 'fbs_general_settings', '{}' ), true );
+		$raw = json_decode( (string) get_option( 'ulbm_general_settings', '{}' ), true );
 		if ( ! is_array( $raw ) ) {
 			$raw = array();
 		}
@@ -100,7 +100,7 @@ final class VendorPageProvisioner {
 				self::sync_page_content( $page_id, $def );
 				$messages[] = sprintf(
 					/* translators: %s: page title */
-					__( 'Linked existing page: %s', 'flex-multiple-listing-and-booking-system' ),
+					__( 'Linked existing page: %s', 'flex-booking-system' ),
 					$def['title']
 				);
 			} else {
@@ -109,7 +109,7 @@ final class VendorPageProvisioner {
 					++$created;
 					$messages[] = sprintf(
 						/* translators: %s: page title */
-						__( 'Created page: %s', 'flex-multiple-listing-and-booking-system' ),
+						__( 'Created page: %s', 'flex-booking-system' ),
 						$def['title']
 					);
 				}
@@ -125,7 +125,7 @@ final class VendorPageProvisioner {
 		}
 
 		if ( $updated ) {
-			update_option( 'fbs_general_settings', wp_json_encode( $raw ), false );
+			update_option( 'ulbm_general_settings', wp_json_encode( $raw ), false );
 			LayoutSettings::clear_cache();
 		}
 

@@ -28,7 +28,7 @@ final class Migrator {
 			dbDelta( $sql );
 		}
 
-		update_option( 'fbs_db_version', Schema::VERSION );
+		update_option( 'ulbm_db_version', Schema::VERSION );
 	}
 
 	/**
@@ -37,7 +37,7 @@ final class Migrator {
 	 * @return void
 	 */
 	public function maybe_upgrade() {
-		$installed = get_option( 'fbs_db_version', '0' );
+		$installed = get_option( 'ulbm_db_version', '0' );
 
 		if ( version_compare( (string) $installed, Schema::VERSION, '<' ) ) {
 			$this->install();

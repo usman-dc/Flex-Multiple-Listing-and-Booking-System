@@ -28,7 +28,7 @@ final class WooCommerceBridge {
 		);
 
 		add_filter(
-			'fbs_calculate_booking_total',
+			'ulbm_calculate_booking_total',
 			array( __CLASS__, 'maybe_add_cart_context' ),
 			20,
 			2
@@ -46,9 +46,9 @@ final class WooCommerceBridge {
 		if ( ! function_exists( 'WC' ) || ! WC()->session ) {
 			return;
 		}
-		$booking_id = absint( WC()->session->get( 'fbs_pending_booking_id' ) );
+		$booking_id = absint( WC()->session->get( 'ulbm_pending_booking_id' ) );
 		if ( $booking_id > 0 ) {
-			$order->update_meta_data( '_fbs_booking_id', $booking_id );
+			$order->update_meta_data( '_ulbm_booking_id', $booking_id );
 		}
 	}
 

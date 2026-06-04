@@ -12,6 +12,7 @@ export default defineConfig( {
 		rollupOptions: {
 			input: {
 				admin: path.resolve( __dirname, 'assets/src/admin.js' ),
+				'admin-booking-types-quick-add': path.resolve( __dirname, 'assets/src/admin-booking-types-quick-add.js' ),
 				public: path.resolve( __dirname, 'assets/src/public.js' ),
 				'listing-metabox': path.resolve( __dirname, 'assets/src/listing-metabox.js' ),
 				blocks: path.resolve( __dirname, 'assets/src/blocks.js' ),

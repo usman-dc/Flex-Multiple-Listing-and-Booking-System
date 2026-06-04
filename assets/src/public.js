@@ -1,5 +1,5 @@
 /**
- * Public bundle — booking form + grid AJAX filters.
+ * Public bundle � booking form + grid AJAX filters.
  */
 import './public.scss';
 
@@ -10,19 +10,52 @@ document.addEventListener( 'DOMContentLoaded', () => {
 	initGallerySlider();
 	initFavorites();
 	initListingReviews();
+	initGoogleMapOptIn();
 } );
 
-/* ─── BOOKING FORM ─────────────────────────────────────────── */
-function initBookingForm() {
-	const form = document.getElementById( 'fbs-booking-form-fields' );
-	if ( ! form || typeof fbsPublic === 'undefined' ) return;
+function initGoogleMapOptIn() {
+	document.querySelectorAll( '.ulbm-show-google-map' ).forEach( ( btn ) => {
+		btn.addEventListener( 'click', () => {
+			const wrap = btn.closest( '.ulbm-google-map-optin' );
+			const frame = wrap?.querySelector( '.ulbm-google-map-frame' );
+			if ( ! wrap || ! frame || frame.querySelector( 'iframe' ) ) {
+				return;
+			}
+			const lat = wrap.dataset.lat || '';
+			const lng = wrap.dataset.lng || '';
+			if ( ! lat || ! lng ) {
+				return;
+			}
+			const iframe = document.createElement( 'iframe' );
+			iframe.width = '100%';
+			iframe.height = '280';
+			iframe.setAttribute( 'frameborder', '0' );
+			iframe.style.border = '0';
+			iframe.loading = 'lazy';
+			iframe.allowFullscreen = true;
+			iframe.src = `https://maps.google.com/maps?q=${ encodeURIComponent( lat + ',' + lng ) }&z=14&output=embed`;
+			frame.appendChild( iframe );
+			frame.classList.remove( 'd-none' );
+			frame.setAttribute( 'aria-hidden', 'false' );
+			btn.classList.add( 'd-none' );
+			const note = wrap.querySelector( 'p.small' );
+			if ( note ) {
+				note.classList.add( 'd-none' );
+			}
+		} );
+	} );
+}
 
-	const root = form.closest( '.fbs-booking-form' );
-	const typeId = root ? parseInt( root.dataset.fbsTypeId || '0', 10 ) : 0;
-	const listingId = root ? parseInt( root.dataset.fbsListingId || '0', 10 ) : 0;
-	const feedback = form.querySelector( '.fbs-form-feedback' );
-	const isMarketplace = root && root.classList.contains( 'fbs-booking-form--marketplace' );
-	const contactPanel = form.querySelector( '.fbs-booking-contact-panel' );
+/* --- BOOKING FORM ------------------------------------------- */
+function initBookingForm() {
+	const form = document.getElementById( 'ulbm-booking-form-fields' );
+	if ( ! form || typeof ulbmPublic === 'undefined' ) return;
+
+	const root = form.closest( '.ulbm-booking-form' );
+	const typeId = root ? parseInt( root.dataset.ulbmTypeId || '0', 10 ) : 0;
+	const listingId = root ? parseInt( root.dataset.ulbmListingId || '0', 10 ) : 0;
+	const feedback = form.querySelector( '.ulbm-form-feedback' );
+	const isMarketplace = root && root.classList.contains( 'ulbm-booking-form--marketplace' );
 
 	if ( isMarketplace ) {
 		initMarketplaceBooking( form, root );
@@ -38,23 +71,21 @@ function initBookingForm() {
 	const reserved = new Set( [
 		'start', 'end', 'base_price', 'currency',
 		'customer_first_name', 'customer_last_name', 'customer_email', 'customer_phone',
-		'fbs_checkin', 'fbs_checkout', 'guests_count',
+		'ulbm_checkin', 'ulbm_checkout', 'guests_count',
 	] );
 
 	form.addEventListener( 'submit', async ( e ) => {
 		e.preventDefault();
 
-		if ( isMarketplace && contactPanel && contactPanel.classList.contains( 'd-none' ) ) {
-			if ( ! form.checkValidity() ) {
-				form.classList.add( 'was-validated' );
-				return;
-			}
-			contactPanel.classList.remove( 'd-none' );
-			contactPanel.scrollIntoView( { behavior: 'smooth', block: 'nearest' } );
-			return;
+		if ( isMarketplace ) {
+			syncMarketplaceHiddenDates( form, root );
 		}
 
-		if ( ! form.checkValidity() ) { form.classList.add( 'was-validated' ); return; }
+		if ( ! form.checkValidity() ) {
+			form.classList.add( 'was-validated' );
+			showFeedback( 'Please complete all required fields below.', true );
+			return;
+		}
 
 		const btn = form.querySelector( '[type="submit"]' );
 		if ( btn ) btn.disabled = true;
@@ -70,13 +101,13 @@ function initBookingForm() {
 		}
 
 		const body = new URLSearchParams();
-		body.append( 'action', 'fbs_create_booking' );
-		body.append( 'nonce', fbsPublic.bookingNonce || '' );
+		body.append( 'action', 'ulbm_create_booking' );
+		body.append( 'nonce', ulbmPublic.bookingNonce || '' );
 		body.append( 'booking_type_id', String( typeId > 0 ? typeId : 1 ) );
 		body.append( 'start', String( fd.get( 'start' ) || '' ) );
 		body.append( 'end', String( fd.get( 'end' ) || '' ) );
 		body.append( 'base_price', String( fd.get( 'base_price' ) || '0' ) );
-		body.append( 'currency', root?.dataset.fbsCurrency || 'USD' );
+		body.append( 'currency', root?.dataset.ulbmCurrency || 'USD' );
 		body.append( 'customer_email', String( fd.get( 'customer_email' ) || '' ) );
 		body.append( 'customer_phone', String( fd.get( 'customer_phone' ) || '' ) );
 		body.append( 'customer_first_name', String( fd.get( 'customer_first_name' ) || '' ) );
@@ -86,7 +117,7 @@ function initBookingForm() {
 		if ( lid > 0 ) body.append( 'listing_id', String( lid ) );
 
 		try {
-			const res = await fetch( fbsPublic.ajaxUrl, {
+			const res = await fetch( ulbmPublic.ajaxUrl, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
 				credentials: 'same-origin',
@@ -98,11 +129,13 @@ function initBookingForm() {
 				form.reset();
 				form.classList.remove( 'was-validated' );
 				if ( isMarketplace ) {
-					contactPanel?.classList.add( 'd-none' );
 					initMarketplaceBooking( form, root );
 				}
 			} else {
-				const msg = json?.data?.errors?.join?.( ' | ' ) || json?.data?.message || 'Booking failed.';
+				const errData = json?.data || {};
+				const msg = Array.isArray( errData.errors )
+					? errData.errors.join( ' | ' )
+					: ( errData.message || 'Booking failed.' );
 				showFeedback( msg, true );
 			}
 		} catch {
@@ -113,29 +146,45 @@ function initBookingForm() {
 	} );
 }
 
+function syncMarketplaceHiddenDates( form, root ) {
+	if ( ! form || ! root ) return;
+	const checkinEl   = form.querySelector( '.ulbm-mp-checkin' );
+	const checkoutEl  = form.querySelector( '.ulbm-mp-checkout' );
+	const startHidden = form.querySelector( '#ulbm-start' );
+	const endHidden   = form.querySelector( '#ulbm-end' );
+	const checkInT    = root.dataset.ulbmCheckInTime || '14:00';
+	const checkOutT   = root.dataset.ulbmCheckOutTime || '11:00';
+	if ( startHidden && checkinEl?.value ) {
+		startHidden.value = checkinEl.value + 'T' + checkInT;
+	}
+	if ( endHidden && checkoutEl?.value ) {
+		endHidden.value = checkoutEl.value + 'T' + checkOutT;
+	}
+}
+
 function initMarketplaceBooking( form, root ) {
 	if ( ! form || ! root ) return;
 
-	const checkinEl  = form.querySelector( '.fbs-mp-checkin' );
-	const checkoutEl = form.querySelector( '.fbs-mp-checkout' );
-	const startHidden = form.querySelector( '#fbs-start' );
-	const endHidden   = form.querySelector( '#fbs-end' );
+	const checkinEl  = form.querySelector( '.ulbm-mp-checkin' );
+	const checkoutEl = form.querySelector( '.ulbm-mp-checkout' );
+	const startHidden = form.querySelector( '#ulbm-start' );
+	const endHidden   = form.querySelector( '#ulbm-end' );
 	const baseHidden  = form.querySelector( '[name="base_price"]' );
 	if ( ! checkinEl || ! checkoutEl ) return;
 
-	const nightly   = parseFloat( root.dataset.fbsNightly || '0' );
-	const cleaning  = parseFloat( root.dataset.fbsCleaning || '0' );
-	let serviceFee  = parseFloat( root.dataset.fbsService || '0' );
-	const currency  = root.dataset.fbsCurrency || 'USD';
-	const suffix    = root.dataset.fbsPriceSuffix || '/night';
-	const checkInT  = root.dataset.fbsCheckInTime || '14:00';
-	const checkOutT = root.dataset.fbsCheckOutTime || '11:00';
+	const nightly   = parseFloat( root.dataset.ulbmNightly || '0' );
+	const cleaning  = parseFloat( root.dataset.ulbmCleaning || '0' );
+	let serviceFee  = parseFloat( root.dataset.ulbmService || '0' );
+	const currency  = root.dataset.ulbmCurrency || 'USD';
+	const suffix    = root.dataset.ulbmPriceSuffix || '/night';
+	const checkInT  = root.dataset.ulbmCheckInTime || '14:00';
+	const checkOutT = root.dataset.ulbmCheckOutTime || '11:00';
 
-	const nightsLine  = form.querySelector( '.fbs-price-line--nights .fbs-price-line-label' );
-	const nightsVal   = form.querySelector( '.fbs-price-line--nights .fbs-price-line-value' );
-	const cleaningVal = form.querySelector( '.fbs-price-line--cleaning .fbs-price-line-value' );
-	const serviceVal  = form.querySelector( '.fbs-price-line--service .fbs-price-line-value' );
-	const totalVal    = form.querySelector( '.fbs-price-total-value' );
+	const nightsLine  = form.querySelector( '.ulbm-price-line--nights .ulbm-price-line-label' );
+	const nightsVal   = form.querySelector( '.ulbm-price-line--nights .ulbm-price-line-value' );
+	const cleaningVal = form.querySelector( '.ulbm-price-line--cleaning .ulbm-price-line-value' );
+	const serviceVal  = form.querySelector( '.ulbm-price-line--service .ulbm-price-line-value' );
+	const totalVal    = form.querySelector( '.ulbm-price-total-value' );
 
 	function fmtMoney( amount ) {
 		return currency + ' ' + Math.round( amount ).toLocaleString();
@@ -210,7 +259,7 @@ function initMarketplaceBooking( form, root ) {
 		updateBreakdown();
 	} );
 	checkoutEl.addEventListener( 'change', updateBreakdown );
-	form.querySelector( '.fbs-mp-guests' )?.addEventListener( 'change', updateBreakdown );
+	form.querySelector( '.ulbm-mp-guests' )?.addEventListener( 'change', updateBreakdown );
 
 	if ( ! checkinEl.value ) {
 		setDefaults();
@@ -219,22 +268,22 @@ function initMarketplaceBooking( form, root ) {
 	}
 }
 
-/* ─── GRID AJAX FILTERS ────────────────────────────────────── */
+/* --- GRID AJAX FILTERS -------------------------------------- */
 function initGridFilters() {
-	document.querySelectorAll( '.fbs-listing-grid' ).forEach( ( grid ) => {
-		if ( typeof fbsPublic === 'undefined' ) return;
+	document.querySelectorAll( '.ulbm-listing-grid' ).forEach( ( grid ) => {
+		if ( typeof ulbmPublic === 'undefined' ) return;
 
-		const resultsEl  = grid.querySelector( '.fbs-grid-results' );
-		const countEl    = grid.querySelector( '.fbs-grid-count' );
-		const spinnerEl  = grid.querySelector( '.fbs-grid-spinner' );
-		const paginEl    = grid.querySelector( '.fbs-grid-pagination' );
-		const prevBtn    = grid.querySelector( '.fbs-grid-prev' );
-		const nextBtn    = grid.querySelector( '.fbs-grid-next' );
-		const pageInfo   = grid.querySelector( '.fbs-grid-page-info' );
-		const filterBtn  = grid.querySelector( '.fbs-filter-submit' );
-		const resetBtn   = grid.querySelector( '.fbs-filter-reset' );
-		const sortSelect = grid.querySelector( '.fbs-filter-sort-select' );
-		const sortHidden = grid.querySelector( '.fbs-filter-sort' );
+		const resultsEl  = grid.querySelector( '.ulbm-grid-results' );
+		const countEl    = grid.querySelector( '.ulbm-grid-count' );
+		const spinnerEl  = grid.querySelector( '.ulbm-grid-spinner' );
+		const paginEl    = grid.querySelector( '.ulbm-grid-pagination' );
+		const prevBtn    = grid.querySelector( '.ulbm-grid-prev' );
+		const nextBtn    = grid.querySelector( '.ulbm-grid-next' );
+		const pageInfo   = grid.querySelector( '.ulbm-grid-page-info' );
+		const filterBtn  = grid.querySelector( '.ulbm-filter-submit' );
+		const resetBtn   = grid.querySelector( '.ulbm-filter-reset' );
+		const sortSelect = grid.querySelector( '.ulbm-filter-sort-select' );
+		const sortHidden = grid.querySelector( '.ulbm-filter-sort' );
 
 		if ( ! resultsEl ) return;
 
@@ -250,18 +299,18 @@ function initGridFilters() {
 			}
 			const start = data.showing_start || 1;
 			const end   = data.showing_end || Math.min( perPage, total );
-			return 'Showing ' + start + '–' + end + ' of ' + total + ' properties';
+			return 'Showing ' + start + '�' + end + ' of ' + total + ' properties';
 		}
 
 		function getFilters() {
 			const sortVal = sortSelect ? sortSelect.value : ( sortHidden ? sortHidden.value : 'date' );
 			if ( sortHidden ) sortHidden.value = sortVal;
 			return {
-				keyword:   ( grid.querySelector( '.fbs-filter-keyword' ) || {} ).value || '',
-				type:      baseType || ( grid.querySelector( '.fbs-filter-type' ) || {} ).value || '',
-				min_price: ( grid.querySelector( '.fbs-filter-min-price' ) || {} ).value || '',
-				max_price: ( grid.querySelector( '.fbs-filter-max-price' ) || {} ).value || '',
-				guests:    ( grid.querySelector( '.fbs-filter-guests' ) || {} ).value || '',
+				keyword:   ( grid.querySelector( '.ulbm-filter-keyword' ) || {} ).value || '',
+				type:      baseType || ( grid.querySelector( '.ulbm-filter-type' ) || {} ).value || '',
+				min_price: ( grid.querySelector( '.ulbm-filter-min-price' ) || {} ).value || '',
+				max_price: ( grid.querySelector( '.ulbm-filter-max-price' ) || {} ).value || '',
+				guests:    ( grid.querySelector( '.ulbm-filter-guests' ) || {} ).value || '',
 				sort:      sortVal || 'date',
 			};
 		}
@@ -272,14 +321,14 @@ function initGridFilters() {
 
 			const filters = getFilters();
 			const body = new URLSearchParams();
-			body.append( 'action', 'fbs_grid_filter' );
-			body.append( 'nonce', fbsPublic.bookingNonce || '' );
+			body.append( 'action', 'ulbm_grid_filter' );
+			body.append( 'nonce', ulbmPublic.bookingNonce || '' );
 			body.append( 'page', String( page ) );
 			body.append( 'per_page', String( perPage ) );
 			Object.keys( filters ).forEach( ( k ) => { if ( filters[ k ] ) body.append( k, filters[ k ] ); } );
 
 			try {
-				const res = await fetch( fbsPublic.ajaxUrl, {
+				const res = await fetch( ulbmPublic.ajaxUrl, {
 					method: 'POST',
 					headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
 					credentials: 'same-origin',
@@ -318,7 +367,7 @@ function initGridFilters() {
 			filterBtn.addEventListener( 'click', () => { currentPage = 1; loadPage( 1 ); } );
 		}
 
-		grid.querySelectorAll( '.fbs-grid-filters input' ).forEach( ( inp ) => {
+		grid.querySelectorAll( '.ulbm-grid-filters input' ).forEach( ( inp ) => {
 			inp.addEventListener( 'keydown', ( e ) => {
 				if ( e.key === 'Enter' ) {
 					e.preventDefault();
@@ -337,25 +386,37 @@ function initGridFilters() {
 
 		if ( resetBtn ) {
 			resetBtn.addEventListener( 'click', () => {
-				grid.querySelectorAll( '.fbs-grid-filters input' ).forEach( ( i ) => { i.value = ''; } );
-				grid.querySelectorAll( '.fbs-grid-filters select' ).forEach( ( s ) => { s.selectedIndex = 0; } );
+				grid.querySelectorAll( '.ulbm-grid-filters input' ).forEach( ( i ) => { i.value = ''; } );
+				grid.querySelectorAll( '.ulbm-grid-filters select' ).forEach( ( s ) => { s.selectedIndex = 0; } );
 				if ( sortSelect ) sortSelect.selectedIndex = 0;
 				currentPage = 1;
 				loadPage( 1 );
 			} );
 		}
 
-		if ( prevBtn ) prevBtn.addEventListener( 'click', () => { if ( currentPage > 1 ) loadPage( --currentPage ); } );
-		if ( nextBtn ) nextBtn.addEventListener( 'click', () => { if ( currentPage < totalPages ) loadPage( ++currentPage ); } );
+		if ( prevBtn ) {
+			prevBtn.addEventListener( 'click', () => {
+				if ( currentPage > 1 ) {
+					loadPage( currentPage - 1 );
+				}
+			} );
+		}
+		if ( nextBtn ) {
+			nextBtn.addEventListener( 'click', () => {
+				if ( currentPage < totalPages ) {
+					loadPage( currentPage + 1 );
+				}
+			} );
+		}
 	} );
 }
 
-/* ─── LISTING GALLERY (MOSAIC + LEGACY SLIDER) + LIGHTBOX ─── */
+/* --- LISTING GALLERY (MOSAIC + LEGACY SLIDER) + LIGHTBOX --- */
 function initGallerySlider() {
-	document.querySelectorAll( '.fbs-gallery-mosaic-wrap, .fbs-hero-slider' ).forEach( ( wrap ) => {
-		const modalEl = wrap.querySelector( '.fbs-gallery-lightbox' );
-		const dataEl  = wrap.querySelector( '.fbs-gallery-data' );
-		const carouselEl = wrap.querySelector( '.fbs-main-carousel' );
+	document.querySelectorAll( '.ulbm-gallery-mosaic-wrap, .ulbm-hero-slider' ).forEach( ( wrap ) => {
+		const modalEl = wrap.querySelector( '.ulbm-gallery-lightbox' );
+		const dataEl  = wrap.querySelector( '.ulbm-gallery-data' );
+		const carouselEl = wrap.querySelector( '.ulbm-main-carousel' );
 
 		const images = [];
 		if ( dataEl ) {
@@ -367,7 +428,7 @@ function initGallerySlider() {
 				} );
 			} );
 		} else if ( carouselEl ) {
-			carouselEl.querySelectorAll( '.carousel-item .fbs-gallery-main-img' ).forEach( ( img ) => {
+			carouselEl.querySelectorAll( '.carousel-item .ulbm-gallery-main-img' ).forEach( ( img ) => {
 				images.push( {
 					full: img.dataset.full || img.src,
 					large: img.src,
@@ -379,10 +440,10 @@ function initGallerySlider() {
 		if ( ! images.length ) return;
 
 		let currentIndex = 0;
-		const counterEl = wrap.querySelector( '.fbs-gallery-current' );
-		const thumbs = wrap.querySelectorAll( '.fbs-gallery-thumb' );
-		const viewAllBtn = wrap.querySelector( '.fbs-gallery-view-all, .fbs-gallery-view-photos' );
-		const openBtns = wrap.querySelectorAll( '.fbs-gallery-open' );
+		const counterEl = wrap.querySelector( '.ulbm-gallery-current' );
+		const thumbs = wrap.querySelectorAll( '.ulbm-gallery-thumb' );
+		const viewAllBtn = wrap.querySelector( '.ulbm-gallery-view-all, .ulbm-gallery-view-photos' );
+		const openBtns = wrap.querySelectorAll( '.ulbm-gallery-open' );
 
 		function setActiveThumb( index ) {
 			thumbs.forEach( ( t, i ) => t.classList.toggle( 'active', i === index ) );
@@ -408,11 +469,11 @@ function initGallerySlider() {
 		}
 
 		const modal = bootstrap.Modal.getOrCreateInstance( modalEl );
-		const lightboxImg = modalEl.querySelector( '.fbs-lightbox-img' );
-		const lightboxCounter = modalEl.querySelector( '.fbs-lightbox-counter' );
-		const lightboxThumbs = modalEl.querySelectorAll( '.fbs-lightbox-thumb' );
-		const prevBtn = modalEl.querySelector( '.fbs-lightbox-prev' );
-		const nextBtn = modalEl.querySelector( '.fbs-lightbox-next' );
+		const lightboxImg = modalEl.querySelector( '.ulbm-lightbox-img' );
+		const lightboxCounter = modalEl.querySelector( '.ulbm-lightbox-counter' );
+		const lightboxThumbs = modalEl.querySelectorAll( '.ulbm-lightbox-thumb' );
+		const prevBtn = modalEl.querySelector( '.ulbm-lightbox-prev' );
+		const nextBtn = modalEl.querySelector( '.ulbm-lightbox-next' );
 
 		function showLightbox( index ) {
 			const img = images[ index ];
@@ -474,10 +535,10 @@ function initGallerySlider() {
 	} );
 }
 
-/* ─── FAVORITES / WISHLIST (localStorage) ──────────────────── */
+/* --- FAVORITES / WISHLIST (localStorage) -------------------- */
 function initFavorites( scope ) {
 	const root = scope || document;
-	const storageKey = 'fbs_favorites';
+	const storageKey = 'ulbm_favorites';
 	let favorites = [];
 
 	try {
@@ -518,9 +579,9 @@ function initFavorites( scope ) {
 		}
 	}
 
-	root.querySelectorAll( '.fbs-card-wishlist, .fbs-favorite-btn' ).forEach( ( btn ) => {
-		if ( btn.dataset.fbsFavBound ) return;
-		btn.dataset.fbsFavBound = '1';
+	root.querySelectorAll( '.ulbm-card-wishlist, .ulbm-favorite-btn' ).forEach( ( btn ) => {
+		if ( btn.dataset.ulbmFavBound ) return;
+		btn.dataset.ulbmFavBound = '1';
 		syncButton( btn );
 		btn.addEventListener( 'click', ( e ) => {
 			e.preventDefault();
@@ -531,9 +592,9 @@ function initFavorites( scope ) {
 	} );
 }
 
-/* ─── PARTNER PORTAL ───────────────────────────────────────── */
+/* --- PARTNER PORTAL ----------------------------------------- */
 function initVendorPortal() {
-	if ( typeof fbsPublic === 'undefined' ) return;
+	if ( typeof ulbmPublic === 'undefined' ) return;
 
 	function showVendorFeedback( el, msg, isError ) {
 		if ( ! el ) return;
@@ -542,24 +603,24 @@ function initVendorPortal() {
 		el.textContent = msg;
 	}
 
-	const regForm = document.getElementById( 'fbs-vendor-register-form' );
+	const regForm = document.getElementById( 'ulbm-vendor-register-form' );
 	if ( regForm ) {
 		regForm.addEventListener( 'submit', async ( e ) => {
 			e.preventDefault();
 			const pass = regForm.querySelector( '[name="password"]' )?.value || '';
 			const pass2 = regForm.querySelector( '[name="password_confirm"]' )?.value || '';
-			const fb = regForm.querySelector( '.fbs-vendor-feedback' );
+			const fb = regForm.querySelector( '.ulbm-vendor-feedback' );
 			if ( pass !== pass2 ) {
 				showVendorFeedback( fb, 'Passwords do not match.', true );
 				return;
 			}
 			const fd = new FormData( regForm );
-			fd.append( 'action', 'fbs_vendor_register' );
-			fd.append( 'nonce', fbsPublic.bookingNonce || '' );
+			fd.append( 'action', 'ulbm_vendor_register' );
+			fd.append( 'nonce', ulbmPublic.bookingNonce || '' );
 			const btn = regForm.querySelector( '[type="submit"]' );
 			if ( btn ) btn.disabled = true;
 			try {
-				const res = await fetch( fbsPublic.ajaxUrl, { method: 'POST', body: fd, credentials: 'same-origin' } );
+				const res = await fetch( ulbmPublic.ajaxUrl, { method: 'POST', body: fd, credentials: 'same-origin' } );
 				const json = await res.json();
 				if ( json?.success ) {
 					showVendorFeedback( fb, json.data.message || 'Registered!', false );
@@ -575,18 +636,18 @@ function initVendorPortal() {
 		} );
 	}
 
-	const loginForm = document.getElementById( 'fbs-vendor-login-form' );
+	const loginForm = document.getElementById( 'ulbm-vendor-login-form' );
 	if ( loginForm ) {
 		loginForm.addEventListener( 'submit', async ( e ) => {
 			e.preventDefault();
-			const fb = loginForm.querySelector( '.fbs-vendor-feedback' );
+			const fb = loginForm.querySelector( '.ulbm-vendor-feedback' );
 			const fd = new FormData( loginForm );
-			fd.append( 'action', 'fbs_vendor_login' );
-			fd.append( 'nonce', fbsPublic.bookingNonce || '' );
+			fd.append( 'action', 'ulbm_vendor_login' );
+			fd.append( 'nonce', ulbmPublic.bookingNonce || '' );
 			const btn = loginForm.querySelector( '[type="submit"]' );
 			if ( btn ) btn.disabled = true;
 			try {
-				const res = await fetch( fbsPublic.ajaxUrl, { method: 'POST', body: fd, credentials: 'same-origin' } );
+				const res = await fetch( ulbmPublic.ajaxUrl, { method: 'POST', body: fd, credentials: 'same-origin' } );
 				const json = await res.json();
 				if ( json?.success ) {
 					window.location.href = json.data.redirect || '/';
@@ -601,18 +662,18 @@ function initVendorPortal() {
 		} );
 	}
 
-	const becomeForm = document.getElementById( 'fbs-vendor-become-partner-form' );
+	const becomeForm = document.getElementById( 'ulbm-vendor-become-partner-form' );
 	if ( becomeForm ) {
 		becomeForm.addEventListener( 'submit', async ( e ) => {
 			e.preventDefault();
-			const fb = becomeForm.querySelector( '.fbs-vendor-feedback' );
+			const fb = becomeForm.querySelector( '.ulbm-vendor-feedback' );
 			const fd = new FormData( becomeForm );
-			fd.append( 'action', 'fbs_vendor_become_partner' );
-			fd.append( 'nonce', fbsPublic.bookingNonce || '' );
+			fd.append( 'action', 'ulbm_vendor_become_partner' );
+			fd.append( 'nonce', ulbmPublic.bookingNonce || '' );
 			const btn = becomeForm.querySelector( '[type="submit"]' );
 			if ( btn ) btn.disabled = true;
 			try {
-				const res = await fetch( fbsPublic.ajaxUrl, { method: 'POST', body: fd, credentials: 'same-origin' } );
+				const res = await fetch( ulbmPublic.ajaxUrl, { method: 'POST', body: fd, credentials: 'same-origin' } );
 				const json = await res.json();
 				if ( json?.success ) {
 					showVendorFeedback( fb, json.data.message || 'Partner access enabled!', false );
@@ -628,22 +689,22 @@ function initVendorPortal() {
 		} );
 	}
 
-	const listingForm = document.getElementById( 'fbs-vendor-listing-form' );
+	const listingForm = document.getElementById( 'ulbm-vendor-listing-form' );
 	if ( listingForm ) {
 		listingForm.addEventListener( 'submit', async ( e ) => {
 			e.preventDefault();
-			const fb = listingForm.querySelector( '.fbs-vendor-feedback' );
+			const fb = listingForm.querySelector( '.ulbm-vendor-feedback' );
 			const fd = new FormData( listingForm );
-			fd.append( 'action', 'fbs_vendor_save_listing' );
-			fd.append( 'nonce', fbsPublic.bookingNonce || '' );
+			fd.append( 'action', 'ulbm_vendor_save_listing' );
+			fd.append( 'nonce', ulbmPublic.bookingNonce || '' );
 			const btn = listingForm.querySelector( '[type="submit"]' );
 			if ( btn ) btn.disabled = true;
 			try {
-				const res = await fetch( fbsPublic.ajaxUrl, { method: 'POST', body: fd, credentials: 'same-origin' } );
+				const res = await fetch( ulbmPublic.ajaxUrl, { method: 'POST', body: fd, credentials: 'same-origin' } );
 				const json = await res.json();
 				if ( json?.success ) {
 					showVendorFeedback( fb, json.data.message || 'Saved!', false );
-					setTimeout( () => { window.location.href = window.location.pathname + '?fbs_tab=listings'; }, 1200 );
+					setTimeout( () => { window.location.href = window.location.pathname + '?ulbm_tab=listings'; }, 1200 );
 				} else {
 					showVendorFeedback( fb, json?.data?.message || 'Save failed.', true );
 				}
@@ -655,16 +716,16 @@ function initVendorPortal() {
 		} );
 	}
 
-	document.querySelectorAll( '.fbs-vendor-delete-listing' ).forEach( ( btn ) => {
+	document.querySelectorAll( '.ulbm-vendor-delete-listing' ).forEach( ( btn ) => {
 		btn.addEventListener( 'click', async () => {
 			if ( ! window.confirm( 'Delete this listing permanently?' ) ) return;
 			const id = btn.dataset.id;
 			const body = new URLSearchParams();
-			body.append( 'action', 'fbs_vendor_delete_listing' );
-			body.append( 'nonce', fbsPublic.bookingNonce || '' );
+			body.append( 'action', 'ulbm_vendor_delete_listing' );
+			body.append( 'nonce', ulbmPublic.bookingNonce || '' );
 			body.append( 'post_id', id );
 			try {
-				const res = await fetch( fbsPublic.ajaxUrl, {
+				const res = await fetch( ulbmPublic.ajaxUrl, {
 					method: 'POST',
 					headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
 					body,
@@ -683,25 +744,25 @@ function initVendorPortal() {
 	} );
 }
 
-/* ─── LISTING REVIEWS ──────────────────────────────────────── */
+/* --- LISTING REVIEWS ---------------------------------------- */
 function initListingReviews() {
-	document.querySelectorAll( '.fbs-review-form' ).forEach( ( form ) => {
+	document.querySelectorAll( '.ulbm-review-form' ).forEach( ( form ) => {
 		form.addEventListener( 'submit', async ( e ) => {
 			e.preventDefault();
-			if ( typeof fbsPublic === 'undefined' ) return;
+			if ( typeof ulbmPublic === 'undefined' ) return;
 
 			const listingId = parseInt( form.dataset.listingId || '0', 10 );
-			const feedback  = form.querySelector( '.fbs-review-feedback' );
-			const btn       = form.querySelector( '.fbs-review-submit' );
+			const feedback  = form.querySelector( '.ulbm-review-feedback' );
+			const btn       = form.querySelector( '.ulbm-review-submit' );
 
 			const body = new URLSearchParams();
-			body.append( 'action', 'fbs_submit_review' );
-			body.append( 'nonce', fbsPublic.bookingNonce || '' );
+			body.append( 'action', 'ulbm_submit_review' );
+			body.append( 'nonce', ulbmPublic.bookingNonce || '' );
 			body.append( 'listing_id', String( listingId ) );
-			body.append( 'author_name', ( form.querySelector( '.fbs-review-name' ) || {} ).value || '' );
-			body.append( 'author_email', ( form.querySelector( '.fbs-review-email' ) || {} ).value || '' );
-			body.append( 'rating', ( form.querySelector( '.fbs-review-rating' ) || {} ).value || '5' );
-			body.append( 'content', ( form.querySelector( '.fbs-review-content' ) || {} ).value || '' );
+			body.append( 'author_name', ( form.querySelector( '.ulbm-review-name' ) || {} ).value || '' );
+			body.append( 'author_email', ( form.querySelector( '.ulbm-review-email' ) || {} ).value || '' );
+			body.append( 'rating', ( form.querySelector( '.ulbm-review-rating' ) || {} ).value || '5' );
+			body.append( 'content', ( form.querySelector( '.ulbm-review-content' ) || {} ).value || '' );
 
 			if ( btn ) btn.disabled = true;
 			if ( feedback ) {
@@ -709,7 +770,7 @@ function initListingReviews() {
 			}
 
 			try {
-				const res = await fetch( fbsPublic.ajaxUrl, {
+				const res = await fetch( ulbmPublic.ajaxUrl, {
 					method: 'POST',
 					headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
 					credentials: 'same-origin',

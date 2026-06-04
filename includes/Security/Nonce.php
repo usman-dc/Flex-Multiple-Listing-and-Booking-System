@@ -14,8 +14,8 @@ defined( 'ABSPATH' ) || exit;
  */
 final class Nonce {
 
-	public const ACTION_AJAX = 'fbs_ajax';
-	public const ACTION_REST = 'fbs_rest';
+	public const ACTION_AJAX = 'ulbm_ajax';
+	public const ACTION_REST = 'ulbm_rest';
 
 	/**
 	 * Field name for forms.
@@ -23,7 +23,7 @@ final class Nonce {
 	 * @return string
 	 */
 	public static function field_name() {
-		return '_fbs_nonce';
+		return '_ulbm_nonce';
 	}
 
 	/**

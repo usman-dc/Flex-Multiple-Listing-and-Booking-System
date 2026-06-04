@@ -23,7 +23,7 @@ final class ActionHooks {
 	 */
 	public function __construct( Plugin $plugin ) {
 		add_action(
-			'fbs_booking_created',
+			'ulbm_booking_created',
 			array( $this, 'maybe_queue_confirmation_email' ),
 			10,
 			2
@@ -34,7 +34,7 @@ final class ActionHooks {
 		 *
 		 * @param Plugin $plugin Kernel instance.
 		 */
-		do_action( 'fbs_register_actions', $plugin );
+		do_action( 'ulbm_register_actions', $plugin );
 	}
 
 	/**
@@ -45,6 +45,6 @@ final class ActionHooks {
 	 * @return void
 	 */
 	public function maybe_queue_confirmation_email( $booking_id, $payload ) {
-		do_action( 'fbs_notification_enqueue', 'booking_created', absint( $booking_id ), $payload );
+		do_action( 'ulbm_notification_enqueue', 'booking_created', absint( $booking_id ), $payload );
 	}
 }

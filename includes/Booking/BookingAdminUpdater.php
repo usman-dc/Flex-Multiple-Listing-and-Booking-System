@@ -62,7 +62,7 @@ final class BookingAdminUpdater {
 		$repo = new BookingRepository();
 		$row  = $repo->get_by_id( $booking_id );
 		if ( ! $row ) {
-			return new \WP_Error( 'fbs_not_found', __( 'Booking not found.', 'flex-multiple-listing-and-booking-system' ), array( 'status' => 404 ) );
+			return new \WP_Error( 'ulbm_not_found', __( 'Booking not found.', 'flex-booking-system' ), array( 'status' => 404 ) );
 		}
 
 		$data    = array();
@@ -72,7 +72,7 @@ final class BookingAdminUpdater {
 		if ( null !== $new_status && '' !== $new_status ) {
 			$st = sanitize_key( (string) $new_status );
 			if ( ! in_array( $st, self::booking_statuses(), true ) ) {
-				return new \WP_Error( 'fbs_bad_status', __( 'Invalid booking status.', 'flex-multiple-listing-and-booking-system' ), array( 'status' => 400 ) );
+				return new \WP_Error( 'ulbm_bad_status', __( 'Invalid booking status.', 'flex-booking-system' ), array( 'status' => 400 ) );
 			}
 			if ( $st !== $old_st ) {
 				$data['status'] = $st;
@@ -82,7 +82,7 @@ final class BookingAdminUpdater {
 		if ( null !== $new_payment && '' !== $new_payment ) {
 			$py = sanitize_key( (string) $new_payment );
 			if ( ! in_array( $py, self::payment_statuses(), true ) ) {
-				return new \WP_Error( 'fbs_bad_payment', __( 'Invalid payment status.', 'flex-multiple-listing-and-booking-system' ), array( 'status' => 400 ) );
+				return new \WP_Error( 'ulbm_bad_payment', __( 'Invalid payment status.', 'flex-booking-system' ), array( 'status' => 400 ) );
 			}
 			if ( $py !== $old_pay ) {
 				$data['payment_status'] = $py;
@@ -90,14 +90,14 @@ final class BookingAdminUpdater {
 		}
 
 		if ( empty( $data ) ) {
-			return new \WP_Error( 'fbs_no_change', __( 'Nothing to update.', 'flex-multiple-listing-and-booking-system' ), array( 'status' => 400 ) );
+			return new \WP_Error( 'ulbm_no_change', __( 'Nothing to update.', 'flex-booking-system' ), array( 'status' => 400 ) );
 		}
 
 		$repo->update_booking( (int) $row['id'], $data );
 
 		$fresh = $repo->get_by_id( (int) $row['id'] );
 		if ( ! $fresh ) {
-			return new \WP_Error( 'fbs_reload', __( 'Update failed to persist.', 'flex-multiple-listing-and-booking-system' ), array( 'status' => 500 ) );
+			return new \WP_Error( 'ulbm_reload', __( 'Update failed to persist.', 'flex-booking-system' ), array( 'status' => 500 ) );
 		}
 
 		try {

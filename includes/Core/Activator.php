@@ -47,10 +47,10 @@ final class Activator {
 		Capabilities::register();
 
 		$defaults = array(
-			'fbs_db_version'       => \FlexBooking\Database\Schema::VERSION,
-			'fbs_setup_completed'  => false,
-			'fbs_enabled_industries' => array(),
-			'fbs_general_settings' => wp_json_encode(
+			'ulbm_db_version'       => \FlexBooking\Database\Schema::VERSION,
+			'ulbm_setup_completed'  => false,
+			'ulbm_enabled_industries' => array(),
+			'ulbm_general_settings' => wp_json_encode(
 				array(
 					'currency'          => 'USD',
 					'currency_position' => 'left',

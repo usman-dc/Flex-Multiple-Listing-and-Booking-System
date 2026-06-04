@@ -30,12 +30,9 @@ while ( have_posts() ) :
 	$booking_type_id  = 0;
 	$booking_type_row = null;
 	$types = BookingTypePostTypeRegistry::get_registered_types();
-	foreach ( $types as $t ) {
-		if ( BookingTypePostTypeRegistry::cpt_name_from_slug( $t['slug'] ) === $post_type ) {
-			$booking_type_id  = (int) $t['id'];
-			$booking_type_row = $t;
-			break;
-		}
+	$booking_type_row = BookingTypePostTypeRegistry::booking_type_for_post_type( (string) $post_type );
+	if ( $booking_type_row ) {
+		$booking_type_id = (int) $booking_type_row['id'];
 	}
 
 	$gallery       = ListingMeta::get( $post_id, ListingMeta::KEY_GALLERY, 'array' );
@@ -61,7 +58,7 @@ while ( have_posts() ) :
 	$min_booking   = ListingMeta::get( $post_id, ListingMeta::KEY_MIN_BOOKING, 'int' );
 	$max_booking   = ListingMeta::get( $post_id, ListingMeta::KEY_MAX_BOOKING, 'int' );
 
-	$general  = json_decode( (string) get_option( 'fbs_general_settings', '{}' ), true );
+	$general  = json_decode( (string) get_option( 'ulbm_general_settings', '{}' ), true );
 	$currency = is_array( $general ) && ! empty( $general['currency'] ) ? $general['currency'] : 'USD';
 
 	// Build slider images array: featured image first, then gallery.
@@ -88,7 +85,7 @@ while ( have_posts() ) :
 	}
 
 	$type_display_name = $booking_type_row ? (string) $booking_type_row['name'] : '';
-	$fbs_gallery_id    = 'fbs-gallery-' . (string) $post_id;
+	$ulbm_gallery_id    = 'ulbm-gallery-' . (string) $post_id;
 	$bedrooms          = ListingDisplay::feature_spec( $features, 'bed' );
 	$bathrooms         = ListingDisplay::feature_spec( $features, 'bath' );
 	$size              = ListingDisplay::feature_spec( $features, 'size' );
@@ -108,78 +105,78 @@ while ( have_posts() ) :
 	$help_phone = $contact_phone ?: '';
 ?>
 
-<div class="fbs-single-listing-wrap fbs-marketplace-ui">
+<div class="ulbm-single-listing-wrap ulbm-marketplace-ui">
 
-	<?php include FBS_PLUGIN_DIR . 'templates/public/partials/account-toolbar.php'; ?>
+	<?php include ULBM_PLUGIN_DIR . 'templates/public/partials/account-toolbar.php'; ?>
 
-	<div class="container fbs-container fbs-container--single pb-5">
+	<div class="container ulbm-container ulbm-container--single pb-5">
 
-		<div class="row g-4 fbs-listing-layout-row">
-			<div class="col-lg-8 fbs-listing-content">
+		<div class="row g-4 ulbm-listing-layout-row">
+			<div class="col-lg-8 ulbm-listing-content">
 
-				<div class="fbs-hero-media">
+				<div class="ulbm-hero-media">
 					<?php if ( ! empty( $slider_images ) ) : ?>
 						<?php
-						$fbs_gallery_embedded = true;
-						include FBS_PLUGIN_DIR . 'templates/public/partials/listing-gallery-mosaic.php';
+						$ulbm_gallery_embedded = true;
+						include ULBM_PLUGIN_DIR . 'templates/public/partials/listing-gallery-mosaic.php';
 						?>
 					<?php endif; ?>
 
 					<?php if ( $base_price || $max_guests || $bedrooms || $bathrooms || $size ) : ?>
-						<div class="fbs-quick-stats fbs-quick-stats--hero">
+						<div class="ulbm-quick-stats ulbm-quick-stats--hero">
 							<?php if ( $price_amount ) : ?>
-								<div class="fbs-quick-stats-price">
+								<div class="ulbm-quick-stats-price">
 									<strong><?php echo esc_html( PriceFormatter::format_plain( $price_amount ) ); ?></strong>
 									<span><?php echo esc_html( $price_suffix_display ); ?></span>
 								</div>
 							<?php endif; ?>
-							<div class="fbs-quick-stats-specs">
+							<div class="ulbm-quick-stats-specs">
 								<?php if ( $max_guests > 0 ) : ?>
-									<span class="fbs-quick-stat"><i class="bi bi-people" aria-hidden="true"></i><?php
+									<span class="ulbm-quick-stat"><i class="bi bi-people" aria-hidden="true"></i><?php
 									printf(
 										/* translators: %d: maximum guest count */
-										esc_html__( '%d Guests', 'flex-multiple-listing-and-booking-system' ),
+										esc_html__( '%d Guests', 'flex-booking-system' ),
 										(int) $max_guests
 									);
 									?></span>
 								<?php endif; ?>
 								<?php if ( $bedrooms ) : ?>
-									<span class="fbs-quick-stat"><i class="bi bi-bed" aria-hidden="true"></i><?php echo esc_html( $bedrooms ); ?></span>
+									<span class="ulbm-quick-stat"><i class="bi bi-bed" aria-hidden="true"></i><?php echo esc_html( $bedrooms ); ?></span>
 								<?php endif; ?>
 								<?php if ( $bathrooms ) : ?>
-									<span class="fbs-quick-stat"><i class="bi bi-badge-wc" aria-hidden="true"></i><?php echo esc_html( $bathrooms ); ?></span>
+									<span class="ulbm-quick-stat"><i class="bi bi-badge-wc" aria-hidden="true"></i><?php echo esc_html( $bathrooms ); ?></span>
 								<?php endif; ?>
 								<?php if ( $size ) : ?>
-									<span class="fbs-quick-stat"><i class="bi bi-arrows-angle-expand" aria-hidden="true"></i><?php echo esc_html( $size ); ?></span>
+									<span class="ulbm-quick-stat"><i class="bi bi-arrows-angle-expand" aria-hidden="true"></i><?php echo esc_html( $size ); ?></span>
 								<?php endif; ?>
 							</div>
 						</div>
 					<?php endif; ?>
 
-					<h1 class="fbs-listing-title fbs-listing-title--hero"><?php the_title(); ?></h1>
+					<h1 class="ulbm-listing-title ulbm-listing-title--hero"><?php the_title(); ?></h1>
 				</div>
 
-				<div class="fbs-listing-main">
-				<header class="fbs-listing-header">
+				<div class="ulbm-listing-main">
+				<header class="ulbm-listing-header">
 					<?php if ( $rating_data['rating'] > 0 ) : ?>
 						<?php ListingDisplay::render_star_rating( $rating_data['rating'], $rating_data['count'] ); ?>
 					<?php endif; ?>
 					<?php if ( $address ) : ?>
-						<p class="fbs-listing-location">
+						<p class="ulbm-listing-location">
 							<i class="bi bi-geo-alt-fill" aria-hidden="true"></i>
 							<?php echo esc_html( $address ); ?>
 							<?php if ( $latitude && $longitude ) : ?>
-								<a href="#fbs-map" class="fbs-view-map"><?php esc_html_e( 'View on map', 'flex-multiple-listing-and-booking-system' ); ?></a>
+								<a href="#ulbm-map" class="ulbm-view-map"><?php esc_html_e( 'View on map', 'flex-booking-system' ); ?></a>
 							<?php endif; ?>
 						</p>
 					<?php endif; ?>
 					<?php if ( has_excerpt() ) : ?>
-						<p class="fbs-listing-excerpt"><?php echo esc_html( get_the_excerpt() ); ?></p>
+						<p class="ulbm-listing-excerpt"><?php echo esc_html( get_the_excerpt() ); ?></p>
 					<?php endif; ?>
 					<?php if ( ! empty( $amenity_features ) ) : ?>
-						<div class="fbs-quick-amenities">
+						<div class="ulbm-quick-amenities">
 							<?php $shown = 0; foreach ( $amenity_features as $f ) : if ( $shown >= 6 ) break; $shown++; ?>
-								<span class="fbs-amenity-item">
+								<span class="ulbm-amenity-item">
 									<i class="bi <?php echo esc_attr( ! empty( $f['icon'] ) ? $f['icon'] : 'bi-check-circle' ); ?>" aria-hidden="true"></i>
 									<?php echo esc_html( $f['label'] ?? '' ); ?>
 								</span>
@@ -188,17 +185,17 @@ while ( have_posts() ) :
 					<?php endif; ?>
 				</header>
 
-				<div class="fbs-section mb-4">
-					<h2 class="fbs-section-title"><?php esc_html_e( 'About The Property', 'flex-multiple-listing-and-booking-system' ); ?></h2>
-					<div class="fbs-content-area">
+				<div class="ulbm-section mb-4">
+					<h2 class="ulbm-section-title"><?php esc_html_e( 'About The Property', 'flex-booking-system' ); ?></h2>
+					<div class="ulbm-content-area">
 						<?php the_content(); ?>
 					</div>
 				</div>
 
 				<!-- Extra Services -->
 				<?php if ( ! empty( $extra_svc ) ) : ?>
-					<div class="fbs-section mb-4">
-						<h4 class="fw-bold mb-3"><i class="bi bi-plus-circle me-2 text-primary"></i><?php esc_html_e( 'Extra Services', 'flex-multiple-listing-and-booking-system' ); ?></h4>
+					<div class="ulbm-section mb-4">
+						<h4 class="fw-bold mb-3"><i class="bi bi-plus-circle me-2 text-primary"></i><?php esc_html_e( 'Extra Services', 'flex-booking-system' ); ?></h4>
 						<div class="list-group">
 							<?php foreach ( $extra_svc as $svc ) : ?>
 								<div class="list-group-item d-flex justify-content-between align-items-center">
@@ -206,7 +203,7 @@ while ( have_posts() ) :
 										<i class="bi bi-check2 text-success me-1"></i>
 										<?php echo esc_html( $svc['name'] ); ?>
 										<?php if ( ! empty( $svc['required'] ) ) : ?>
-											<span class="badge text-bg-warning ms-1"><?php esc_html_e( 'Required', 'flex-multiple-listing-and-booking-system' ); ?></span>
+											<span class="badge text-bg-warning ms-1"><?php esc_html_e( 'Required', 'flex-booking-system' ); ?></span>
 										<?php endif; ?>
 									</span>
 									<span class="fw-semibold">
@@ -221,13 +218,13 @@ while ( have_posts() ) :
 
 				<!-- Video -->
 				<?php if ( $video_url ) : ?>
-					<div class="fbs-section mb-4">
-						<h4 class="fw-bold mb-3"><i class="bi bi-play-circle me-2 text-primary"></i><?php esc_html_e( 'Video', 'flex-multiple-listing-and-booking-system' ); ?></h4>
+					<div class="ulbm-section mb-4">
+						<h4 class="fw-bold mb-3"><i class="bi bi-play-circle me-2 text-primary"></i><?php esc_html_e( 'Video', 'flex-booking-system' ); ?></h4>
 						<div class="ratio ratio-16x9 rounded overflow-hidden">
 							<?php
-							$fbs_oembed = wp_oembed_get( $video_url );
-							if ( $fbs_oembed ) {
-								echo wp_kses_post( $fbs_oembed );
+							$ulbm_oembed = wp_oembed_get( $video_url );
+							if ( $ulbm_oembed ) {
+								echo wp_kses_post( $ulbm_oembed );
 							} else {
 								echo '<a href="' . esc_url( $video_url ) . '" target="_blank" rel="noopener noreferrer" class="btn btn-outline-primary">' . esc_html( $video_url ) . '</a>';
 							}
@@ -238,17 +235,35 @@ while ( have_posts() ) :
 
 				<!-- Location / Map -->
 				<?php if ( $address || ( $latitude && $longitude ) ) : ?>
-					<div class="fbs-section mb-4" id="fbs-map">
-						<h2 class="fbs-section-title"><?php esc_html_e( 'Location', 'flex-multiple-listing-and-booking-system' ); ?></h2>
+					<div class="ulbm-section mb-4" id="ulbm-map">
+						<h2 class="ulbm-section-title"><?php esc_html_e( 'Location', 'flex-booking-system' ); ?></h2>
 						<?php if ( $address ) : ?>
 							<p class="text-muted mb-2"><i class="bi bi-pin-map me-1"></i><?php echo esc_html( $address ); ?></p>
 						<?php endif; ?>
 						<?php if ( $latitude && $longitude ) : ?>
-							<div class="rounded overflow-hidden border" style="height:280px;">
-								<iframe width="100%" height="280" frameborder="0" style="border:0"
-									src="https://maps.google.com/maps?q=<?php echo esc_attr( $latitude ); ?>,<?php echo esc_attr( $longitude ); ?>&z=14&output=embed"
-									allowfullscreen loading="lazy"></iframe>
-							</div>
+							<?php
+							$ulbm_maps_embed = ! empty( VendorPages::settings()['enable_google_maps_embed'] );
+							$ulbm_maps_url   = 'https://www.google.com/maps?q=' . rawurlencode( $latitude . ',' . $longitude );
+							?>
+							<?php if ( $ulbm_maps_embed ) : ?>
+								<div class="ulbm-google-map-optin rounded border p-3"
+									data-lat="<?php echo esc_attr( (string) $latitude ); ?>"
+									data-lng="<?php echo esc_attr( (string) $longitude ); ?>">
+									<p class="small text-muted mb-2">
+										<?php esc_html_e( 'Showing the embedded map loads content from Google and may share your IP address with Google.', 'flex-booking-system' ); ?>
+									</p>
+									<button type="button" class="btn btn-sm btn-outline-primary ulbm-show-google-map">
+										<?php esc_html_e( 'Show Google Map', 'flex-booking-system' ); ?>
+									</button>
+									<div class="ulbm-google-map-frame d-none mt-2 rounded overflow-hidden border" style="height:280px;" aria-hidden="true"></div>
+								</div>
+							<?php else : ?>
+								<p class="mb-0">
+									<a class="btn btn-sm btn-outline-primary" href="<?php echo esc_url( $ulbm_maps_url ); ?>" target="_blank" rel="noopener noreferrer">
+										<?php esc_html_e( 'Open in Google Maps', 'flex-booking-system' ); ?>
+									</a>
+								</p>
+							<?php endif; ?>
 						<?php endif; ?>
 					</div>
 				<?php endif; ?>
@@ -265,18 +280,18 @@ while ( have_posts() ) :
 				}
 				?>
 				<?php if ( ! empty( $faq_items ) ) : ?>
-					<div class="fbs-section mb-4">
-						<h4 class="fw-bold mb-3"><i class="bi bi-question-circle me-2 text-primary"></i><?php esc_html_e( 'Frequently Asked Questions', 'flex-multiple-listing-and-booking-system' ); ?></h4>
-						<div class="accordion" id="fbs-faq-accordion-<?php echo esc_attr( (string) $post_id ); ?>">
+					<div class="ulbm-section mb-4">
+						<h4 class="fw-bold mb-3"><i class="bi bi-question-circle me-2 text-primary"></i><?php esc_html_e( 'Frequently Asked Questions', 'flex-booking-system' ); ?></h4>
+						<div class="accordion" id="ulbm-faq-accordion-<?php echo esc_attr( (string) $post_id ); ?>">
 							<?php foreach ( $faq_items as $idx => $item ) : ?>
 								<div class="accordion-item">
 									<h2 class="accordion-header">
 										<button class="accordion-button <?php echo $idx > 0 ? 'collapsed' : ''; ?>" type="button"
-											data-bs-toggle="collapse" data-bs-target="#fbs-faq-<?php echo esc_attr( (string) $post_id . '-' . $idx ); ?>">
+											data-bs-toggle="collapse" data-bs-target="#ulbm-faq-<?php echo esc_attr( (string) $post_id . '-' . $idx ); ?>">
 											<?php echo esc_html( $item['question'] ); ?>
 										</button>
 									</h2>
-									<div id="fbs-faq-<?php echo esc_attr( (string) $post_id . '-' . $idx ); ?>" class="accordion-collapse collapse <?php echo 0 === $idx ? 'show' : ''; ?>" data-bs-parent="#fbs-faq-accordion-<?php echo esc_attr( (string) $post_id ); ?>">
+									<div id="ulbm-faq-<?php echo esc_attr( (string) $post_id . '-' . $idx ); ?>" class="accordion-collapse collapse <?php echo 0 === $idx ? 'show' : ''; ?>" data-bs-parent="#ulbm-faq-accordion-<?php echo esc_attr( (string) $post_id ); ?>">
 										<div class="accordion-body">
 											<?php echo wp_kses_post( nl2br( esc_html( $item['answer'] ?? '' ) ) ); ?>
 										</div>
@@ -288,46 +303,46 @@ while ( have_posts() ) :
 				<?php endif; ?>
 
 				<?php
-				$fbs_review_listing_id = $post_id;
-				include FBS_PLUGIN_DIR . 'templates/public/partials/listing-reviews.php';
+				$ulbm_review_listing_id = $post_id;
+				include ULBM_PLUGIN_DIR . 'templates/public/partials/listing-reviews.php';
 				?>
 
-				</div><!-- .fbs-listing-main -->
+				</div><!-- .ulbm-listing-main -->
 
 			</div><!-- .col-lg-8 -->
 
-			<div class="col-lg-4 fbs-listing-sidebar-col">
+			<div class="col-lg-4 ulbm-listing-sidebar-col">
 				<?php
-				$fbs_booking_type_id = $booking_type_id;
-				include FBS_PLUGIN_DIR . 'templates/public/partials/listing-sidebar.php';
+				$ulbm_booking_type_id = $booking_type_id;
+				include ULBM_PLUGIN_DIR . 'templates/public/partials/listing-sidebar.php';
 				?>
 
-				<div class="fbs-partner-cta fbs-partner-cta--compact d-none">
+				<div class="ulbm-partner-cta ulbm-partner-cta--compact d-none">
 						<?php if ( is_user_logged_in() && VendorRole::can_manage_listings() ) : ?>
-							<h6 class="fw-semibold mb-2"><i class="bi bi-building me-1 text-primary"></i><?php esc_html_e( 'Manage your listings', 'flex-multiple-listing-and-booking-system' ); ?></h6>
-							<p class="small text-muted mb-3"><?php esc_html_e( 'Add a new property, car, tour, or service from your partner dashboard.', 'flex-multiple-listing-and-booking-system' ); ?></p>
+							<h6 class="fw-semibold mb-2"><i class="bi bi-building me-1 text-primary"></i><?php esc_html_e( 'Manage your listings', 'flex-booking-system' ); ?></h6>
+							<p class="small text-muted mb-3"><?php esc_html_e( 'Add a new property, car, tour, or service from your partner dashboard.', 'flex-booking-system' ); ?></p>
 							<div class="d-grid gap-2">
 								<a href="<?php echo esc_url( VendorPages::add_listing_url() ); ?>" class="btn btn-primary btn-sm">
-									<i class="bi bi-plus-lg me-1"></i><?php esc_html_e( 'Add New Listing', 'flex-multiple-listing-and-booking-system' ); ?>
+									<i class="bi bi-plus-lg me-1"></i><?php esc_html_e( 'Add New Listing', 'flex-booking-system' ); ?>
 								</a>
 								<a href="<?php echo esc_url( VendorPages::dashboard_url() ); ?>" class="btn btn-outline-secondary btn-sm">
-									<i class="bi bi-person-circle me-1"></i><?php esc_html_e( 'Go to Account', 'flex-multiple-listing-and-booking-system' ); ?>
+									<i class="bi bi-person-circle me-1"></i><?php esc_html_e( 'Go to Account', 'flex-booking-system' ); ?>
 								</a>
 							</div>
 						<?php else : ?>
-							<h6 class="fw-semibold mb-2"><i class="bi bi-megaphone me-1 text-primary"></i><?php esc_html_e( 'Want to list here?', 'flex-multiple-listing-and-booking-system' ); ?></h6>
-							<p class="small text-muted mb-3"><?php esc_html_e( 'Register as a partner to add your property, car, tour, or service and receive bookings.', 'flex-multiple-listing-and-booking-system' ); ?></p>
+							<h6 class="fw-semibold mb-2"><i class="bi bi-megaphone me-1 text-primary"></i><?php esc_html_e( 'Want to list here?', 'flex-booking-system' ); ?></h6>
+							<p class="small text-muted mb-3"><?php esc_html_e( 'Register as a partner to add your property, car, tour, or service and receive bookings.', 'flex-booking-system' ); ?></p>
 							<div class="d-grid gap-2">
 								<a href="<?php echo esc_url( VendorPages::register_url() ); ?>" class="btn btn-primary btn-sm">
-									<i class="bi bi-person-plus me-1"></i><?php esc_html_e( 'Register & Add Listing', 'flex-multiple-listing-and-booking-system' ); ?>
+									<i class="bi bi-person-plus me-1"></i><?php esc_html_e( 'Register & Add Listing', 'flex-booking-system' ); ?>
 								</a>
 								<?php if ( ! is_user_logged_in() ) : ?>
 									<a href="<?php echo esc_url( VendorPages::login_url() ); ?>" class="btn btn-outline-secondary btn-sm">
-										<i class="bi bi-box-arrow-in-right me-1"></i><?php esc_html_e( 'Already have an account? Log in', 'flex-multiple-listing-and-booking-system' ); ?>
+										<i class="bi bi-box-arrow-in-right me-1"></i><?php esc_html_e( 'Already have an account? Log in', 'flex-booking-system' ); ?>
 									</a>
 								<?php else : ?>
 									<a href="<?php echo esc_url( VendorPages::register_url() ); ?>" class="btn btn-outline-secondary btn-sm">
-										<i class="bi bi-person-circle me-1"></i><?php esc_html_e( 'Apply for Partner Access', 'flex-multiple-listing-and-booking-system' ); ?>
+										<i class="bi bi-person-circle me-1"></i><?php esc_html_e( 'Apply for Partner Access', 'flex-booking-system' ); ?>
 									</a>
 								<?php endif; ?>
 							</div>

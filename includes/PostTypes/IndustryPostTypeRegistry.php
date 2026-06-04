@@ -30,7 +30,7 @@ final class IndustryPostTypeRegistry {
 	 * @return void
 	 */
 	public function register() {
-		$enabled = get_option( 'fbs_enabled_industries', array() );
+		$enabled = get_option( 'ulbm_enabled_industries', array() );
 		if ( ! is_array( $enabled ) || empty( $enabled ) ) {
 			return;
 		}
@@ -49,34 +49,34 @@ final class IndustryPostTypeRegistry {
 				'name'               => $def['plural'],
 				'singular_name'      => $def['singular'],
 				'menu_name'          => $def['plural'],
-				'add_new'            => __( 'Add New', 'flex-multiple-listing-and-booking-system' ),
+				'add_new'            => __( 'Add New', 'flex-booking-system' ),
 				'add_new_item'       => sprintf(
 					/* translators: %s: singular entity name */
-					__( 'Add %s', 'flex-multiple-listing-and-booking-system' ),
+					__( 'Add %s', 'flex-booking-system' ),
 					$def['singular']
 				),
 				'edit_item'          => sprintf(
 					/* translators: %s: singular entity name */
-					__( 'Edit %s', 'flex-multiple-listing-and-booking-system' ),
+					__( 'Edit %s', 'flex-booking-system' ),
 					$def['singular']
 				),
 				'new_item'           => sprintf(
 					/* translators: %s: singular entity name */
-					__( 'New %s', 'flex-multiple-listing-and-booking-system' ),
+					__( 'New %s', 'flex-booking-system' ),
 					$def['singular']
 				),
 				'view_item'          => sprintf(
 					/* translators: %s: singular entity name */
-					__( 'View %s', 'flex-multiple-listing-and-booking-system' ),
+					__( 'View %s', 'flex-booking-system' ),
 					$def['singular']
 				),
 				'search_items'       => sprintf(
 					/* translators: %s: plural entity name */
-					__( 'Search %s', 'flex-multiple-listing-and-booking-system' ),
+					__( 'Search %s', 'flex-booking-system' ),
 					$def['plural']
 				),
-				'not_found'          => __( 'Nothing found.', 'flex-multiple-listing-and-booking-system' ),
-				'not_found_in_trash' => __( 'Nothing found in Trash.', 'flex-multiple-listing-and-booking-system' ),
+				'not_found'          => __( 'Nothing found.', 'flex-booking-system' ),
+				'not_found_in_trash' => __( 'Nothing found in Trash.', 'flex-booking-system' ),
 			);
 
 			$caps = array(
@@ -104,7 +104,7 @@ final class IndustryPostTypeRegistry {
 					'public'              => false,
 					'publicly_queryable'  => false,
 					'show_ui'             => true,
-					'show_in_menu'        => 'fbs-dashboard',
+					'show_in_menu'        => 'ulbm-dashboard',
 					'show_in_nav_menus'   => false,
 					'show_in_admin_bar'   => false,
 					'exclude_from_search' => true,

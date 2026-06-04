@@ -14,32 +14,32 @@ final class ListingMeta {
 	/**
 	 * Meta keys registry — single source of truth for all listing metadata.
 	 */
-	public const KEY_BOOKING_TYPE_ID    = '_fbs_booking_type_id';
-	public const KEY_BASE_PRICE         = '_fbs_base_price';
-	public const KEY_SALE_PRICE         = '_fbs_sale_price';
-	public const KEY_PRICE_SUFFIX       = '_fbs_price_suffix';
-	public const KEY_BOOKING_MODE       = '_fbs_booking_mode';
-	public const KEY_MIN_BOOKING        = '_fbs_min_booking';
-	public const KEY_MAX_BOOKING        = '_fbs_max_booking';
-	public const KEY_MAX_GUESTS         = '_fbs_max_guests';
-	public const KEY_GALLERY            = '_fbs_gallery';
-	public const KEY_ADDRESS            = '_fbs_address';
-	public const KEY_LATITUDE           = '_fbs_latitude';
-	public const KEY_LONGITUDE          = '_fbs_longitude';
-	public const KEY_MAP_ZOOM           = '_fbs_map_zoom';
-	public const KEY_FEATURES           = '_fbs_features';
-	public const KEY_FAQ                = '_fbs_faq';
-	public const KEY_EXTRA_SERVICES     = '_fbs_extra_services';
-	public const KEY_CONTACT_EMAIL      = '_fbs_contact_email';
-	public const KEY_CONTACT_PHONE      = '_fbs_contact_phone';
-	public const KEY_CHECK_IN_TIME      = '_fbs_check_in_time';
-	public const KEY_CHECK_OUT_TIME     = '_fbs_check_out_time';
-	public const KEY_INSTANT_BOOKING    = '_fbs_instant_booking';
-	public const KEY_DEPOSIT_PERCENT    = '_fbs_deposit_percent';
-	public const KEY_CANCELLATION_DAYS  = '_fbs_cancellation_days';
-	public const KEY_VIDEO_URL          = '_fbs_video_url';
-	public const KEY_RATING             = '_fbs_rating';
-	public const KEY_REVIEW_COUNT       = '_fbs_review_count';
+	public const KEY_BOOKING_TYPE_ID    = '_ulbm_booking_type_id';
+	public const KEY_BASE_PRICE         = '_ulbm_base_price';
+	public const KEY_SALE_PRICE         = '_ulbm_sale_price';
+	public const KEY_PRICE_SUFFIX       = '_ulbm_price_suffix';
+	public const KEY_BOOKING_MODE       = '_ulbm_booking_mode';
+	public const KEY_MIN_BOOKING        = '_ulbm_min_booking';
+	public const KEY_MAX_BOOKING        = '_ulbm_max_booking';
+	public const KEY_MAX_GUESTS         = '_ulbm_max_guests';
+	public const KEY_GALLERY            = '_ulbm_gallery';
+	public const KEY_ADDRESS            = '_ulbm_address';
+	public const KEY_LATITUDE           = '_ulbm_latitude';
+	public const KEY_LONGITUDE          = '_ulbm_longitude';
+	public const KEY_MAP_ZOOM           = '_ulbm_map_zoom';
+	public const KEY_FEATURES           = '_ulbm_features';
+	public const KEY_FAQ                = '_ulbm_faq';
+	public const KEY_EXTRA_SERVICES     = '_ulbm_extra_services';
+	public const KEY_CONTACT_EMAIL      = '_ulbm_contact_email';
+	public const KEY_CONTACT_PHONE      = '_ulbm_contact_phone';
+	public const KEY_CHECK_IN_TIME      = '_ulbm_check_in_time';
+	public const KEY_CHECK_OUT_TIME     = '_ulbm_check_out_time';
+	public const KEY_INSTANT_BOOKING    = '_ulbm_instant_booking';
+	public const KEY_DEPOSIT_PERCENT    = '_ulbm_deposit_percent';
+	public const KEY_CANCELLATION_DAYS  = '_ulbm_cancellation_days';
+	public const KEY_VIDEO_URL          = '_ulbm_video_url';
+	public const KEY_RATING             = '_ulbm_rating';
+	public const KEY_REVIEW_COUNT       = '_ulbm_review_count';
 
 	/**
 	 * Retrieve post meta with type casting.
@@ -51,6 +51,12 @@ final class ListingMeta {
 	 */
 	public static function get( $post_id, $key, $type = 'string' ) {
 		$val = get_post_meta( $post_id, $key, true );
+		if ( ! metadata_exists( 'post', $post_id, $key ) && 0 === strpos( (string) $key, '_ulbm_' ) ) {
+			$legacy_key = '_fbs_' . substr( (string) $key, 6 );
+			if ( metadata_exists( 'post', $post_id, $legacy_key ) ) {
+				$val = get_post_meta( $post_id, $legacy_key, true );
+			}
+		}
 
 		switch ( $type ) {
 			case 'int':

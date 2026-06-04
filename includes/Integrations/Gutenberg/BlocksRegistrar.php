@@ -48,13 +48,13 @@ final class BlocksRegistrar {
 
 		register_block_type(
 
-			'flex-booking/form',
+			'ulbm-booking/form',
 
 			array(
 
 				'api_version'     => 2,
 
-				'title'           => __( 'Flex MLS Booking Form', 'flex-multiple-listing-and-booking-system' ),
+				'title'           => __( 'Flex Listings Booking Form', 'flex-booking-system' ),
 
 				'render_callback' => array( __CLASS__, 'render_booking_form' ),
 
@@ -74,13 +74,13 @@ final class BlocksRegistrar {
 
 		register_block_type(
 
-			'flex-booking/grid',
+			'ulbm-booking/grid',
 
 			array(
 
 				'api_version'     => 2,
 
-				'title'           => __( 'Flex MLS Listing Grid', 'flex-multiple-listing-and-booking-system' ),
+				'title'           => __( 'Usman Listing Grid', 'flex-booking-system' ),
 
 				'render_callback' => array( __CLASS__, 'render_listing_grid' ),
 
@@ -94,13 +94,13 @@ final class BlocksRegistrar {
 
 		register_block_type(
 
-			'flex-booking/search',
+			'ulbm-booking/search',
 
 			array(
 
 				'api_version'     => 2,
 
-				'title'           => __( 'Flex MLS Listing Search', 'flex-multiple-listing-and-booking-system' ),
+				'title'           => __( 'Usman Listing Search', 'flex-booking-system' ),
 
 				'render_callback' => array( __CLASS__, 'render_search' ),
 
@@ -168,19 +168,19 @@ final class BlocksRegistrar {
 
 	public static function enqueue_editor_assets() {
 
-		$asset_path = FBS_PLUGIN_URL . 'dist/blocks.js';
+		$asset_path = ULBM_PLUGIN_URL . 'dist/blocks.js';
 
 
 
 		wp_enqueue_script(
 
-			'fbs-blocks-editor',
+			'ulbm-blocks-editor',
 
 			$asset_path,
 
 			array( 'wp-blocks', 'wp-element', 'wp-block-editor', 'wp-components', 'wp-server-side-render', 'wp-data' ),
 
-			FBS_VERSION,
+			ULBM_VERSION,
 
 			true
 
@@ -210,7 +210,7 @@ final class BlocksRegistrar {
 
 
 
-		wp_localize_script( 'fbs-blocks-editor', 'fbsBlockData', array( 'types' => $types_js ) );
+		wp_localize_script( 'ulbm-blocks-editor', 'ulbmBlockData', array( 'types' => $types_js ) );
 
 	}
 
@@ -236,7 +236,7 @@ final class BlocksRegistrar {
 
 
 
-		return do_shortcode( sprintf( '[fbs_booking_form type="%s" id="%d"]', $type, $id ) );
+		return do_shortcode( sprintf( '[ulbm_booking_form type="%s" id="%d"]', $type, $id ) );
 
 	}
 
@@ -306,7 +306,7 @@ final class BlocksRegistrar {
 
 
 
-		return do_shortcode( '[fbs_listing_grid ' . implode( ' ', $parts ) . ']' );
+		return do_shortcode( '[ulbm_listing_grid ' . implode( ' ', $parts ) . ']' );
 
 	}
 
@@ -330,7 +330,7 @@ final class BlocksRegistrar {
 
 
 
-		return do_shortcode( sprintf( '[fbs_search layout="%s"]', $layout ) );
+		return do_shortcode( sprintf( '[ulbm_search layout="%s"]', $layout ) );
 
 	}
 

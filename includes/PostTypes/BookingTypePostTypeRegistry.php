@@ -3,7 +3,7 @@
  * Registers a public CPT for every booking type row in the database.
  *
  * When admin creates "Car Rental" or "Hotel" as a booking type, a matching
- * CPT is registered automatically (fbs_{slug}) with:
+ * CPT is registered automatically (ulbm_{slug}) with:
  * - Public single pages
  * - Archive pages
  * - Appears under Flex Booking admin menu
@@ -68,11 +68,81 @@ final class BookingTypePostTypeRegistry {
 	 */
 	public static function cpt_name_from_slug( $slug ) {
 		$slug = sanitize_key( (string) $slug );
+		$name = 'ulbm_' . $slug;
+		if ( strlen( $name ) > 20 ) {
+			$name = substr( $name, 0, 20 );
+		}
+		return $name;
+	}
+
+	/**
+	 * Legacy CPT slug prefix (pre–ulbm rename).
+	 *
+	 * @param string $slug Booking type slug.
+	 * @return string
+	 */
+	public static function legacy_cpt_name_from_slug( $slug ) {
+		$slug = sanitize_key( (string) $slug );
 		$name = 'fbs_' . $slug;
 		if ( strlen( $name ) > 20 ) {
 			$name = substr( $name, 0, 20 );
 		}
 		return $name;
+	}
+
+	/**
+	 * Current + legacy post types for listing queries (existing sites may still use fbs_* posts).
+	 *
+	 * @return string[]
+	 */
+	public static function listing_post_types_for_query() {
+		$out = array();
+		foreach ( self::get_registered_types() as $type ) {
+			$slug = (string) $type['slug'];
+			$out[] = self::cpt_name_from_slug( $slug );
+			$out[] = self::legacy_cpt_name_from_slug( $slug );
+		}
+		return array_values( array_unique( $out ) );
+	}
+
+	/**
+	 * Whether a post type is a bookable listing CPT (ulbm_* or legacy fbs_*).
+	 *
+	 * @param string $post_type Post type name.
+	 * @return bool
+	 */
+	public static function is_listing_post_type( $post_type ) {
+		$post_type = (string) $post_type;
+		if ( '' === $post_type || in_array( $post_type, array( 'ulbm_listing', 'fbs_listing' ), true ) ) {
+			return false;
+		}
+		if ( 0 !== strpos( $post_type, 'ulbm_' ) && 0 !== strpos( $post_type, 'fbs_' ) ) {
+			return false;
+		}
+		foreach ( self::get_registered_types() as $type ) {
+			$slug = (string) $type['slug'];
+			if ( self::cpt_name_from_slug( $slug ) === $post_type || self::legacy_cpt_name_from_slug( $slug ) === $post_type ) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Resolve booking type row from a listing post type name.
+	 *
+	 * @param string $post_type Post type.
+	 * @return array<string, mixed>|null
+	 */
+	public static function booking_type_for_post_type( $post_type ) {
+		$post_type = (string) $post_type;
+		foreach ( self::get_registered_types() as $type ) {
+			$slug = (string) $type['slug'];
+			if ( self::cpt_name_from_slug( $slug ) === $post_type || self::legacy_cpt_name_from_slug( $slug ) === $post_type ) {
+				return $type;
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -95,34 +165,34 @@ final class BookingTypePostTypeRegistry {
 				'name'          => $name,
 				'singular_name' => $name,
 				'menu_name'     => $name,
-				'add_new'       => __( 'Add New', 'flex-multiple-listing-and-booking-system' ),
+				'add_new'       => __( 'Add New', 'flex-booking-system' ),
 				'add_new_item'  => sprintf(
 					/* translators: %s: booking type name */
-					__( 'Add %s', 'flex-multiple-listing-and-booking-system' ),
+					__( 'Add %s', 'flex-booking-system' ),
 					$name
 				),
 				'edit_item'     => sprintf(
 					/* translators: %s: booking type name */
-					__( 'Edit %s', 'flex-multiple-listing-and-booking-system' ),
+					__( 'Edit %s', 'flex-booking-system' ),
 					$name
 				),
 				'new_item'      => sprintf(
 					/* translators: %s: booking type name */
-					__( 'New %s', 'flex-multiple-listing-and-booking-system' ),
+					__( 'New %s', 'flex-booking-system' ),
 					$name
 				),
 				'view_item'     => sprintf(
 					/* translators: %s: booking type name */
-					__( 'View %s', 'flex-multiple-listing-and-booking-system' ),
+					__( 'View %s', 'flex-booking-system' ),
 					$name
 				),
 				'search_items'  => sprintf(
 					/* translators: %s: booking type name */
-					__( 'Search %s', 'flex-multiple-listing-and-booking-system' ),
+					__( 'Search %s', 'flex-booking-system' ),
 					$name
 				),
-				'not_found'          => __( 'Nothing found.', 'flex-multiple-listing-and-booking-system' ),
-				'not_found_in_trash' => __( 'Nothing found in Trash.', 'flex-multiple-listing-and-booking-system' ),
+				'not_found'          => __( 'Nothing found.', 'flex-booking-system' ),
+				'not_found_in_trash' => __( 'Nothing found in Trash.', 'flex-booking-system' ),
 				'all_items'          => $name,
 			);
 
@@ -136,7 +206,7 @@ final class BookingTypePostTypeRegistry {
 					'public'              => true,
 					'publicly_queryable'  => true,
 					'show_ui'             => true,
-					'show_in_menu'        => 'fbs-dashboard',
+					'show_in_menu'        => 'ulbm-dashboard',
 					'show_in_rest'        => true,
 					'show_in_nav_menus'   => true,
 					'show_in_admin_bar'   => true,
@@ -166,28 +236,12 @@ final class BookingTypePostTypeRegistry {
 		}
 
 		$post_type = get_post_type();
-		if ( ! $post_type || 0 !== strpos( $post_type, 'fbs_' ) ) {
-			return $template;
-		}
-
-		if ( $post_type === 'fbs_listing' ) {
-			return $template;
-		}
-
-		$types = self::get_registered_types();
-		$match = false;
-		foreach ( $types as $t ) {
-			if ( self::cpt_name_from_slug( $t['slug'] ) === $post_type ) {
-				$match = $t;
-				break;
-			}
-		}
-
+		$match     = self::booking_type_for_post_type( (string) $post_type );
 		if ( ! $match ) {
 			return $template;
 		}
 
-		$custom = FBS_PLUGIN_DIR . 'templates/public/single-booking-type.php';
+		$custom = ULBM_PLUGIN_DIR . 'templates/public/single-booking-type.php';
 		if ( is_readable( $custom ) ) {
 			return $custom;
 		}
@@ -210,15 +264,11 @@ final class BookingTypePostTypeRegistry {
 		if ( is_array( $post_type ) ) {
 			$post_type = reset( $post_type );
 		}
-		if ( ! $post_type || 0 !== strpos( (string) $post_type, 'fbs_' ) ) {
+		if ( ! self::is_listing_post_type( (string) $post_type ) ) {
 			return $template;
 		}
 
-		if ( 'fbs_listing' === $post_type ) {
-			return $template;
-		}
-
-		$custom = FBS_PLUGIN_DIR . 'templates/public/archive-booking-type.php';
+		$custom = ULBM_PLUGIN_DIR . 'templates/public/archive-booking-type.php';
 		if ( is_readable( $custom ) ) {
 			return $custom;
 		}

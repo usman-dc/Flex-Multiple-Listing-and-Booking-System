@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Admin dashboard Chart.js initialization.
  *
  * @package FlexBookingSystem
@@ -13,7 +13,7 @@
 	var cfg = window.fbsDashboardCharts;
 
 	document.addEventListener( 'DOMContentLoaded', function () {
-		var mainCtx = document.getElementById( 'fbs-chart-main' );
+		var mainCtx = document.getElementById( 'ulbm-chart-main' );
 		if ( mainCtx ) {
 			new window.Chart( mainCtx, {
 				type: 'line',
@@ -61,7 +61,7 @@
 			} );
 		}
 
-		var statusCtx = document.getElementById( 'fbs-chart-status' );
+		var statusCtx = document.getElementById( 'ulbm-chart-status' );
 		if ( statusCtx ) {
 			new window.Chart( statusCtx, {
 				type: 'doughnut',
@@ -81,7 +81,7 @@
 			} );
 		}
 
-		var typesCtx = document.getElementById( 'fbs-chart-types' );
+		var typesCtx = document.getElementById( 'ulbm-chart-types' );
 		if ( typesCtx ) {
 			new window.Chart( typesCtx, {
 				type: 'bar',

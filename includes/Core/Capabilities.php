@@ -14,8 +14,8 @@ defined( 'ABSPATH' ) || exit;
  */
 final class Capabilities {
 
-	public const CAP_MANAGE = 'manage_fbs_bookings';
-	public const CAP_BOOK    = 'create_fbs_bookings';
+	public const CAP_MANAGE = 'manage_ulbm_bookings';
+	public const CAP_BOOK    = 'create_ulbm_bookings';
 
 	/**
 	 * Capability for add_menu_page / add_submenu_page.
@@ -55,7 +55,7 @@ final class Capabilities {
 	private static $filter_registered = false;
 
 	/**
-	 * Satisfy `manage_fbs_bookings` when the user can run the site or WooCommerce store.
+	 * Satisfy `manage_ulbm_bookings` when the user can run the site or WooCommerce store.
 	 *
 	 * WordPress maps unknown caps to a primitive with the same name; CPT UI also requires that
 	 * primitive in `allcaps`. Role rows sometimes never get updated (no activation, object cache),

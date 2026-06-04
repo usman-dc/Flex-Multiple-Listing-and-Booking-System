@@ -34,7 +34,7 @@ final class ListingReviewService {
 	 * @return bool
 	 */
 	public static function reviews_enabled() {
-		$raw = json_decode( (string) get_option( 'fbs_general_settings', '{}' ), true );
+		$raw = json_decode( (string) get_option( 'ulbm_general_settings', '{}' ), true );
 		if ( ! is_array( $raw ) ) {
 			return true;
 		}
@@ -47,7 +47,7 @@ final class ListingReviewService {
 	 * @return bool
 	 */
 	public static function auto_approve() {
-		$raw = json_decode( (string) get_option( 'fbs_general_settings', '{}' ), true );
+		$raw = json_decode( (string) get_option( 'ulbm_general_settings', '{}' ), true );
 		return is_array( $raw ) && ! empty( $raw['reviews_auto_approve'] );
 	}
 
@@ -65,7 +65,7 @@ final class ListingReviewService {
 		if ( ! self::reviews_enabled() ) {
 			return array(
 				'success' => false,
-				'message' => __( 'Reviews are currently disabled.', 'flex-multiple-listing-and-booking-system' ),
+				'message' => __( 'Reviews are currently disabled.', 'flex-booking-system' ),
 			);
 		}
 
@@ -73,7 +73,7 @@ final class ListingReviewService {
 		if ( $listing_id < 1 || ! $this->is_valid_listing( $listing_id ) ) {
 			return array(
 				'success' => false,
-				'message' => __( 'Invalid listing.', 'flex-multiple-listing-and-booking-system' ),
+				'message' => __( 'Invalid listing.', 'flex-booking-system' ),
 			);
 		}
 
@@ -95,14 +95,14 @@ final class ListingReviewService {
 		if ( '' === $name || '' === $email || ! is_email( $email ) ) {
 			return array(
 				'success' => false,
-				'message' => __( 'Please enter your name and a valid email.', 'flex-multiple-listing-and-booking-system' ),
+				'message' => __( 'Please enter your name and a valid email.', 'flex-booking-system' ),
 			);
 		}
 
 		if ( strlen( $content ) < 10 ) {
 			return array(
 				'success' => false,
-				'message' => __( 'Please write at least 10 characters in your review.', 'flex-multiple-listing-and-booking-system' ),
+				'message' => __( 'Please write at least 10 characters in your review.', 'flex-booking-system' ),
 			);
 		}
 
@@ -121,7 +121,7 @@ final class ListingReviewService {
 		);
 
 		if ( $review_id < 1 ) {
-			$message = __( 'Could not save your review. Please try again.', 'flex-multiple-listing-and-booking-system' );
+			$message = __( 'Could not save your review. Please try again.', 'flex-booking-system' );
 			$db_err  = ListingReviewRepository::last_db_error();
 			if ( '' !== $db_err && ( defined( 'WP_DEBUG' ) && WP_DEBUG ) ) {
 				$message .= ' (' . $db_err . ')';
@@ -138,8 +138,8 @@ final class ListingReviewService {
 		}
 
 		$message = 'approved' === $status
-			? __( 'Thank you! Your review has been published.', 'flex-multiple-listing-and-booking-system' )
-			: __( 'Thank you! Your review was submitted and is awaiting approval.', 'flex-multiple-listing-and-booking-system' );
+			? __( 'Thank you! Your review has been published.', 'flex-booking-system' )
+			: __( 'Thank you! Your review was submitted and is awaiting approval.', 'flex-booking-system' );
 
 		return array(
 			'success'   => true,
@@ -241,6 +241,6 @@ final class ListingReviewService {
 		}
 
 		// Fallback: any booking-type CPT slug prefix.
-		return 0 === strpos( (string) $post->post_type, 'fbs_' );
+		return \FlexBooking\PostTypes\BookingTypePostTypeRegistry::is_listing_post_type( (string) $post->post_type );
 	}
 }

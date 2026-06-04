@@ -111,7 +111,7 @@ final class Plugin {
 		$migrator->maybe_upgrade();
 
 		// Grant custom caps on every load — activation-only registration skips sites where the hook
-		// never ran (manual deploy, migration); without `manage_fbs_bookings`, wp-admin routes 403.
+		// never ran (manual deploy, migration); without `manage_ulbm_bookings`, wp-admin routes 403.
 		add_action(
 			'init',
 			static function () {
@@ -162,9 +162,9 @@ final class Plugin {
 			'plugins_loaded',
 			function () {
 				load_plugin_textdomain(
-					'flex-multiple-listing-and-booking-system',
+					'flex-booking-system',
 					false,
-					dirname( FBS_PLUGIN_BASENAME ) . '/languages/'
+					dirname( ULBM_PLUGIN_BASENAME ) . '/languages/'
 				);
 			},
 			5,
@@ -192,9 +192,9 @@ final class Plugin {
 	 * @return void
 	 */
 	public function register_shortcodes() {
-		add_shortcode( 'fbs_booking_form', array( $this, 'shortcode_booking_form' ) );
-		add_shortcode( 'fbs_listing_grid', array( $this, 'shortcode_listing_grid' ) );
-		add_shortcode( 'fbs_search', array( $this, 'shortcode_search' ) );
+		add_shortcode( 'ulbm_booking_form', array( $this, 'shortcode_booking_form' ) );
+		add_shortcode( 'ulbm_listing_grid', array( $this, 'shortcode_listing_grid' ) );
+		add_shortcode( 'ulbm_search', array( $this, 'shortcode_search' ) );
 	}
 
 	/**
@@ -211,26 +211,39 @@ final class Plugin {
 				'listing_id' => 0,
 			),
 			$atts,
-			'fbs_booking_form'
+			'ulbm_booking_form'
 		);
 
-		$fbs_booking_type = null;
+		$ulbm_booking_type = null;
+		$type_repo         = new \FlexBooking\Booking\BookingTypeRepository();
 		if ( ! empty( $atts['id'] ) ) {
-			$type_repo        = new \FlexBooking\Booking\BookingTypeRepository();
-			$fbs_booking_type = $type_repo->get_by_id( (int) $atts['id'] );
+			$ulbm_booking_type = $type_repo->get_by_id( (int) $atts['id'] );
 		}
 
-		$fbs_listing_id = absint( $atts['listing_id'] );
-		if ( ! $fbs_listing_id && is_singular() ) {
+		$ulbm_listing_id = absint( $atts['listing_id'] );
+		if ( ! $ulbm_listing_id && is_singular() ) {
 			$pt = get_post_type();
-			if ( $pt && 0 === strpos( (string) $pt, 'fbs_' ) && 'fbs_listing' !== $pt ) {
-				$fbs_listing_id = get_the_ID();
+			if ( $pt && \FlexBooking\PostTypes\BookingTypePostTypeRegistry::is_listing_post_type( (string) $pt ) ) {
+				$ulbm_listing_id = get_the_ID();
 			}
 		}
 
-		$fbs_form_groups = \FlexBooking\Forms\PublicBookingFields::groups_for_type( $fbs_booking_type );
+		if ( ! $ulbm_booking_type && $ulbm_listing_id > 0 ) {
+			$pt = get_post_type( $ulbm_listing_id );
+			if ( $pt ) {
+				$row = \FlexBooking\PostTypes\BookingTypePostTypeRegistry::booking_type_for_post_type( (string) $pt );
+				if ( $row ) {
+					$ulbm_booking_type = $type_repo->get_by_id( (int) $row['id'] ) ?: $row;
+					if ( empty( $atts['id'] ) ) {
+						$atts['id'] = (int) $row['id'];
+					}
+				}
+			}
+		}
 
-		$fbs_prefill = array(
+		$ulbm_form_groups = \FlexBooking\Forms\PublicBookingFields::groups_for_type( $ulbm_booking_type );
+
+		$ulbm_prefill = array(
 			'customer_email'      => '',
 			'customer_phone'      => '',
 			'customer_first_name' => '',
@@ -238,21 +251,21 @@ final class Plugin {
 		);
 		if ( is_user_logged_in() ) {
 			$user                      = wp_get_current_user();
-			$fbs_prefill['customer_email']      = $user->user_email;
-			$fbs_prefill['customer_first_name'] = (string) get_user_meta( $user->ID, 'first_name', true );
-			$fbs_prefill['customer_last_name']  = (string) get_user_meta( $user->ID, 'last_name', true );
+			$ulbm_prefill['customer_email']      = $user->user_email;
+			$ulbm_prefill['customer_first_name'] = (string) get_user_meta( $user->ID, 'first_name', true );
+			$ulbm_prefill['customer_last_name']  = (string) get_user_meta( $user->ID, 'last_name', true );
 		}
 
 		ob_start();
-		include FBS_PLUGIN_DIR . 'templates/public/booking-form.php';
+		include ULBM_PLUGIN_DIR . 'templates/public/booking-form.php';
 
-		return \FlexBooking\Front\LayoutSettings::wrap( (string) ob_get_clean(), 'fbs-booking-form-wrap' );
+		return \FlexBooking\Front\LayoutSettings::wrap( (string) ob_get_clean(), 'ulbm-booking-form-wrap' );
 	}
 
 	/**
 	 * Shortcode: listing grid — displays cards for a booking type's posts.
 	 *
-	 * Usage: [fbs_listing_grid type="car-rental" columns="3" limit="12"]
+	 * Usage: [ulbm_listing_grid type="car-rental" columns="3" limit="12"]
 	 *
 	 * @param array<string,mixed> $atts Attributes.
 	 * @return string
@@ -271,23 +284,23 @@ final class Plugin {
 				'card_padding'  => '',
 			),
 			$atts,
-			'fbs_listing_grid'
+			'ulbm_listing_grid'
 		);
 
-		$fbs_grid_type    = sanitize_key( $atts['type'] );
-		$fbs_grid_columns = max( 1, min( 6, (int) $atts['columns'] ) );
-		$fbs_grid_limit   = max( 1, min( 100, (int) $atts['limit'] ) );
-		$fbs_grid_spacing = array();
+		$ulbm_grid_type    = sanitize_key( $atts['type'] );
+		$ulbm_grid_columns = max( 1, min( 6, (int) $atts['columns'] ) );
+		$ulbm_grid_limit   = max( 1, min( 100, (int) $atts['limit'] ) );
+		$ulbm_grid_spacing = array();
 		foreach ( array( 'gap', 'padding_x', 'padding_y', 'margin_top', 'margin_bottom', 'card_padding' ) as $spacing_key ) {
 			if ( '' !== (string) $atts[ $spacing_key ] ) {
-				$fbs_grid_spacing[ $spacing_key ] = (int) $atts[ $spacing_key ];
+				$ulbm_grid_spacing[ $spacing_key ] = (int) $atts[ $spacing_key ];
 			}
 		}
 
 		ob_start();
-		include FBS_PLUGIN_DIR . 'templates/public/listing-grid.php';
+		include ULBM_PLUGIN_DIR . 'templates/public/listing-grid.php';
 
-		return \FlexBooking\Front\LayoutSettings::wrap( (string) ob_get_clean(), 'fbs-listing-grid-wrap' );
+		return \FlexBooking\Front\LayoutSettings::wrap( (string) ob_get_clean(), 'ulbm-listing-grid-wrap' );
 	}
 
 	/**
@@ -302,15 +315,15 @@ final class Plugin {
 				'layout' => 'horizontal',
 			),
 			$atts,
-			'fbs_search'
+			'ulbm_search'
 		);
 
 		return \FlexBooking\Front\LayoutSettings::wrap(
 			sprintf(
-				'<div class="fbs-search-root" data-layout="%s"><div class="fbs-loading spinner-border text-primary" role="status"></div></div>',
+				'<div class="ulbm-search-root" data-layout="%s"><div class="ulbm-loading spinner-border text-primary" role="status"></div></div>',
 				esc_attr( $atts['layout'] )
 			),
-			'fbs-search-wrap'
+			'ulbm-search-wrap'
 		);
 	}
 }

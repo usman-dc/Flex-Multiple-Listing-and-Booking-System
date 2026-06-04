@@ -10,7 +10,7 @@ namespace FlexBooking\Front;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Reads and sanitizes color options from fbs_general_settings.
+ * Reads and sanitizes color options from ulbm_general_settings.
  */
 final class ColorSettings {
 
@@ -22,118 +22,118 @@ final class ColorSettings {
 	public static function fields() {
 		return array(
 			'color_primary'       => array(
-				'label'   => __( 'Primary', 'flex-multiple-listing-and-booking-system' ),
+				'label'   => __( 'Primary', 'flex-booking-system' ),
 				'default' => '#0d6efd',
 				'group'   => 'brand',
-				'hint'    => __( 'Main buttons, icons, prices, active states', 'flex-multiple-listing-and-booking-system' ),
+				'hint'    => __( 'Main buttons, icons, prices, active states', 'flex-booking-system' ),
 			),
 			'color_secondary'     => array(
-				'label'   => __( 'Secondary', 'flex-multiple-listing-and-booking-system' ),
+				'label'   => __( 'Secondary', 'flex-booking-system' ),
 				'default' => '#6c757d',
 				'group'   => 'brand',
-				'hint'    => __( 'Secondary buttons, subtle UI', 'flex-multiple-listing-and-booking-system' ),
+				'hint'    => __( 'Secondary buttons, subtle UI', 'flex-booking-system' ),
 			),
 			'color_success'       => array(
-				'label'   => __( 'Success', 'flex-multiple-listing-and-booking-system' ),
+				'label'   => __( 'Success', 'flex-booking-system' ),
 				'default' => '#198754',
 				'group'   => 'brand',
-				'hint'    => __( 'Featured badge, instant booking, success messages', 'flex-multiple-listing-and-booking-system' ),
+				'hint'    => __( 'Featured badge, instant booking, success messages', 'flex-booking-system' ),
 			),
 			'color_accent'        => array(
-				'label'   => __( 'Accent', 'flex-multiple-listing-and-booking-system' ),
+				'label'   => __( 'Accent', 'flex-booking-system' ),
 				'default' => '#ffc107',
 				'group'   => 'brand',
-				'hint'    => __( 'Star ratings, highlights', 'flex-multiple-listing-and-booking-system' ),
+				'hint'    => __( 'Star ratings, highlights', 'flex-booking-system' ),
 			),
 			'color_danger'        => array(
-				'label'   => __( 'Danger / Sale', 'flex-multiple-listing-and-booking-system' ),
+				'label'   => __( 'Danger / Sale', 'flex-booking-system' ),
 				'default' => '#dc3545',
 				'group'   => 'brand',
-				'hint'    => __( 'Errors, sale prices, wishlist active', 'flex-multiple-listing-and-booking-system' ),
+				'hint'    => __( 'Errors, sale prices, wishlist active', 'flex-booking-system' ),
 			),
 			'color_page_bg'       => array(
-				'label'   => __( 'Page background', 'flex-multiple-listing-and-booking-system' ),
+				'label'   => __( 'Page background', 'flex-booking-system' ),
 				'default' => '#f5f6f8',
 				'group'   => 'backgrounds',
-				'hint'    => __( 'Outer page area behind listings', 'flex-multiple-listing-and-booking-system' ),
+				'hint'    => __( 'Outer page area behind listings', 'flex-booking-system' ),
 			),
 			'color_surface_bg'    => array(
-				'label'   => __( 'Panel / filter background', 'flex-multiple-listing-and-booking-system' ),
+				'label'   => __( 'Panel / filter background', 'flex-booking-system' ),
 				'default' => '#ffffff',
 				'group'   => 'backgrounds',
-				'hint'    => __( 'Filter bar, content panels, forms', 'flex-multiple-listing-and-booking-system' ),
+				'hint'    => __( 'Filter bar, content panels, forms', 'flex-booking-system' ),
 			),
 			'color_card_bg'       => array(
-				'label'   => __( 'Card background', 'flex-multiple-listing-and-booking-system' ),
+				'label'   => __( 'Card background', 'flex-booking-system' ),
 				'default' => '#ffffff',
 				'group'   => 'backgrounds',
-				'hint'    => __( 'Listing grid cards', 'flex-multiple-listing-and-booking-system' ),
+				'hint'    => __( 'Listing grid cards', 'flex-booking-system' ),
 			),
 			'color_booking_bg'    => array(
-				'label'   => __( 'Booking box background', 'flex-multiple-listing-and-booking-system' ),
+				'label'   => __( 'Booking box background', 'flex-booking-system' ),
 				'default' => '#ffffff',
 				'group'   => 'backgrounds',
-				'hint'    => __( 'Sidebar booking widget on single listing', 'flex-multiple-listing-and-booking-system' ),
+				'hint'    => __( 'Sidebar booking widget on single listing', 'flex-booking-system' ),
 			),
 			'color_toolbar_bg'    => array(
-				'label'   => __( 'Toolbar background', 'flex-multiple-listing-and-booking-system' ),
+				'label'   => __( 'Toolbar background', 'flex-booking-system' ),
 				'default' => '#ffffff',
 				'group'   => 'backgrounds',
-				'hint'    => __( 'Top account / navigation bar', 'flex-multiple-listing-and-booking-system' ),
+				'hint'    => __( 'Top account / navigation bar', 'flex-booking-system' ),
 			),
 			'color_gallery_bg'    => array(
-				'label'   => __( 'Gallery placeholder', 'flex-multiple-listing-and-booking-system' ),
+				'label'   => __( 'Gallery placeholder', 'flex-booking-system' ),
 				'default' => '#dee2e6',
 				'group'   => 'backgrounds',
-				'hint'    => __( 'Empty image areas before photos load', 'flex-multiple-listing-and-booking-system' ),
+				'hint'    => __( 'Empty image areas before photos load', 'flex-booking-system' ),
 			),
 			'color_heading'       => array(
-				'label'   => __( 'Headings', 'flex-multiple-listing-and-booking-system' ),
+				'label'   => __( 'Headings', 'flex-booking-system' ),
 				'default' => '#1a2b48',
 				'group'   => 'text',
-				'hint'    => __( 'Titles, listing names, prices in hero', 'flex-multiple-listing-and-booking-system' ),
+				'hint'    => __( 'Titles, listing names, prices in hero', 'flex-booking-system' ),
 			),
 			'color_text'          => array(
-				'label'   => __( 'Body text', 'flex-multiple-listing-and-booking-system' ),
+				'label'   => __( 'Body text', 'flex-booking-system' ),
 				'default' => '#212529',
 				'group'   => 'text',
-				'hint'    => __( 'Main paragraph and card text', 'flex-multiple-listing-and-booking-system' ),
+				'hint'    => __( 'Main paragraph and card text', 'flex-booking-system' ),
 			),
 			'color_muted'         => array(
-				'label'   => __( 'Muted text', 'flex-multiple-listing-and-booking-system' ),
+				'label'   => __( 'Muted text', 'flex-booking-system' ),
 				'default' => '#6b7280',
 				'group'   => 'text',
-				'hint'    => __( 'Locations, meta, helper text', 'flex-multiple-listing-and-booking-system' ),
+				'hint'    => __( 'Locations, meta, helper text', 'flex-booking-system' ),
 			),
 			'color_link'          => array(
-				'label'   => __( 'Links', 'flex-multiple-listing-and-booking-system' ),
+				'label'   => __( 'Links', 'flex-booking-system' ),
 				'default' => '#0d6efd',
 				'group'   => 'text',
-				'hint'    => __( 'Text links (view map, etc.)', 'flex-multiple-listing-and-booking-system' ),
+				'hint'    => __( 'Text links (view map, etc.)', 'flex-booking-system' ),
 			),
 			'color_border'        => array(
-				'label'   => __( 'Borders', 'flex-multiple-listing-and-booking-system' ),
+				'label'   => __( 'Borders', 'flex-booking-system' ),
 				'default' => '#e5e7eb',
 				'group'   => 'borders',
-				'hint'    => __( 'Cards, dividers, input outlines', 'flex-multiple-listing-and-booking-system' ),
+				'hint'    => __( 'Cards, dividers, input outlines', 'flex-booking-system' ),
 			),
 			'color_border_focus'  => array(
-				'label'   => __( 'Focus border', 'flex-multiple-listing-and-booking-system' ),
+				'label'   => __( 'Focus border', 'flex-booking-system' ),
 				'default' => '#0d6efd',
 				'group'   => 'borders',
-				'hint'    => __( 'Focused form fields', 'flex-multiple-listing-and-booking-system' ),
+				'hint'    => __( 'Focused form fields', 'flex-booking-system' ),
 			),
 			'color_input_bg'      => array(
-				'label'   => __( 'Input background', 'flex-multiple-listing-and-booking-system' ),
+				'label'   => __( 'Input background', 'flex-booking-system' ),
 				'default' => '#ffffff',
 				'group'   => 'borders',
-				'hint'    => __( 'Search fields, booking form inputs', 'flex-multiple-listing-and-booking-system' ),
+				'hint'    => __( 'Search fields, booking form inputs', 'flex-booking-system' ),
 			),
 			'color_btn_text'      => array(
-				'label'   => __( 'Primary button text', 'flex-multiple-listing-and-booking-system' ),
+				'label'   => __( 'Primary button text', 'flex-booking-system' ),
 				'default' => '#ffffff',
 				'group'   => 'buttons',
-				'hint'    => __( 'Text on primary buttons', 'flex-multiple-listing-and-booking-system' ),
+				'hint'    => __( 'Text on primary buttons', 'flex-booking-system' ),
 			),
 		);
 	}
@@ -143,11 +143,11 @@ final class ColorSettings {
 	 */
 	public static function groups() {
 		return array(
-			'brand'       => __( 'Brand colors', 'flex-multiple-listing-and-booking-system' ),
-			'backgrounds' => __( 'Backgrounds', 'flex-multiple-listing-and-booking-system' ),
-			'text'        => __( 'Text', 'flex-multiple-listing-and-booking-system' ),
-			'borders'     => __( 'Borders & form fields', 'flex-multiple-listing-and-booking-system' ),
-			'buttons'     => __( 'Buttons', 'flex-multiple-listing-and-booking-system' ),
+			'brand'       => __( 'Brand colors', 'flex-booking-system' ),
+			'backgrounds' => __( 'Backgrounds', 'flex-booking-system' ),
+			'text'        => __( 'Text', 'flex-booking-system' ),
+			'borders'     => __( 'Borders & form fields', 'flex-booking-system' ),
+			'buttons'     => __( 'Buttons', 'flex-booking-system' ),
 		);
 	}
 
@@ -169,7 +169,7 @@ final class ColorSettings {
 	 * @return string
 	 */
 	public static function post_key( $settings_key ) {
-		return 'fbs_' . $settings_key;
+		return 'ulbm_' . $settings_key;
 	}
 
 	/**
@@ -228,8 +228,8 @@ final class ColorSettings {
 		$out      = array();
 		$json_in  = array();
 
-		if ( ! empty( $post['fbs_colors_json'] ) ) {
-			$decoded = json_decode( (string) $post['fbs_colors_json'], true );
+		if ( ! empty( $post['ulbm_colors_json'] ) ) {
+			$decoded = json_decode( (string) $post['ulbm_colors_json'], true );
 			if ( is_array( $decoded ) ) {
 				$json_in = $decoded;
 			}
@@ -262,26 +262,26 @@ final class ColorSettings {
 		$c = self::get();
 
 		return array(
-			'--fbs-primary'        => $c['color_primary'],
-			'--fbs-secondary'      => $c['color_secondary'],
-			'--fbs-success'        => $c['color_success'],
-			'--fbs-accent'         => $c['color_accent'],
-			'--fbs-danger'         => $c['color_danger'],
-			'--fbs-page-bg'        => $c['color_page_bg'],
-			'--fbs-surface-bg'     => $c['color_surface_bg'],
-			'--fbs-card-bg'        => $c['color_card_bg'],
-			'--fbs-booking-bg'     => $c['color_booking_bg'],
-			'--fbs-toolbar-bg'     => $c['color_toolbar_bg'],
-			'--fbs-gallery-bg'     => $c['color_gallery_bg'],
-			'--fbs-heading'        => $c['color_heading'],
-			'--fbs-text'           => $c['color_text'],
-			'--fbs-muted'          => $c['color_muted'],
-			'--fbs-link'           => $c['color_link'],
-			'--fbs-border'         => $c['color_border'],
-			'--fbs-border-focus'   => $c['color_border_focus'],
-			'--fbs-input-bg'       => $c['color_input_bg'],
-			'--fbs-btn-text'       => $c['color_btn_text'],
-			'--fbs-navy'           => $c['color_heading'],
+			'--ulbm-primary'        => $c['color_primary'],
+			'--ulbm-secondary'      => $c['color_secondary'],
+			'--ulbm-success'        => $c['color_success'],
+			'--ulbm-accent'         => $c['color_accent'],
+			'--ulbm-danger'         => $c['color_danger'],
+			'--ulbm-page-bg'        => $c['color_page_bg'],
+			'--ulbm-surface-bg'     => $c['color_surface_bg'],
+			'--ulbm-card-bg'        => $c['color_card_bg'],
+			'--ulbm-booking-bg'     => $c['color_booking_bg'],
+			'--ulbm-toolbar-bg'     => $c['color_toolbar_bg'],
+			'--ulbm-gallery-bg'     => $c['color_gallery_bg'],
+			'--ulbm-heading'        => $c['color_heading'],
+			'--ulbm-text'           => $c['color_text'],
+			'--ulbm-muted'          => $c['color_muted'],
+			'--ulbm-link'           => $c['color_link'],
+			'--ulbm-border'         => $c['color_border'],
+			'--ulbm-border-focus'   => $c['color_border_focus'],
+			'--ulbm-input-bg'       => $c['color_input_bg'],
+			'--ulbm-btn-text'       => $c['color_btn_text'],
+			'--ulbm-navy'           => $c['color_heading'],
 			'--bs-primary'         => $c['color_primary'],
 			'--bs-secondary'       => $c['color_secondary'],
 			'--bs-success'         => $c['color_success'],
@@ -297,14 +297,14 @@ final class ColorSettings {
 	 */
 	public static function css_scope_selector() {
 		$selectors = array(
-			'.fbs-root',
-			'.fbs-single-listing-wrap',
-			'.fbs-booking-form',
-			'.fbs-listing-grid',
-			'.fbs-vendor-dashboard',
-			'.fbs-vendor-auth',
-			'.fbs-search-root',
-			'.fbs-become-partner',
+			'.ulbm-root',
+			'.ulbm-single-listing-wrap',
+			'.ulbm-booking-form',
+			'.ulbm-listing-grid',
+			'.ulbm-vendor-dashboard',
+			'.ulbm-vendor-auth',
+			'.ulbm-search-root',
+			'.ulbm-become-partner',
 		);
 
 		return implode( ',', $selectors );
@@ -318,7 +318,7 @@ final class ColorSettings {
 	public static function admin_preview_var_map() {
 		$map = array();
 		foreach ( self::fields() as $key => $field ) {
-			$map[ $key ] = '--fbs-preview-' . str_replace( 'color_', '', $key );
+			$map[ $key ] = '--ulbm-preview-' . str_replace( 'color_', '', $key );
 		}
 		return $map;
 	}
@@ -357,10 +357,10 @@ final class ColorSettings {
 
 		$settings = LayoutSettings::get();
 		if ( ! empty( $settings['card_border_radius'] ) ) {
-			$parts[] = '--fbs-radius:' . absint( $settings['card_border_radius'] ) . 'px';
+			$parts[] = '--ulbm-radius:' . absint( $settings['card_border_radius'] ) . 'px';
 		}
 		if ( ! empty( $settings['slider_height'] ) ) {
-			$parts[] = '--fbs-slider-h:' . absint( $settings['slider_height'] ) . 'px';
+			$parts[] = '--ulbm-slider-h:' . absint( $settings['slider_height'] ) . 'px';
 		}
 
 		if ( empty( $parts ) ) {

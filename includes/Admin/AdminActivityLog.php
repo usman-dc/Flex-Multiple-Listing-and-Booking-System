@@ -12,7 +12,7 @@ use FlexBooking\Database\Schema;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Fetches fbs_activity_logs for dashboard.
+ * Fetches ulbm_activity_logs for dashboard.
  */
 final class AdminActivityLog {
 

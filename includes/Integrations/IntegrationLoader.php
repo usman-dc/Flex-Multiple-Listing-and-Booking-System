@@ -35,8 +35,8 @@ final class IntegrationLoader {
 				if ( ! class_exists( '\Elementor\Widget_Base' ) ) {
 					return;
 				}
-				require_once FBS_PLUGIN_DIR . 'includes/Integrations/Elementor/Widgets/BookingFormWidget.php';
-				require_once FBS_PLUGIN_DIR . 'includes/Integrations/Elementor/Widgets/ListingGridWidget.php';
+				require_once ULBM_PLUGIN_DIR . 'includes/Integrations/Elementor/Widgets/BookingFormWidget.php';
+				require_once ULBM_PLUGIN_DIR . 'includes/Integrations/Elementor/Widgets/ListingGridWidget.php';
 				$widgets_manager->register( new Elementor\Widgets\BookingFormWidget() );
 				$widgets_manager->register( new Elementor\Widgets\ListingGridWidget() );
 			}
@@ -53,10 +53,10 @@ final class IntegrationLoader {
 			'elementor/editor/after_enqueue_scripts',
 			function () {
 				FrontController::register_public_assets();
-				wp_enqueue_style( 'fbs-public' );
+				wp_enqueue_style( 'ulbm-public' );
 				$inline = ColorSettings::inline_css();
 				if ( '' !== $inline ) {
-					wp_add_inline_style( 'fbs-public', $inline );
+					wp_add_inline_style( 'ulbm-public', $inline );
 				}
 			}
 		);
@@ -70,6 +70,6 @@ final class IntegrationLoader {
 			}
 		);
 
-		do_action( 'fbs_integrations_loaded', $plugin );
+		do_action( 'ulbm_integrations_loaded', $plugin );
 	}
 }

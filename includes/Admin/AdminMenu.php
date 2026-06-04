@@ -31,7 +31,7 @@ final class AdminMenu {
 	public static function reorder_submenu() {
 		global $submenu;
 
-		if ( empty( $submenu['fbs-dashboard'] ) || ! is_array( $submenu['fbs-dashboard'] ) ) {
+		if ( empty( $submenu['ulbm-dashboard'] ) || ! is_array( $submenu['ulbm-dashboard'] ) ) {
 			return;
 		}
 
@@ -41,19 +41,19 @@ final class AdminMenu {
 		}
 
 		$desired = array_merge(
-			array( 'fbs-dashboard' ),
+			array( 'ulbm-dashboard' ),
 			$booking_cpts,
 			array(
-				'fbs-booking-types',
-				'fbs-bookings',
-				'fbs-reviews',
-				'fbs-settings',
-				'fbs-setup',
+				'ulbm-booking-types',
+				'ulbm-bookings',
+				'ulbm-reviews',
+				'ulbm-settings',
+				'ulbm-setup',
 			)
 		);
 
 		$by_slug = array();
-		foreach ( $submenu['fbs-dashboard'] as $item ) {
+		foreach ( $submenu['ulbm-dashboard'] as $item ) {
 			if ( ! is_array( $item ) || empty( $item[2] ) ) {
 				continue;
 			}
@@ -72,6 +72,6 @@ final class AdminMenu {
 			$ordered[] = $item;
 		}
 
-		$submenu['fbs-dashboard'] = $ordered;
+		$submenu['ulbm-dashboard'] = $ordered;
 	}
 }

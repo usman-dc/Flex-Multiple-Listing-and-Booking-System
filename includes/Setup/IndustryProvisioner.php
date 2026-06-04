@@ -1,6 +1,6 @@
 <?php
 /**
- * Persists selected industries — booking_types rows and option fbs_enabled_industries.
+ * Persists selected industries — booking_types rows and option ulbm_enabled_industries.
  *
  * @package FlexBookingSystem
  */
@@ -38,7 +38,7 @@ final class IndustryProvisioner {
 			)
 		);
 
-		update_option( 'fbs_enabled_industries', $clean, false );
+		update_option( 'ulbm_enabled_industries', $clean, false );
 
 		global $wpdb;
 
@@ -97,7 +97,7 @@ final class IndustryProvisioner {
 	}
 
 	/**
-	 * Ensure an industry key is in fbs_enabled_industries so CPT + menus register (idempotent).
+	 * Ensure an industry key is in ulbm_enabled_industries so CPT + menus register (idempotent).
 	 *
 	 * @param string $key Industry catalog key.
 	 * @return void
@@ -108,7 +108,7 @@ final class IndustryProvisioner {
 			return;
 		}
 
-		$enabled = get_option( 'fbs_enabled_industries', array() );
+		$enabled = get_option( 'ulbm_enabled_industries', array() );
 		if ( ! is_array( $enabled ) ) {
 			$enabled = array();
 		}
@@ -117,7 +117,7 @@ final class IndustryProvisioner {
 		}
 
 		$enabled[] = $key;
-		update_option( 'fbs_enabled_industries', array_values( array_unique( $enabled ) ), false );
+		update_option( 'ulbm_enabled_industries', array_values( array_unique( $enabled ) ), false );
 		flush_rewrite_rules( false );
 	}
 }

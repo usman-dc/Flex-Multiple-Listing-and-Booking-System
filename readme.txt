@@ -1,10 +1,10 @@
-=== Flex Multiple Listing and Booking System ===
+=== Flex Listings and Booking Manager ===
 Contributors: usmanaliwpdeveloper
 Tags: booking, listings, rental, appointment, calendar
 Requires at least: 6.0
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -12,7 +12,7 @@ Multiple listing grids and a full booking engine for property rentals, car hire,
 
 == Description ==
 
-**Flex Multiple Listing and Booking System** helps you publish many bookable listings and accept reservations on WordPress — hotels, vacation rentals, car rental, tours, events, and services.
+**Flex Listings and Booking Manager** helps you publish many bookable listings and accept reservations on WordPress — hotels, vacation rentals, car rental, tours, events, and services.
 
 Developed by [Usman Ali](https://profiles.wordpress.org/usmanaliwpdeveloper/) at [WpRogers](https://wprogers.com/).
 
@@ -33,19 +33,21 @@ Source code (development, issues, releases): [GitHub repository](https://github.
 
 = Shortcodes =
 
-* `[fbs_booking_form id="1"]` — booking form for a booking type
-* `[fbs_listing_grid type="car-rental" columns="3" limit="12"]` — filterable listing grid
-* `[fbs_search]` — search UI placeholder
-* `[fbs_register]` — partner registration
-* `[fbs_login]` — partner login
-* `[fbs_dashboard]` — partner dashboard
-* `[fbs_become_partner]` — partner call-to-action block
+* `[ulbm_booking_form id="1"]` — booking form for a booking type
+* `[ulbm_listing_grid type="car-rental" columns="3" limit="12"]` — filterable listing grid
+* `[ulbm_search]` — search UI placeholder
+* `[ulbm_register]` — partner registration
+* `[ulbm_login]` — partner login
+* `[ulbm_dashboard]` — partner dashboard
+* `[ulbm_become_partner]` — partner call-to-action block
 
 = External services =
 
-**Bootstrap 5.3.3**, **Bootstrap Icons 1.11.3**, and **Chart.js 4.4.4** are bundled inside the plugin (`assets/vendor/`) and enqueued from the site only on admin and booking UI screens. No CDN is used for those libraries.
+**Bootstrap 5.3.8**, **Bootstrap Icons 1.11.3**, and **Chart.js 4.5.1** are bundled inside the plugin (`assets/vendor/`) and enqueued from the site only on admin and booking UI screens. No CDN is used for those libraries.
 
-**Optional:** The demo content importer (Settings → Demo Content, admin-only) may download placeholder images from `https://picsum.photos/` when an administrator runs the import. No visitor data is sent. Site owners can skip demo import.
+**Optional — Google Maps (not affiliated with Google):** If the site owner enables embedded maps under **Settings → Partner Portal**, listing pages can show a button for visitors to opt in before loading an iframe from `https://maps.google.com/`. Until the visitor clicks that button, no request is sent to Google. When loaded, the visitor’s IP address and map coordinates may be processed by Google. Terms: https://www.google.com/intl/en/policies/terms/ — Privacy: https://policies.google.com/privacy
+
+**Optional — Picsum Photos:** The demo content importer (Settings → Demo Content, admin-only) may download placeholder images from `https://picsum.photos/` when an administrator runs the import. No front-end visitor data is sent. Site owners can skip demo import. Terms: https://picsum.photos/terms — Privacy: https://picsum.photos/privacy
 
 **Optional:** Listing video embeds use WordPress `wp_oembed_get()` for URLs the site owner adds (e.g. YouTube). WooCommerce integration loads only when WooCommerce is active.
 
@@ -56,9 +58,9 @@ Booking forms collect customer name, email, phone, and booking details stored in
 == Installation ==
 
 1. Upload the `flex-booking-system` folder to `/wp-content/plugins/` or install via **Plugins → Add New**
-2. Activate **Flex Multiple Listing and Booking System** through the **Plugins** menu
-3. Go to **Flex MLS & Booking → Setup** (first run) and choose your industries
-4. Open **Flex MLS & Booking → Settings** to configure currency, colors, and layout
+2. Activate **Flex Listings and Booking Manager** through the **Plugins** menu
+3. Go to **Flex Listings & Booking → Setup** (first run) and choose your industries
+4. Open **Flex Listings & Booking → Settings** to configure currency, colors, and layout
 5. Partner pages (register, login, dashboard) are created automatically — see **Partner Portal** tab
 6. Add listings under the plugin menu or import demo content from **Settings → Demo Content**
 7. Embed grids and forms with shortcodes, blocks, or Elementor widgets
@@ -73,7 +75,7 @@ WordPress.org does **not** install plugins directly from GitHub. Use this flow:
 
 1. Download or clone from [GitHub](https://github.com/usman-dc/Flex-Multiple-Listing-and-Booking-System).
 2. Create a ZIP of the **`flex-booking-system`** folder (plugin root must contain `flex-booking-system.php` and `readme.txt`).
-3. **Exclude** from the ZIP: `node_modules/`, `vendor/`, `.git/`, `.cursor/`, `.vscode/`, `.env` (the included `/dist` folder **must** stay in the ZIP).
+3. **Exclude** from the ZIP: `node_modules/`, `vendor/`, `.git/`, `.cursor/`, `.vscode/`, `.env`, `tests/` (the included `/dist` folder **must** stay in the ZIP).
 4. Submit the ZIP at [WordPress.org Add Plugin](https://wordpress.org/plugins/developers/add/) (requires a WordPress.org account).
 5. After approval, releases are published via WordPress.org SVN — keep GitHub and SVN versions in sync.
 
@@ -91,7 +93,7 @@ Zip the `flex-booking-system` directory so the archive unpacks to one folder nam
 
 = Why is the text domain different from the folder name? =
 
-WordPress.org requires the text domain to match the plugin slug (`flex-multiple-listing-and-booking-system`). The install folder may remain `flex-booking-system` for compatibility with existing sites and GitHub releases.
+WordPress.org requires the text domain to match the plugin slug (`flex-booking-system`). The install folder may remain `flex-booking-system` for compatibility with existing sites and GitHub releases.
 
 = Does this work with any theme? =
 
@@ -111,7 +113,7 @@ No. WooCommerce integration is optional and loads only when WooCommerce is activ
 
 = What happens when I delete the plugin? =
 
-Custom database tables and plugin options are removed on uninstall. Use the `fbs_uninstall_remove_all_data` filter to keep data if needed.
+Custom database tables and plugin options are removed on uninstall. Use the `ulbm_uninstall_remove_all_data` filter to keep data if needed.
 
 == Screenshots ==
 
@@ -123,8 +125,15 @@ Custom database tables and plugin options are removed on uninstall. Use the `fbs
 
 == Changelog ==
 
+= 1.0.2 =
+* Plugin slug and text domain: flex-booking-system
+* Partner registration: pending approval by default, no auto-login until approved
+* Google Maps embed opt-in; external services documented in readme
+* Sanitization and JSON decode hardening; admin scripts enqueued
+* Upgraded bundled Bootstrap 5.3.8 and Chart.js 4.5.1
+
 = 1.0.1 =
-* Rebranded to Flex Multiple Listing and Booking System
+* Rebranded to Flex Listings and Booking Manager
 * Improved color settings save and scoped backgrounds to plugin UI only
 * WordPress.org readiness: security index files, uninstall hook, i18n
 * Added GitHub source link and WordPress.org ZIP submission instructions in readme

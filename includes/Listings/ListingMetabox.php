@@ -15,15 +15,15 @@ final class ListingMetabox {
 
 	public static function register() {
 		add_action( 'add_meta_boxes', array( __CLASS__, 'add_metabox' ) );
-		add_action( 'save_post', array( __CLASS__, 'save_any_fbs_post' ), 10, 2 );
+		add_action( 'save_post', array( __CLASS__, 'save_any_ulbm_post' ), 10, 2 );
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'enqueue' ) );
 	}
 
 	/**
-	 * Proxy save for any fbs_* post type.
+	 * Proxy save for any ulbm_* post type.
 	 */
-	public static function save_any_fbs_post( $post_id, $post ) {
-		if ( ! self::is_fbs_post_type( $post->post_type ?? '' ) ) {
+	public static function save_any_ulbm_post( $post_id, $post ) {
+		if ( ! self::is_ulbm_post_type( $post->post_type ?? '' ) ) {
 			return;
 		}
 		self::save( $post_id, $post );
@@ -39,14 +39,16 @@ final class ListingMetabox {
 		if ( ! $pt && $post instanceof \WP_Post ) {
 			$pt = $post->post_type;
 		}
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Admin screen context only.
 		if ( ! $pt && isset( $_GET['post_type'] ) ) {
 			$pt = sanitize_key( wp_unslash( $_GET['post_type'] ) );
 		}
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Admin screen context only.
 		if ( ! $pt && isset( $_GET['post'] ) ) {
 			$pt = (string) get_post_type( absint( $_GET['post'] ) );
 		}
 
-		if ( ! self::is_fbs_post_type( $pt ) ) {
+		if ( ! self::is_ulbm_post_type( $pt ) ) {
 			return;
 		}
 
@@ -54,22 +56,23 @@ final class ListingMetabox {
 
 		\FlexBooking\Assets\VendorAssets::register_bootstrap();
 
-		wp_enqueue_style( 'fbs-bootstrap' );
-		wp_enqueue_style( 'fbs-bootstrap-icons' );
-		wp_enqueue_script( 'fbs-bootstrap' );
+		wp_enqueue_style( 'ulbm-bootstrap' );
+		wp_enqueue_style( 'ulbm-bootstrap-icons' );
+		wp_enqueue_script( 'ulbm-bootstrap' );
 
-		wp_enqueue_style( 'fbs-listing-metabox', FBS_PLUGIN_URL . 'dist/admin.css', array( 'fbs-bootstrap', 'fbs-bootstrap-icons' ), FBS_VERSION );
-		wp_enqueue_script( 'fbs-listing-metabox', FBS_PLUGIN_URL . 'dist/listing-metabox.js', array( 'jquery', 'fbs-bootstrap' ), FBS_VERSION, true );
+		wp_enqueue_style( 'ulbm-listing-metabox', ULBM_PLUGIN_URL . 'dist/admin.css', array( 'ulbm-bootstrap', 'ulbm-bootstrap-icons' ), ULBM_VERSION );
+		wp_enqueue_script( 'ulbm-listing-metabox', ULBM_PLUGIN_URL . 'dist/listing-metabox.js', array( 'jquery', 'ulbm-bootstrap' ), ULBM_VERSION, true );
 	}
 
 	/**
-	 * Check if post type belongs to our plugin (fbs_listing or any fbs_* booking type CPT).
+	 * Check if post type belongs to our plugin (ulbm_listing or any ulbm_* booking type CPT).
 	 */
-	private static function is_fbs_post_type( $post_type ) {
+	private static function is_ulbm_post_type( $post_type ) {
 		if ( ! $post_type ) {
 			return false;
 		}
-		return $post_type === ListingPostType::POST_TYPE || 0 === strpos( (string) $post_type, 'fbs_' );
+		return $post_type === ListingPostType::POST_TYPE
+			|| \FlexBooking\PostTypes\BookingTypePostTypeRegistry::is_listing_post_type( (string) $post_type );
 	}
 
 	public static function add_metabox() {
@@ -83,8 +86,8 @@ final class ListingMetabox {
 
 		foreach ( $screens as $screen ) {
 			add_meta_box(
-				'fbs_listing_settings',
-				__( 'Listing Settings', 'flex-multiple-listing-and-booking-system' ),
+				'ulbm_listing_settings',
+				__( 'Listing Settings', 'flex-booking-system' ),
 				array( __CLASS__, 'render' ),
 				$screen,
 				'normal',
@@ -99,7 +102,7 @@ final class ListingMetabox {
 	 * @param \WP_Post $post Current post.
 	 */
 	public static function render( $post ) {
-		wp_nonce_field( 'fbs_listing_meta', 'fbs_listing_meta_nonce' );
+		wp_nonce_field( 'ulbm_listing_meta', 'ulbm_listing_meta_nonce' );
 		$id = $post->ID;
 
 		$type_repo     = new BookingTypeRepository();
@@ -120,7 +123,7 @@ final class ListingMetabox {
 			$meta[ $key ] = ListingMeta::get( $id, $key, $type );
 		}
 
-		include FBS_PLUGIN_DIR . 'templates/admin/listing-metabox.php';
+		include ULBM_PLUGIN_DIR . 'templates/admin/listing-metabox.php';
 	}
 
 	/**
@@ -130,12 +133,17 @@ final class ListingMetabox {
 	 * @param \WP_Post $post    Post object.
 	 */
 	public static function save( $post_id, $post ) {
-		if ( ! isset( $_POST['fbs_listing_meta_nonce'] ) ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce field checked before verify.
+		if ( ! isset( $_POST['ulbm_listing_meta_nonce'] ) ) {
 			return;
 		}
-		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['fbs_listing_meta_nonce'] ) ), 'fbs_listing_meta' ) ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Verified on next line.
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['ulbm_listing_meta_nonce'] ) ), 'ulbm_listing_meta' ) ) {
 			return;
 		}
+
+		\FlexBooking\Security\PostData::allow_processing();
+
 		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
 			return;
 		}
@@ -145,7 +153,7 @@ final class ListingMetabox {
 
 		// Auto-assign booking_type_id from CPT if not explicitly set.
 		$pt = $post->post_type ?? '';
-		if ( $pt && 'fbs_listing' !== $pt && 0 === strpos( $pt, 'fbs_' ) ) {
+		if ( $pt && \FlexBooking\PostTypes\BookingTypePostTypeRegistry::is_listing_post_type( $pt ) ) {
 			$current_type_id = (int) ListingMeta::get( $post_id, ListingMeta::KEY_BOOKING_TYPE_ID, 'int' );
 			if ( 0 === $current_type_id ) {
 				$registered = \FlexBooking\PostTypes\BookingTypePostTypeRegistry::get_registered_types();
@@ -173,9 +181,9 @@ final class ListingMetabox {
 		);
 
 		foreach ( $text_keys as $key ) {
-			$field = str_replace( '_fbs_', 'fbs_', $key );
-			if ( isset( $_POST[ $field ] ) ) {
-				ListingMeta::set( $post_id, $key, sanitize_text_field( wp_unslash( $_POST[ $field ] ) ) );
+			$field = str_replace( '_ulbm_', 'ulbm_', $key );
+			if ( \FlexBooking\Security\PostData::has( $field ) ) {
+				ListingMeta::set( $post_id, $key, sanitize_text_field( (string) \FlexBooking\Security\PostData::raw( $field ) ) );
 			}
 		}
 
@@ -190,32 +198,32 @@ final class ListingMetabox {
 		);
 
 		foreach ( $int_keys as $key ) {
-			$field = str_replace( '_fbs_', 'fbs_', $key );
-			if ( isset( $_POST[ $field ] ) ) {
-				ListingMeta::set( $post_id, $key, absint( wp_unslash( $_POST[ $field ] ) ) );
+			$field = str_replace( '_ulbm_', 'ulbm_', $key );
+			if ( \FlexBooking\Security\PostData::has( $field ) ) {
+				ListingMeta::set( $post_id, $key, absint( \FlexBooking\Security\PostData::raw( $field ) ) );
 			}
 		}
 
-		$field_mode = str_replace( '_fbs_', 'fbs_', ListingMeta::KEY_BOOKING_MODE );
-		if ( isset( $_POST[ $field_mode ] ) ) {
-			$mode = sanitize_key( wp_unslash( $_POST[ $field_mode ] ) );
+		$field_mode = str_replace( '_ulbm_', 'ulbm_', ListingMeta::KEY_BOOKING_MODE );
+		if ( \FlexBooking\Security\PostData::has( $field_mode ) ) {
+			$mode = sanitize_key( (string) \FlexBooking\Security\PostData::raw( $field_mode ) );
 			$valid_modes = array( 'daily', 'hourly', 'time_slot' );
 			ListingMeta::set( $post_id, ListingMeta::KEY_BOOKING_MODE, in_array( $mode, $valid_modes, true ) ? $mode : 'daily' );
 		}
 
-		$field_instant = str_replace( '_fbs_', 'fbs_', ListingMeta::KEY_INSTANT_BOOKING );
-		ListingMeta::set( $post_id, ListingMeta::KEY_INSTANT_BOOKING, isset( $_POST[ $field_instant ] ) ? '1' : '' );
+		$field_instant = str_replace( '_ulbm_', 'ulbm_', ListingMeta::KEY_INSTANT_BOOKING );
+		ListingMeta::set( $post_id, ListingMeta::KEY_INSTANT_BOOKING, \FlexBooking\Security\PostData::has( $field_instant ) ? '1' : '' );
 
 		// Gallery (comma-separated attachment IDs).
-		if ( isset( $_POST['fbs_gallery'] ) ) {
-			$raw_ids = sanitize_text_field( wp_unslash( $_POST['fbs_gallery'] ) );
+		if ( \FlexBooking\Security\PostData::has( 'ulbm_gallery' ) ) {
+			$raw_ids = sanitize_text_field( (string) \FlexBooking\Security\PostData::raw( 'ulbm_gallery' ) );
 			$ids     = array_values( array_filter( array_map( 'absint', explode( ',', $raw_ids ) ) ) );
 			ListingMeta::set( $post_id, ListingMeta::KEY_GALLERY, $ids );
 		}
 
 		// Features repeater (JSON string from JS).
-		if ( isset( $_POST['fbs_features_json'] ) ) {
-			$decoded = json_decode( wp_unslash( $_POST['fbs_features_json'] ), true );
+		if ( \FlexBooking\Security\PostData::has( 'ulbm_features_json' ) ) {
+			$decoded = \FlexBooking\Security\JsonInput::decode_post_array( 'ulbm_features_json' );
 			if ( is_array( $decoded ) ) {
 				$sanitized = array();
 				foreach ( $decoded as $item ) {
@@ -232,8 +240,8 @@ final class ListingMetabox {
 		}
 
 		// FAQ repeater (JSON).
-		if ( isset( $_POST['fbs_faq_json'] ) ) {
-			$decoded = json_decode( wp_unslash( $_POST['fbs_faq_json'] ), true );
+		if ( \FlexBooking\Security\PostData::has( 'ulbm_faq_json' ) ) {
+			$decoded = \FlexBooking\Security\JsonInput::decode_post_array( 'ulbm_faq_json' );
 			if ( is_array( $decoded ) ) {
 				$sanitized = array();
 				foreach ( $decoded as $item ) {
@@ -249,8 +257,8 @@ final class ListingMetabox {
 		}
 
 		// Extra services repeater (JSON).
-		if ( isset( $_POST['fbs_extra_services_json'] ) ) {
-			$decoded = json_decode( wp_unslash( $_POST['fbs_extra_services_json'] ), true );
+		if ( \FlexBooking\Security\PostData::has( 'ulbm_extra_services_json' ) ) {
+			$decoded = \FlexBooking\Security\JsonInput::decode_post_array( 'ulbm_extra_services_json' );
 			if ( is_array( $decoded ) ) {
 				$sanitized = array();
 				foreach ( $decoded as $item ) {
@@ -267,6 +275,6 @@ final class ListingMetabox {
 			}
 		}
 
-		do_action( 'fbs_listing_meta_saved', $post_id, $post );
+		do_action( 'ulbm_listing_meta_saved', $post_id, $post );
 	}
 }

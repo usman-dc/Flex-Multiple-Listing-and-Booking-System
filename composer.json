@@ -1,6 +1,6 @@
 {
-  "name": "flexbooking/flex-multiple-listing-booking-system",
-  "description": "Flex Multiple Listing and Booking System — WordPress listings and booking plugin",
+  "name": "usmanaliwpdeveloper/flex-booking-system",
+  "description": "Flex Listings and Booking Manager — WordPress listings and booking plugin",
   "type": "wordpress-plugin",
   "license": "GPL-2.0-or-later",
   "homepage": "https://wprogers.com/",

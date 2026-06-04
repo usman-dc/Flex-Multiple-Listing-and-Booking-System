@@ -10,13 +10,13 @@ namespace FlexBooking\Vendor;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Registers fbs_vendor role for frontend listing owners.
+ * Registers ulbm_vendor role for frontend listing owners.
  */
 final class VendorRole {
 
-	public const ROLE = 'fbs_vendor';
+	public const ROLE = 'ulbm_vendor';
 
-	public const CAP_MANAGE_LISTINGS = 'manage_fbs_listings';
+	public const CAP_MANAGE_LISTINGS = 'manage_ulbm_listings';
 
 	/**
 	 * Register role and caps on init.
@@ -39,7 +39,7 @@ final class VendorRole {
 		if ( ! get_role( self::ROLE ) ) {
 			add_role(
 				self::ROLE,
-				__( 'Flex MLS Booking Partner', 'flex-multiple-listing-and-booking-system' ),
+				__( 'Listings Booking Partner', 'flex-booking-system' ),
 				$caps
 			);
 		} else {

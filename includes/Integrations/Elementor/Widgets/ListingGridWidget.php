@@ -2,7 +2,7 @@
 
 /**
 
- * Elementor widget: embeds [fbs_listing_grid] with full controls.
+ * Elementor widget: embeds [ulbm_listing_grid] with full controls.
 
  *
 
@@ -48,7 +48,7 @@ final class ListingGridWidget extends Widget_Base {
 
 	public function get_name() {
 
-		return 'fbs_listing_grid';
+		return 'ulbm_listing_grid';
 
 	}
 
@@ -66,7 +66,7 @@ final class ListingGridWidget extends Widget_Base {
 
 	public function get_title() {
 
-		return __( 'Flex MLS Listing Grid', 'flex-multiple-listing-and-booking-system' );
+		return __( 'Usman Listing Grid', 'flex-booking-system' );
 
 	}
 
@@ -134,7 +134,7 @@ final class ListingGridWidget extends Widget_Base {
 
 	public function get_style_depends() {
 
-		return array( 'fbs-bootstrap', 'fbs-bootstrap-icons', 'fbs-public' );
+		return array( 'ulbm-bootstrap', 'ulbm-bootstrap-icons', 'ulbm-public' );
 
 	}
 
@@ -148,7 +148,7 @@ final class ListingGridWidget extends Widget_Base {
 
 	public function get_script_depends() {
 
-		return array( 'fbs-bootstrap', 'fbs-public' );
+		return array( 'ulbm-bootstrap', 'ulbm-public' );
 
 	}
 
@@ -170,7 +170,7 @@ final class ListingGridWidget extends Widget_Base {
 
 		$all_types = $type_repo->get_all();
 
-		$type_opts = array( '' => __( 'All Types', 'flex-multiple-listing-and-booking-system' ) );
+		$type_opts = array( '' => __( 'All Types', 'flex-booking-system' ) );
 
 		foreach ( $all_types as $t ) {
 
@@ -186,7 +186,7 @@ final class ListingGridWidget extends Widget_Base {
 
 			array(
 
-				'label' => __( 'Grid Settings', 'flex-multiple-listing-and-booking-system' ),
+				'label' => __( 'Grid Settings', 'flex-booking-system' ),
 
 				'tab'   => Controls_Manager::TAB_CONTENT,
 
@@ -202,7 +202,7 @@ final class ListingGridWidget extends Widget_Base {
 
 			array(
 
-				'label'   => __( 'Booking Type', 'flex-multiple-listing-and-booking-system' ),
+				'label'   => __( 'Booking Type', 'flex-booking-system' ),
 
 				'type'    => Controls_Manager::SELECT,
 
@@ -222,7 +222,7 @@ final class ListingGridWidget extends Widget_Base {
 
 			array(
 
-				'label'   => __( 'Columns', 'flex-multiple-listing-and-booking-system' ),
+				'label'   => __( 'Columns', 'flex-booking-system' ),
 
 				'type'    => Controls_Manager::SELECT,
 
@@ -250,7 +250,7 @@ final class ListingGridWidget extends Widget_Base {
 
 			array(
 
-				'label'   => __( 'Listings per page', 'flex-multiple-listing-and-booking-system' ),
+				'label'   => __( 'Listings per page', 'flex-booking-system' ),
 
 				'type'    => Controls_Manager::NUMBER,
 
@@ -276,7 +276,7 @@ final class ListingGridWidget extends Widget_Base {
 
 			array(
 
-				'label' => __( 'Spacing', 'flex-multiple-listing-and-booking-system' ),
+				'label' => __( 'Spacing', 'flex-booking-system' ),
 
 				'tab'   => Controls_Manager::TAB_STYLE,
 
@@ -292,7 +292,7 @@ final class ListingGridWidget extends Widget_Base {
 
 			array(
 
-				'label'      => __( 'Column gap (px)', 'flex-multiple-listing-and-booking-system' ),
+				'label'      => __( 'Column gap (px)', 'flex-booking-system' ),
 
 				'type'       => Controls_Manager::SLIDER,
 
@@ -302,7 +302,7 @@ final class ListingGridWidget extends Widget_Base {
 
 				'selectors'  => array(
 
-					'{{WRAPPER}} .fbs-listing-grid' => '--fbs-grid-gap: {{SIZE}}{{UNIT}};',
+					'{{WRAPPER}} .ulbm-listing-grid' => '--ulbm-grid-gap: {{SIZE}}{{UNIT}};',
 
 				),
 
@@ -318,7 +318,7 @@ final class ListingGridWidget extends Widget_Base {
 
 			array(
 
-				'label'      => __( 'Padding left/right (px)', 'flex-multiple-listing-and-booking-system' ),
+				'label'      => __( 'Padding left/right (px)', 'flex-booking-system' ),
 
 				'type'       => Controls_Manager::SLIDER,
 
@@ -328,7 +328,7 @@ final class ListingGridWidget extends Widget_Base {
 
 				'selectors'  => array(
 
-					'{{WRAPPER}} .fbs-listing-grid' => '--fbs-grid-padding-x: {{SIZE}}{{UNIT}};',
+					'{{WRAPPER}} .ulbm-listing-grid' => '--ulbm-grid-padding-x: {{SIZE}}{{UNIT}};',
 
 				),
 
@@ -344,7 +344,7 @@ final class ListingGridWidget extends Widget_Base {
 
 			array(
 
-				'label'      => __( 'Padding top/bottom (px)', 'flex-multiple-listing-and-booking-system' ),
+				'label'      => __( 'Padding top/bottom (px)', 'flex-booking-system' ),
 
 				'type'       => Controls_Manager::SLIDER,
 
@@ -354,7 +354,7 @@ final class ListingGridWidget extends Widget_Base {
 
 				'selectors'  => array(
 
-					'{{WRAPPER}} .fbs-listing-grid' => '--fbs-grid-padding-y: {{SIZE}}{{UNIT}};',
+					'{{WRAPPER}} .ulbm-listing-grid' => '--ulbm-grid-padding-y: {{SIZE}}{{UNIT}};',
 
 				),
 
@@ -370,7 +370,7 @@ final class ListingGridWidget extends Widget_Base {
 
 			array(
 
-				'label'      => __( 'Margin top (px)', 'flex-multiple-listing-and-booking-system' ),
+				'label'      => __( 'Margin top (px)', 'flex-booking-system' ),
 
 				'type'       => Controls_Manager::SLIDER,
 
@@ -380,7 +380,7 @@ final class ListingGridWidget extends Widget_Base {
 
 				'selectors'  => array(
 
-					'{{WRAPPER}} .fbs-listing-grid' => '--fbs-grid-margin-top: {{SIZE}}{{UNIT}};',
+					'{{WRAPPER}} .ulbm-listing-grid' => '--ulbm-grid-margin-top: {{SIZE}}{{UNIT}};',
 
 				),
 
@@ -396,7 +396,7 @@ final class ListingGridWidget extends Widget_Base {
 
 			array(
 
-				'label'      => __( 'Margin bottom (px)', 'flex-multiple-listing-and-booking-system' ),
+				'label'      => __( 'Margin bottom (px)', 'flex-booking-system' ),
 
 				'type'       => Controls_Manager::SLIDER,
 
@@ -406,7 +406,7 @@ final class ListingGridWidget extends Widget_Base {
 
 				'selectors'  => array(
 
-					'{{WRAPPER}} .fbs-listing-grid' => '--fbs-grid-margin-bottom: {{SIZE}}{{UNIT}};',
+					'{{WRAPPER}} .ulbm-listing-grid' => '--ulbm-grid-margin-bottom: {{SIZE}}{{UNIT}};',
 
 				),
 
@@ -422,7 +422,7 @@ final class ListingGridWidget extends Widget_Base {
 
 			array(
 
-				'label'      => __( 'Card body padding (px)', 'flex-multiple-listing-and-booking-system' ),
+				'label'      => __( 'Card body padding (px)', 'flex-booking-system' ),
 
 				'type'       => Controls_Manager::SLIDER,
 
@@ -432,7 +432,7 @@ final class ListingGridWidget extends Widget_Base {
 
 				'selectors'  => array(
 
-					'{{WRAPPER}} .fbs-listing-grid' => '--fbs-grid-card-padding: {{SIZE}}{{UNIT}};',
+					'{{WRAPPER}} .ulbm-listing-grid' => '--ulbm-grid-card-padding: {{SIZE}}{{UNIT}};',
 
 				),
 
@@ -452,7 +452,7 @@ final class ListingGridWidget extends Widget_Base {
 
 			array(
 
-				'label' => __( 'Cards', 'flex-multiple-listing-and-booking-system' ),
+				'label' => __( 'Cards', 'flex-booking-system' ),
 
 				'tab'   => Controls_Manager::TAB_STYLE,
 
@@ -468,7 +468,7 @@ final class ListingGridWidget extends Widget_Base {
 
 			array(
 
-				'label'      => __( 'Card border radius (px)', 'flex-multiple-listing-and-booking-system' ),
+				'label'      => __( 'Card border radius (px)', 'flex-booking-system' ),
 
 				'type'       => Controls_Manager::SLIDER,
 
@@ -480,7 +480,7 @@ final class ListingGridWidget extends Widget_Base {
 
 				'selectors'  => array(
 
-					'{{WRAPPER}} .fbs-listing-card' => 'border-radius: {{SIZE}}{{UNIT}};',
+					'{{WRAPPER}} .ulbm-listing-card' => 'border-radius: {{SIZE}}{{UNIT}};',
 
 				),
 
@@ -496,7 +496,7 @@ final class ListingGridWidget extends Widget_Base {
 
 			array(
 
-				'label'   => __( 'Hover shadow', 'flex-multiple-listing-and-booking-system' ),
+				'label'   => __( 'Hover shadow', 'flex-booking-system' ),
 
 				'type'    => Controls_Manager::SWITCHER,
 
@@ -514,21 +514,21 @@ final class ListingGridWidget extends Widget_Base {
 
 			array(
 
-				'label'       => __( 'Override primary color (optional)', 'flex-multiple-listing-and-booking-system' ),
+				'label'       => __( 'Override primary color (optional)', 'flex-booking-system' ),
 
 				'type'        => Controls_Manager::COLOR,
 
-				'description' => __( 'Leave empty to use Flex MLS & Booking → Settings → Colors.', 'flex-multiple-listing-and-booking-system' ),
+				'description' => __( 'Leave empty to use Flex Listings & Booking → Settings → Colors.', 'flex-booking-system' ),
 
 				'selectors'   => array(
 
-					'{{WRAPPER}} .fbs-root' => '--fbs-primary: {{VALUE}}; --bs-primary: {{VALUE}};',
+					'{{WRAPPER}} .ulbm-root' => '--ulbm-primary: {{VALUE}}; --bs-primary: {{VALUE}};',
 
 					'{{WRAPPER}} .btn-primary' => 'background-color: {{VALUE}}; border-color: {{VALUE}};',
 
-					'{{WRAPPER}} .fbs-card-price .fbs-price-current' => 'color: {{VALUE}};',
+					'{{WRAPPER}} .ulbm-card-price .ulbm-price-current' => 'color: {{VALUE}};',
 
-					'{{WRAPPER}} .fbs-listing-card .fbs-card-title a:hover' => 'color: {{VALUE}};',
+					'{{WRAPPER}} .ulbm-listing-card .ulbm-card-title a:hover' => 'color: {{VALUE}};',
 
 				),
 
@@ -608,9 +608,9 @@ final class ListingGridWidget extends Widget_Base {
 
 
 
-		echo '<div class="fbs-root">';
+		echo '<div class="ulbm-root">';
 
-		echo do_shortcode( '[fbs_listing_grid ' . implode( ' ', $parts ) . ']' );
+		echo do_shortcode( '[ulbm_listing_grid ' . implode( ' ', $parts ) . ']' );
 
 		echo '</div>';
 

@@ -54,13 +54,13 @@ final class Admin {
 	 * @return bool
 	 */
 	private function should_enqueue_admin_assets( $hook_suffix ) {
-		if ( preg_match( '/(toplevel_page_fbs-dashboard|_page_fbs-)/', (string) $hook_suffix ) ) {
+		if ( preg_match( '/(toplevel_page_ulbm-dashboard|_page_ulbm-)/', (string) $hook_suffix ) ) {
 			return true;
 		}
 
 		if ( in_array( $hook_suffix, array( 'edit.php', 'post.php', 'post-new.php' ), true ) ) {
 			$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
-			if ( $screen && ! empty( $screen->post_type ) && 0 === strpos( (string) $screen->post_type, 'fbs_' ) ) {
+			if ( $screen && ! empty( $screen->post_type ) && \FlexBooking\PostTypes\BookingTypePostTypeRegistry::is_listing_post_type( (string) $screen->post_type ) ) {
 				return true;
 			}
 		}
@@ -82,12 +82,12 @@ final class Admin {
 		if ( ! $screen || empty( $screen->id ) ) {
 			return $classes;
 		}
-		if ( preg_match( '/(toplevel_page_fbs-dashboard|_page_fbs-)/', (string) $screen->id ) ) {
-			$classes .= ' fbs-admin-screen';
+		if ( preg_match( '/(toplevel_page_ulbm-dashboard|_page_ulbm-)/', (string) $screen->id ) ) {
+			$classes .= ' ulbm-admin-screen';
 			return $classes;
 		}
-		if ( ! empty( $screen->post_type ) && 0 === strpos( (string) $screen->post_type, 'fbs_' ) ) {
-			$classes .= ' fbs-admin-screen';
+		if ( ! empty( $screen->post_type ) && \FlexBooking\PostTypes\BookingTypePostTypeRegistry::is_listing_post_type( (string) $screen->post_type ) ) {
+			$classes .= ' ulbm-admin-screen';
 		}
 		return $classes;
 	}
@@ -101,57 +101,57 @@ final class Admin {
 		$cap = Capabilities::menu_capability();
 
 		add_menu_page(
-			fbs_plugin_display_name(),
-			fbs_plugin_menu_label(),
+			ulbm_plugin_display_name(),
+			ulbm_plugin_menu_label(),
 			$cap,
-			'fbs-dashboard',
+			'ulbm-dashboard',
 			array( $this, 'render_dashboard' ),
 			'dashicons-calendar-alt',
 			56
 		);
 
 		add_submenu_page(
-			'fbs-dashboard',
-			__( 'Dashboard', 'flex-multiple-listing-and-booking-system' ),
-			__( 'Dashboard', 'flex-multiple-listing-and-booking-system' ),
+			'ulbm-dashboard',
+			__( 'Dashboard', 'flex-booking-system' ),
+			__( 'Dashboard', 'flex-booking-system' ),
 			$cap,
-			'fbs-dashboard',
+			'ulbm-dashboard',
 			array( $this, 'render_dashboard' )
 		);
 
 		add_submenu_page(
-			'fbs-dashboard',
-			__( 'Booking Types', 'flex-multiple-listing-and-booking-system' ),
-			__( 'Booking Types', 'flex-multiple-listing-and-booking-system' ),
+			'ulbm-dashboard',
+			__( 'Booking Types', 'flex-booking-system' ),
+			__( 'Booking Types', 'flex-booking-system' ),
 			$cap,
-			'fbs-booking-types',
+			'ulbm-booking-types',
 			array( $this, 'render_booking_types' )
 		);
 
 		add_submenu_page(
-			'fbs-dashboard',
-			__( 'All Bookings', 'flex-multiple-listing-and-booking-system' ),
-			__( 'Bookings', 'flex-multiple-listing-and-booking-system' ),
+			'ulbm-dashboard',
+			__( 'All Bookings', 'flex-booking-system' ),
+			__( 'Bookings', 'flex-booking-system' ),
 			$cap,
-			'fbs-bookings',
+			'ulbm-bookings',
 			array( $this, 'render_bookings' )
 		);
 
 		add_submenu_page(
-			'fbs-dashboard',
-			__( 'Listing Reviews', 'flex-multiple-listing-and-booking-system' ),
-			__( 'Reviews', 'flex-multiple-listing-and-booking-system' ),
+			'ulbm-dashboard',
+			__( 'Listing Reviews', 'flex-booking-system' ),
+			__( 'Reviews', 'flex-booking-system' ),
 			$cap,
-			'fbs-reviews',
+			'ulbm-reviews',
 			array( $this, 'render_reviews' )
 		);
 
 		add_submenu_page(
-			'fbs-dashboard',
-			__( 'Settings', 'flex-multiple-listing-and-booking-system' ),
-			__( 'Settings', 'flex-multiple-listing-and-booking-system' ),
+			'ulbm-dashboard',
+			__( 'Settings', 'flex-booking-system' ),
+			__( 'Settings', 'flex-booking-system' ),
 			$cap,
-			'fbs-settings',
+			'ulbm-settings',
 			array( $this, 'render_settings' )
 		);
 	}
@@ -169,36 +169,57 @@ final class Admin {
 
 		VendorAssets::register_bootstrap();
 
-		wp_enqueue_style( 'fbs-bootstrap' );
-		wp_enqueue_style( 'fbs-bootstrap-icons' );
+		wp_enqueue_style( 'ulbm-bootstrap' );
+		wp_enqueue_style( 'ulbm-bootstrap-icons' );
 
 		wp_enqueue_style(
-			'fbs-admin',
-			FBS_PLUGIN_URL . 'dist/admin.css',
-			array( 'fbs-bootstrap', 'fbs-bootstrap-icons' ),
-			FBS_VERSION
+			'ulbm-admin',
+			ULBM_PLUGIN_URL . 'dist/admin.css',
+			array( 'ulbm-bootstrap', 'ulbm-bootstrap-icons' ),
+			ULBM_VERSION
 		);
 
-		wp_enqueue_script( 'fbs-bootstrap' );
+		wp_enqueue_script( 'ulbm-bootstrap' );
 
 		wp_enqueue_script(
-			'fbs-admin',
-			FBS_PLUGIN_URL . 'dist/admin.js',
-			array( 'fbs-bootstrap', 'jquery' ),
-			FBS_VERSION,
+			'ulbm-admin',
+			ULBM_PLUGIN_URL . 'dist/admin.js',
+			array( 'ulbm-bootstrap', 'jquery' ),
+			ULBM_VERSION,
 			true
 		);
 
 		$admin_localize = array(
 			'ajaxUrl'   => admin_url( 'admin-ajax.php' ),
 			'nonce'     => wp_create_nonce( \FlexBooking\Security\Nonce::ACTION_AJAX ),
-			'restUrl'   => esc_url_raw( rest_url( 'flex-booking/v1' ) ),
+			'restUrl'   => esc_url_raw( rest_url( 'ulbm/v1' ) ),
 			'restNonce' => wp_create_nonce( 'wp_rest' ),
 		);
-		if ( false !== strpos( (string) $hook_suffix, 'fbs-settings' ) ) {
+		if ( false !== strpos( (string) $hook_suffix, 'ulbm-settings' ) ) {
 			$admin_localize['colorDefaults'] = ColorSettings::defaults();
 		}
-		wp_localize_script( 'fbs-admin', 'fbsAdmin', $admin_localize );
+		wp_localize_script( 'ulbm-admin', 'ulbmAdmin', $admin_localize );
+
+		if ( false !== strpos( (string) $hook_suffix, 'ulbm-booking-types' ) ) {
+			wp_enqueue_script(
+				'ulbm-admin-booking-types-quick-add',
+				ULBM_PLUGIN_URL . 'dist/admin-booking-types-quick-add.js',
+				array(),
+				ULBM_VERSION,
+				true
+			);
+			wp_localize_script(
+				'ulbm-admin-booking-types-quick-add',
+				'ulbmAdmin',
+				array_merge(
+					$admin_localize,
+					array(
+						'quickAddCreating' => __( 'Creating...', 'flex-booking-system' ),
+						'quickAddFailed'   => __( 'Request failed.', 'flex-booking-system' ),
+					)
+				)
+			);
+		}
 	}
 
 	/**
@@ -229,19 +250,19 @@ final class Admin {
 		$this->render_view(
 			'dashboard',
 			array(
-				'fbs_stat_bookings_30d'   => $booking_repo->count_since( $cutoff_mysql ),
-				'fbs_stat_revenue_30d'    => $booking_repo->sum_total_since( $cutoff_mysql ),
-				'fbs_stat_bookings_all'   => $booking_repo->count_all(),
-				'fbs_stat_types_count'    => $type_repo->count_all(),
-				'fbs_stat_customers'      => $this->count_customers(),
-				'fbs_daily_bookings'      => $booking_repo->daily_counts( 30 ),
-				'fbs_daily_revenue'       => $booking_repo->daily_revenue( 30 ),
-				'fbs_count_by_status'     => $booking_repo->count_by_status(),
-				'fbs_count_by_type'       => $booking_repo->count_by_type(),
-				'fbs_type_names'          => $type_names,
-				'fbs_recent_bookings'     => $booking_repo->get_recent( 10 ),
-				'fbs_recent_activity'     => AdminActivityLog::get_recent( 10 ),
-				'fbs_activity_total'      => AdminActivityLog::count_all(),
+				'ulbm_stat_bookings_30d'   => $booking_repo->count_since( $cutoff_mysql ),
+				'ulbm_stat_revenue_30d'    => $booking_repo->sum_total_since( $cutoff_mysql ),
+				'ulbm_stat_bookings_all'   => $booking_repo->count_all(),
+				'ulbm_stat_types_count'    => $type_repo->count_all(),
+				'ulbm_stat_customers'      => $this->count_customers(),
+				'ulbm_daily_bookings'      => $booking_repo->daily_counts( 30 ),
+				'ulbm_daily_revenue'       => $booking_repo->daily_revenue( 30 ),
+				'ulbm_count_by_status'     => $booking_repo->count_by_status(),
+				'ulbm_count_by_type'       => $booking_repo->count_by_type(),
+				'ulbm_type_names'          => $type_names,
+				'ulbm_recent_bookings'     => $booking_repo->get_recent( 10 ),
+				'ulbm_recent_activity'     => AdminActivityLog::get_recent( 10 ),
+				'ulbm_activity_total'      => AdminActivityLog::count_all(),
 			)
 		);
 	}
@@ -292,36 +313,36 @@ final class Admin {
 			$type_counts[] = (int) $cnt;
 		}
 
-		$general  = json_decode( (string) get_option( 'fbs_general_settings', '{}' ), true );
+		$general  = json_decode( (string) get_option( 'ulbm_general_settings', '{}' ), true );
 		$currency = is_array( $general ) && ! empty( $general['currency'] ) ? (string) $general['currency'] : 'USD';
 
 		wp_enqueue_script(
-			'fbs-chartjs',
-			FBS_PLUGIN_URL . 'assets/vendor/chart.umd.min.js',
+			'ulbm-chartjs',
+			ULBM_PLUGIN_URL . 'assets/vendor/chart.umd.min.js',
 			array(),
-			'4.4.4',
+			'4.5.1',
 			true
 		);
 
 		wp_enqueue_script(
-			'fbs-dashboard-charts',
-			FBS_PLUGIN_URL . 'assets/js/dashboard-charts.js',
-			array( 'fbs-chartjs' ),
-			FBS_VERSION,
+			'ulbm-dashboard-charts',
+			ULBM_PLUGIN_URL . 'assets/js/dashboard-charts.js',
+			array( 'ulbm-chartjs' ),
+			ULBM_VERSION,
 			true
 		);
 
 		wp_localize_script(
-			'fbs-dashboard-charts',
+			'ulbm-dashboard-charts',
 			'fbsDashboardCharts',
 			array(
 				'labels'        => $labels,
 				'bookings'      => $bookings,
 				'revenue'       => $revenue,
-				'bookingsLabel' => __( 'Bookings', 'flex-multiple-listing-and-booking-system' ),
+				'bookingsLabel' => __( 'Bookings', 'flex-booking-system' ),
 				'revenueLabel'  => sprintf(
 					/* translators: %s: currency code */
-					__( 'Revenue (%s)', 'flex-multiple-listing-and-booking-system' ),
+					__( 'Revenue (%s)', 'flex-booking-system' ),
 					$currency
 				),
 				'currency'      => $currency,
@@ -353,15 +374,18 @@ final class Admin {
 	 */
 	public function render_booking_types() {
 		if ( ! Capabilities::can_access_admin() ) {
-			wp_die( esc_html__( 'You do not have permission to access this page.', 'flex-multiple-listing-and-booking-system' ) );
+			wp_die( esc_html__( 'You do not have permission to access this page.', 'flex-booking-system' ) );
 		}
 
 		$type_repo = new BookingTypeRepository();
 
-		$notice_code = isset( $_GET['fbs_notice'] ) ? sanitize_key( wp_unslash( $_GET['fbs_notice'] ) ) : '';
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Admin notice display after redirect.
+		$notice_code = isset( $_GET['ulbm_notice'] ) ? sanitize_key( wp_unslash( $_GET['ulbm_notice'] ) ) : '';
 
-		$edit_id = isset( $_GET['fbs_edit'] ) ? absint( wp_unslash( $_GET['fbs_edit'] ) ) : 0;
-		$is_new  = isset( $_GET['fbs_new'] ) && '1' === (string) wp_unslash( $_GET['fbs_new'] );
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Admin edit screen routing.
+		$edit_id = isset( $_GET['ulbm_edit'] ) ? absint( wp_unslash( $_GET['ulbm_edit'] ) ) : 0;
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Admin new-item routing.
+		$is_new  = isset( $_GET['ulbm_new'] ) && '1' === (string) wp_unslash( $_GET['ulbm_new'] );
 
 		$editing = null;
 		if ( $edit_id > 0 ) {
@@ -376,12 +400,12 @@ final class Admin {
 		$this->render_view(
 			'booking-types',
 			array(
-				'fbs_booking_types'   => $type_repo->get_all(),
-				'fbs_types_total'     => $type_repo->count_all(),
-				'fbs_type_notice'     => $notice_code,
-				'fbs_editing_type'    => $editing,
-				'fbs_show_type_form'  => $show_form,
-				'fbs_industry_catalog' => IndustryCatalog::definitions(),
+				'ulbm_booking_types'   => $type_repo->get_all(),
+				'ulbm_types_total'     => $type_repo->count_all(),
+				'ulbm_type_notice'     => $notice_code,
+				'ulbm_editing_type'    => $editing,
+				'ulbm_show_type_form'  => $show_form,
+				'ulbm_industry_catalog' => IndustryCatalog::definitions(),
 			)
 		);
 	}
@@ -395,10 +419,12 @@ final class Admin {
 		if ( ! is_admin() ) {
 			return;
 		}
-		if ( ! isset( $_GET['page'] ) || 'fbs-booking-types' !== (string) wp_unslash( $_GET['page'] ) ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Admin screen routing only.
+		if ( ! isset( $_GET['page'] ) || 'ulbm-booking-types' !== (string) wp_unslash( $_GET['page'] ) ) {
 			return;
 		}
-		if ( ! isset( $_POST['fbs_booking_types_nonce'] ) || ! isset( $_POST['fbs_type_action'] ) ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Verified before processing.
+		if ( ! isset( $_POST['ulbm_booking_types_nonce'] ) || ! isset( $_POST['ulbm_type_action'] ) ) {
 			return;
 		}
 
@@ -406,9 +432,12 @@ final class Admin {
 			return;
 		}
 
-		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['fbs_booking_types_nonce'] ) ), 'fbs_booking_types' ) ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Verified on next line.
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['ulbm_booking_types_nonce'] ) ), 'ulbm_booking_types' ) ) {
 			return;
 		}
+
+		\FlexBooking\Security\PostData::allow_processing();
 
 		$type_repo    = new BookingTypeRepository();
 		$booking_repo = new BookingRepository();
@@ -425,10 +454,10 @@ final class Admin {
 	 */
 	private function process_booking_type_form_submission( BookingTypeRepository $type_repo, BookingRepository $booking_repo ) {
 
-		$action = sanitize_key( wp_unslash( $_POST['fbs_type_action'] ) );
+		$action = \FlexBooking\Security\PostData::key( 'ulbm_type_action' );
 
 		if ( 'delete' === $action ) {
-			$id = isset( $_POST['fbs_type_id'] ) ? absint( wp_unslash( $_POST['fbs_type_id'] ) ) : 0;
+			$id = \FlexBooking\Security\PostData::int( 'ulbm_type_id' );
 			if ( $id < 1 ) {
 				$this->redirect_booking_types( 'delete_invalid' );
 			}
@@ -447,14 +476,14 @@ final class Admin {
 			return;
 		}
 
-		$id = isset( $_POST['fbs_type_id'] ) ? absint( wp_unslash( $_POST['fbs_type_id'] ) ) : 0;
+		$id = \FlexBooking\Security\PostData::int( 'ulbm_type_id' );
 
-		$name = isset( $_POST['fbs_type_name'] ) ? sanitize_text_field( wp_unslash( $_POST['fbs_type_name'] ) ) : '';
+		$name = \FlexBooking\Security\PostData::string( 'ulbm_type_name' );
 		if ( '' === $name ) {
 			$this->redirect_booking_types( 'error_name' );
 		}
 
-		$slug_in = isset( $_POST['fbs_type_slug'] ) ? sanitize_title( wp_unslash( $_POST['fbs_type_slug'] ) ) : '';
+		$slug_in = \FlexBooking\Security\PostData::has( 'ulbm_type_slug' ) ? sanitize_title( (string) \FlexBooking\Security\PostData::raw( 'ulbm_type_slug' ) ) : '';
 		$slug    = '' !== $slug_in ? $slug_in : sanitize_title( $name );
 		if ( '' === $slug ) {
 			$this->redirect_booking_types( 'error_slug' );
@@ -464,9 +493,13 @@ final class Admin {
 			$this->redirect_booking_types( 'error_duplicate_slug' );
 		}
 
-		$description = isset( $_POST['fbs_type_description'] ) ? sanitize_textarea_field( wp_unslash( $_POST['fbs_type_description'] ) ) : '';
-		$industry    = isset( $_POST['fbs_type_industry'] ) ? sanitize_key( wp_unslash( $_POST['fbs_type_industry'] ) ) : '';
-		$status      = isset( $_POST['fbs_type_status'] ) ? sanitize_key( wp_unslash( $_POST['fbs_type_status'] ) ) : 'publish';
+		$description = \FlexBooking\Security\PostData::has( 'ulbm_type_description' )
+			? sanitize_textarea_field( (string) \FlexBooking\Security\PostData::raw( 'ulbm_type_description' ) )
+			: '';
+		$industry    = \FlexBooking\Security\PostData::key( 'ulbm_type_industry' );
+		$status      = \FlexBooking\Security\PostData::has( 'ulbm_type_status' )
+			? \FlexBooking\Security\PostData::key( 'ulbm_type_status', 'publish' )
+			: 'publish';
 		if ( ! in_array( $status, array( 'publish', 'draft' ), true ) ) {
 			$status = 'publish';
 		}
@@ -555,8 +588,8 @@ final class Admin {
 		wp_safe_redirect(
 			add_query_arg(
 				array(
-					'page'       => 'fbs-booking-types',
-					'fbs_notice' => sanitize_key( (string) $code ),
+					'page'       => 'ulbm-booking-types',
+					'ulbm_notice' => sanitize_key( (string) $code ),
 				),
 				admin_url( 'admin.php' )
 			)
@@ -571,21 +604,24 @@ final class Admin {
 	 */
 	public function render_bookings() {
 		$booking_repo = new BookingRepository();
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- List table pagination.
 		$paged        = isset( $_GET['paged'] ) ? max( 1, absint( wp_unslash( $_GET['paged'] ) ) ) : 1;
-		$per_page     = (int) apply_filters( 'fbs_admin_bookings_per_page', 50 );
+		$per_page     = (int) apply_filters( 'ulbm_admin_bookings_per_page', 50 );
 		$per_page     = min( 200, max( 1, $per_page ) );
 
-		$status_filter = isset( $_GET['fbs_status'] ) ? sanitize_key( wp_unslash( $_GET['fbs_status'] ) ) : '';
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- List filter query arg.
+		$status_filter = isset( $_GET['ulbm_status'] ) ? sanitize_key( wp_unslash( $_GET['ulbm_status'] ) ) : '';
 		if ( '' !== $status_filter && ! in_array( $status_filter, BookingAdminUpdater::booking_statuses(), true ) ) {
 			$status_filter = '';
 		}
 
-		$type_filter = isset( $_GET['fbs_type'] ) ? absint( wp_unslash( $_GET['fbs_type'] ) ) : 0;
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- List filter query arg.
+		$type_filter = isset( $_GET['ulbm_type'] ) ? absint( wp_unslash( $_GET['ulbm_type'] ) ) : 0;
 		$type_repo   = new BookingTypeRepository();
 		$all_types      = $type_repo->get_all();
-		$fbs_type_names = array();
+		$ulbm_type_names = array();
 		foreach ( $all_types as $tr ) {
-			$fbs_type_names[ (int) $tr['id'] ] = (string) $tr['name'];
+			$ulbm_type_names[ (int) $tr['id'] ] = (string) $tr['name'];
 		}
 		if ( $type_filter > 0 ) {
 			$found = false;
@@ -614,25 +650,25 @@ final class Admin {
 				$cids[] = (int) $r['customer_id'];
 			}
 		}
-		$fbs_customer_emails = $booking_repo->get_customer_emails_by_ids( $cids );
+		$ulbm_customer_emails = $booking_repo->get_customer_emails_by_ids( $cids );
 
 		$bids                 = array_column( $rows, 'id' );
-		$fbs_booking_answers = $booking_repo->get_form_values_for_bookings( $bids );
+		$ulbm_booking_answers = $booking_repo->get_form_values_for_bookings( $bids );
 
 		$this->render_view(
 			'bookings',
 			array(
-				'fbs_bookings'             => $rows,
-				'fbs_bookings_total'       => $total,
-				'fbs_bookings_paged'       => $paged,
-				'fbs_bookings_per_page'    => $per_page,
-				'fbs_bookings_total_pages' => $total_pages,
-				'fbs_status_filter'        => $status_filter,
-				'fbs_type_filter'          => $type_filter,
-				'fbs_booking_type_options' => $all_types,
-				'fbs_type_names'           => $fbs_type_names,
-				'fbs_customer_emails'      => $fbs_customer_emails,
-				'fbs_booking_answers'      => $fbs_booking_answers,
+				'ulbm_bookings'             => $rows,
+				'ulbm_bookings_total'       => $total,
+				'ulbm_bookings_paged'       => $paged,
+				'ulbm_bookings_per_page'    => $per_page,
+				'ulbm_bookings_total_pages' => $total_pages,
+				'ulbm_status_filter'        => $status_filter,
+				'ulbm_type_filter'          => $type_filter,
+				'ulbm_booking_type_options' => $all_types,
+				'ulbm_type_names'           => $ulbm_type_names,
+				'ulbm_customer_emails'      => $ulbm_customer_emails,
+				'ulbm_booking_answers'      => $ulbm_booking_answers,
 			)
 		);
 	}
@@ -644,15 +680,17 @@ final class Admin {
 	 */
 	public function render_reviews() {
 		if ( ! Capabilities::can_access_admin() ) {
-			wp_die( esc_html__( 'You do not have permission to access this page.', 'flex-multiple-listing-and-booking-system' ) );
+			wp_die( esc_html__( 'You do not have permission to access this page.', 'flex-booking-system' ) );
 		}
 
 		$repo     = new ListingReviewRepository();
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- List table pagination.
 		$paged    = isset( $_GET['paged'] ) ? max( 1, absint( wp_unslash( $_GET['paged'] ) ) ) : 1;
-		$per_page = (int) apply_filters( 'fbs_admin_reviews_per_page', 30 );
+		$per_page = (int) apply_filters( 'ulbm_admin_reviews_per_page', 30 );
 		$per_page = min( 100, max( 1, $per_page ) );
 
-		$status_filter = isset( $_GET['fbs_status'] ) ? sanitize_key( wp_unslash( $_GET['fbs_status'] ) ) : '';
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- List filter query arg.
+		$status_filter = isset( $_GET['ulbm_status'] ) ? sanitize_key( wp_unslash( $_GET['ulbm_status'] ) ) : '';
 		if ( '' !== $status_filter && ! in_array( $status_filter, array( 'pending', 'approved', 'rejected' ), true ) ) {
 			$status_filter = '';
 		}
@@ -666,12 +704,12 @@ final class Admin {
 		$this->render_view(
 			'reviews',
 			array(
-				'fbs_reviews'               => $repo->get_page( $paged, $per_page, $status_filter ),
-				'fbs_reviews_total'         => $total,
-				'fbs_reviews_paged'         => $paged,
-				'fbs_reviews_per_page'      => $per_page,
-				'fbs_reviews_total_pages'   => $total_pages,
-				'fbs_reviews_status_filter' => $status_filter,
+				'ulbm_reviews'               => $repo->get_page( $paged, $per_page, $status_filter ),
+				'ulbm_reviews_total'         => $total,
+				'ulbm_reviews_paged'         => $paged,
+				'ulbm_reviews_per_page'      => $per_page,
+				'ulbm_reviews_total_pages'   => $total_pages,
+				'ulbm_reviews_status_filter' => $status_filter,
 			)
 		);
 	}
@@ -692,13 +730,13 @@ final class Admin {
 	 * @return void
 	 */
 	private function render_view( $view, array $vars = array() ) {
-		$path = FBS_PLUGIN_DIR . 'templates/admin/' . $view . '.php';
+		$path = ULBM_PLUGIN_DIR . 'templates/admin/' . $view . '.php';
 		if ( is_readable( $path ) ) {
 			// phpcs:ignore WordPress.PHP.DontExtract.extract_extract -- scoped template variables for admin views only.
 			extract( $vars, EXTR_SKIP );
 			include $path;
 			return;
 		}
-		echo '<div class="wrap"><h1>' . esc_html( fbs_plugin_display_name() ) . '</h1><p>' . esc_html__( 'Missing template.', 'flex-multiple-listing-and-booking-system' ) . '</p></div>';
+		echo '<div class="wrap"><h1>' . esc_html( ulbm_plugin_display_name() ) . '</h1><p>' . esc_html__( 'Missing template.', 'flex-booking-system' ) . '</p></div>';
 	}
 }

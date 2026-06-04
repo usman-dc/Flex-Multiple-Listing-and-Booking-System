@@ -12,7 +12,7 @@ use FlexBooking\Database\Schema;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Persists auditable events to fbs_activity_logs.
+ * Persists auditable events to ulbm_activity_logs.
  */
 final class Logger {
 

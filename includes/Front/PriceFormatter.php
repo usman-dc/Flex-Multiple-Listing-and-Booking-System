@@ -23,7 +23,7 @@ final class PriceFormatter {
 			return $cached;
 		}
 
-		$raw = json_decode( (string) get_option( 'fbs_general_settings', '{}' ), true );
+		$raw = json_decode( (string) get_option( 'ulbm_general_settings', '{}' ), true );
 		$cached = is_array( $raw ) ? $raw : array();
 
 		return $cached;
@@ -110,16 +110,16 @@ final class PriceFormatter {
 		$html = '';
 
 		if ( '' !== $sale_price && '' !== $base_price ) {
-			$html .= '<del class="fbs-price-was text-muted me-1">' . esc_html( self::format_plain( $base_price ) ) . '</del> ';
-			$html .= '<span class="fbs-price-current">' . esc_html( self::format_plain( $sale_price ) ) . '</span>';
+			$html .= '<del class="ulbm-price-was text-muted me-1">' . esc_html( self::format_plain( $base_price ) ) . '</del> ';
+			$html .= '<span class="ulbm-price-current">' . esc_html( self::format_plain( $sale_price ) ) . '</span>';
 		} elseif ( '' !== $sale_price ) {
-			$html .= '<span class="fbs-price-current">' . esc_html( self::format_plain( $sale_price ) ) . '</span>';
+			$html .= '<span class="ulbm-price-current">' . esc_html( self::format_plain( $sale_price ) ) . '</span>';
 		} else {
-			$html .= '<span class="fbs-price-current">' . esc_html( self::format_plain( $base_price ) ) . '</span>';
+			$html .= '<span class="ulbm-price-current">' . esc_html( self::format_plain( $base_price ) ) . '</span>';
 		}
 
 		if ( '' !== $suffix ) {
-			$html .= '<small class="text-muted fw-normal fbs-price-suffix">' . esc_html( $suffix ) . '</small>';
+			$html .= '<small class="text-muted fw-normal ulbm-price-suffix">' . esc_html( $suffix ) . '</small>';
 		}
 
 		return $html;

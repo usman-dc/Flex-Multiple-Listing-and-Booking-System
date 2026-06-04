@@ -22,11 +22,11 @@ final class Uninstaller {
 	public static function run() {
 		global $wpdb;
 
-		if ( ! defined( 'FBS_PLUGIN_DIR' ) ) {
-			define( 'FBS_PLUGIN_DIR', dirname( dirname( __DIR__ ) ) . '/' );
+		if ( ! defined( 'ULBM_PLUGIN_DIR' ) ) {
+			define( 'ULBM_PLUGIN_DIR', dirname( dirname( __DIR__ ) ) . '/' );
 		}
 
-		$remove_data = apply_filters( 'fbs_uninstall_remove_all_data', true );
+		$remove_data = apply_filters( 'ulbm_uninstall_remove_all_data', true );
 
 		if ( ! $remove_data ) {
 			return;
@@ -40,18 +40,18 @@ final class Uninstaller {
 		}
 
 		$options = array(
-			'fbs_db_version',
-			'fbs_setup_completed',
-			'fbs_enabled_industries',
-			'fbs_general_settings',
-			'fbs_payment_settings',
-			'fbs_email_settings',
+			'ulbm_db_version',
+			'ulbm_setup_completed',
+			'ulbm_enabled_industries',
+			'ulbm_general_settings',
+			'ulbm_payment_settings',
+			'ulbm_email_settings',
 		);
 
 		foreach ( $options as $option ) {
 			delete_option( $option );
 		}
 
-		delete_site_option( 'fbs_network_placeholder' );
+		delete_site_option( 'ulbm_network_placeholder' );
 	}
 }

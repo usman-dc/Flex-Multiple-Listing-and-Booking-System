@@ -37,8 +37,8 @@ final class Autoloader {
 	 * @return void
 	 */
 	private static function init_base_dir() {
-		if ( ! defined( 'FBS_PLUGIN_DIR' ) ) {
-			define( 'FBS_PLUGIN_DIR', dirname( __DIR__ ) . '/' );
+		if ( ! defined( 'ULBM_PLUGIN_DIR' ) ) {
+			define( 'ULBM_PLUGIN_DIR', dirname( __DIR__ ) . '/' );
 		}
 	}
 
@@ -55,7 +55,7 @@ final class Autoloader {
 
 		$relative = substr( $class, strlen( self::PREFIX ) );
 		$relative = str_replace( '\\', DIRECTORY_SEPARATOR, $relative );
-		$file     = FBS_PLUGIN_DIR . 'includes/' . $relative . '.php';
+		$file     = ULBM_PLUGIN_DIR . 'includes/' . $relative . '.php';
 
 		if ( is_readable( $file ) ) {
 			require_once $file;

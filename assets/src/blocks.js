@@ -1,7 +1,7 @@
 /**
- * Gutenberg Blocks — Flex Multiple Listing and Booking System.
+ * Gutenberg Blocks — Flex Listings and Booking Manager.
  *
- * Registers: flex-booking/form, flex-booking/grid, flex-booking/search
+ * Registers: ulbm-booking/form, ulbm-booking/grid, ulbm-booking/search
  */
 
 const { registerBlockType } = wp.blocks;
@@ -12,7 +12,7 @@ const SSR = ( wp.serverSideRender && wp.serverSideRender.default )
 	? wp.serverSideRender.default
 	: ( wp.serverSideRender || ( wp.components && wp.components.ServerSideRender ) || null );
 
-const bookingTypes = ( window.fbsBlockData && window.fbsBlockData.types ) || [];
+const bookingTypes = ( window.ulbmBlockData && window.ulbmBlockData.types ) || [];
 const typeOptions = [ { label: '— All Types —', value: '' } ].concat(
 	bookingTypes.map( ( t ) => ( { label: t.name + ' (#' + t.id + ')', value: t.slug } ) )
 );
@@ -21,8 +21,8 @@ const typeIdOptions = [ { label: '— Select —', value: '0' } ].concat(
 );
 
 /* ─── BOOKING FORM BLOCK ───────────────────────────────────── */
-registerBlockType( 'flex-booking/form', {
-	title: 'Flex MLS Booking Form',
+registerBlockType( 'ulbm-booking/form', {
+	title: 'Flex Listings Booking Form',
 	description: 'Display a booking form for a specific booking type.',
 	icon: 'calendar-alt',
 	category: 'widgets',
@@ -53,9 +53,9 @@ registerBlockType( 'flex-booking/form', {
 			),
 			el( 'div', blockProps,
 				SSR
-					? el( SSR, { block: 'flex-booking/form', attributes: attributes } )
-					: el( 'div', { className: 'fbs-block-placeholder' },
-						el( 'p', {}, '📋 Flex MLS Booking Form' ),
+					? el( SSR, { block: 'ulbm-booking/form', attributes: attributes } )
+					: el( 'div', { className: 'ulbm-block-placeholder' },
+						el( 'p', {}, '📋 Flex Listings Booking Form' ),
 						el( 'p', { className: 'components-placeholder__instructions' },
 							attributes.id > 0 ? 'Type #' + attributes.id : 'Select a booking type in the sidebar.'
 						)
@@ -67,8 +67,8 @@ registerBlockType( 'flex-booking/form', {
 } );
 
 /* ─── LISTING GRID BLOCK ──────────────────────────────────── */
-registerBlockType( 'flex-booking/grid', {
-	title: 'Flex MLS Listing Grid',
+registerBlockType( 'ulbm-booking/grid', {
+	title: 'Usman Listing Grid',
 	description: 'Display a filterable listing grid with AJAX search for any booking type.',
 	icon: 'grid-view',
 	category: 'widgets',
@@ -160,8 +160,8 @@ registerBlockType( 'flex-booking/grid', {
 			),
 			el( 'div', blockProps,
 				SSR
-					? el( SSR, { block: 'flex-booking/grid', attributes: attributes } )
-					: el( 'div', { className: 'fbs-block-placeholder' },
+					? el( SSR, { block: 'ulbm-booking/grid', attributes: attributes } )
+					: el( 'div', { className: 'ulbm-block-placeholder' },
 						el( 'p', {}, '🏠 Flex Listing Grid' ),
 						el( 'p', { className: 'components-placeholder__instructions' },
 							( attributes.type ? 'Type: ' + attributes.type : 'All types' ) +
@@ -175,8 +175,8 @@ registerBlockType( 'flex-booking/grid', {
 } );
 
 /* ─── SEARCH BLOCK ─────────────────────────────────────────── */
-registerBlockType( 'flex-booking/search', {
-	title: 'Flex MLS Listing Search',
+registerBlockType( 'ulbm-booking/search', {
+	title: 'Usman Listing Search',
 	description: 'AJAX-powered availability search UI.',
 	icon: 'search',
 	category: 'widgets',
@@ -204,9 +204,9 @@ registerBlockType( 'flex-booking/search', {
 			),
 			el( 'div', blockProps,
 				SSR
-					? el( SSR, { block: 'flex-booking/search', attributes: attributes } )
-					: el( 'div', { className: 'fbs-block-placeholder' },
-						el( 'p', {}, '🔍 Flex MLS Listing Search' ),
+					? el( SSR, { block: 'ulbm-booking/search', attributes: attributes } )
+					: el( 'div', { className: 'ulbm-block-placeholder' },
+						el( 'p', {}, '🔍 Usman Listing Search' ),
 						el( 'p', { className: 'components-placeholder__instructions' }, 'Layout: ' + attributes.layout )
 					)
 			)

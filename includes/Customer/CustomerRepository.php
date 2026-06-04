@@ -12,7 +12,7 @@ use FlexBooking\Database\Schema;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * CRUD helpers for fbs_customers.
+ * CRUD helpers for ulbm_customers.
  */
 final class CustomerRepository {
 

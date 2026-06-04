@@ -49,25 +49,25 @@ final class BookingEngine {
 
 		$errors = array();
 		if ( $booking_type_id < 1 ) {
-			$errors[] = __( 'Invalid booking type.', 'flex-multiple-listing-and-booking-system' );
+			$errors[] = __( 'Invalid booking type.', 'flex-booking-system' );
 		}
 		if ( empty( $start ) || empty( $end ) ) {
-			$errors[] = __( 'Start and end are required.', 'flex-multiple-listing-and-booking-system' );
+			$errors[] = __( 'Start and end are required.', 'flex-booking-system' );
 		}
 
-		if ( apply_filters( 'fbs_require_booking_contact', true, $payload ) ) {
+		if ( apply_filters( 'ulbm_require_booking_contact', true, $payload ) ) {
 			$ce = isset( $payload['customer_email'] ) ? sanitize_email( (string) $payload['customer_email'] ) : '';
 			if ( ! $ce || ! is_email( $ce ) ) {
-				$errors[] = __( 'A valid email is required.', 'flex-multiple-listing-and-booking-system' );
+				$errors[] = __( 'A valid email is required.', 'flex-booking-system' );
 			}
 			$ph = isset( $payload['customer_phone'] ) ? trim( (string) $payload['customer_phone'] ) : '';
 			if ( '' === $ph ) {
-				$errors[] = __( 'Mobile / phone is required.', 'flex-multiple-listing-and-booking-system' );
+				$errors[] = __( 'Mobile / phone is required.', 'flex-booking-system' );
 			}
 			$fn = isset( $payload['customer_first_name'] ) ? trim( (string) $payload['customer_first_name'] ) : '';
 			$ln = isset( $payload['customer_last_name'] ) ? trim( (string) $payload['customer_last_name'] ) : '';
 			if ( '' === $fn || '' === $ln ) {
-				$errors[] = __( 'First and last name are required.', 'flex-multiple-listing-and-booking-system' );
+				$errors[] = __( 'First and last name are required.', 'flex-booking-system' );
 			}
 		}
 
@@ -79,7 +79,7 @@ final class BookingEngine {
 		}
 
 		$uid   = $this->generate_uid();
-		$total = apply_filters( 'fbs_calculate_booking_total', 0, $payload );
+		$total = apply_filters( 'ulbm_calculate_booking_total', 0, $payload );
 
 		$customer_id = isset( $payload['customer_id'] ) ? absint( $payload['customer_id'] ) : null;
 		if ( ! $customer_id && ! empty( $payload['customer_email'] ) ) {
@@ -108,15 +108,22 @@ final class BookingEngine {
 			'meta'            => isset( $payload['meta'] ) ? wp_json_encode( $payload['meta'] ) : null,
 		);
 
-		$data = apply_filters( 'fbs_before_insert_booking', $data, $payload );
+		$data = apply_filters( 'ulbm_before_insert_booking', $data, $payload );
 
 		$booking_id = $repo->insert_booking( $data );
+
+		if ( $booking_id < 1 ) {
+			return array(
+				'success' => false,
+				'errors'  => array( __( 'Could not save booking. Try reactivating the plugin or contact the site owner.', 'flex-booking-system' ) ),
+			);
+		}
 
 		if ( isset( $payload['form_values'] ) && is_array( $payload['form_values'] ) ) {
 			$repo->add_meta( $booking_id, 'form_values', $payload['form_values'] );
 		}
 
-		do_action( 'fbs_booking_created', $booking_id, $payload );
+		do_action( 'ulbm_booking_created', $booking_id, $payload );
 
 		$logger = $this->container->get( 'logger' );
 		$logger->log( 'booking', $booking_id, 'created', array( 'uid' => $uid ) );

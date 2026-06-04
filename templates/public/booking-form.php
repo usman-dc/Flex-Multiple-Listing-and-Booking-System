@@ -12,11 +12,11 @@
 
  * @var array<string, mixed>              $atts              Shortcode attributes.
 
- * @var array<string, mixed>|null         $fbs_booking_type  Loaded type row or null.
+ * @var array<string, mixed>|null         $ulbm_booking_type  Loaded type row or null.
 
- * @var array{industry: string, contact: array, extra: array, title: string} $fbs_form_groups Field definitions.
+ * @var array{industry: string, contact: array, extra: array, title: string} $ulbm_form_groups Field definitions.
 
- * @var array<string, string>             $fbs_prefill       Default values for contact fields.
+ * @var array<string, string>             $ulbm_prefill       Default values for contact fields.
 
  */
 
@@ -36,7 +36,7 @@ $type    = isset( $atts['type'] ) ? sanitize_title( $atts['type'] ) : '';
 
 $id      = isset( $atts['id'] ) ? absint( $atts['id'] ) : 0;
 
-$groups  = isset( $fbs_form_groups ) && is_array( $fbs_form_groups ) ? $fbs_form_groups : array(
+$groups  = isset( $ulbm_form_groups ) && is_array( $ulbm_form_groups ) ? $ulbm_form_groups : array(
 
 	'industry' => 'generic',
 
@@ -48,21 +48,21 @@ $groups  = isset( $fbs_form_groups ) && is_array( $fbs_form_groups ) ? $fbs_form
 
 );
 
-$prefill = isset( $fbs_prefill ) && is_array( $fbs_prefill ) ? $fbs_prefill : array();
+$prefill = isset( $ulbm_prefill ) && is_array( $ulbm_prefill ) ? $ulbm_prefill : array();
 
 
 
-$fbs_type_name = '';
+$ulbm_type_name = '';
 
-if ( $fbs_booking_type && is_array( $fbs_booking_type ) && ! empty( $fbs_booking_type['name'] ) ) {
+if ( $ulbm_booking_type && is_array( $ulbm_booking_type ) && ! empty( $ulbm_booking_type['name'] ) ) {
 
-	$fbs_type_name = (string) $fbs_booking_type['name'];
+	$ulbm_type_name = (string) $ulbm_booking_type['name'];
 
 }
 
 
 
-$fbs_render_field = static function ( array $f, $compact = false ) use ( $prefill ) {
+$ulbm_render_field = static function ( array $f, $compact = false ) use ( $prefill ) {
 
 	$name     = isset( $f['name'] ) ? (string) $f['name'] : '';
 
@@ -82,7 +82,7 @@ $fbs_render_field = static function ( array $f, $compact = false ) use ( $prefil
 
 	$req = $required ? ' required' : '';
 
-	$id_attr = 'fbs-f-' . sanitize_key( $name );
+	$id_attr = 'ulbm-f-' . sanitize_key( $name );
 
 	$control_class = $compact ? 'form-control' : 'form-control form-control-sm';
 
@@ -108,7 +108,7 @@ $fbs_render_field = static function ( array $f, $compact = false ) use ( $prefil
 
 			<select class="<?php echo esc_attr( $select_class ); ?>" name="<?php echo esc_attr( $name ); ?>" id="<?php echo esc_attr( $id_attr ); ?>"<?php echo $req; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
 
-				<option value=""><?php esc_html_e( '— Select —', 'flex-multiple-listing-and-booking-system' ); ?></option>
+				<option value=""><?php esc_html_e( '— Select —', 'flex-booking-system' ); ?></option>
 
 				<?php foreach ( $f['options'] as $opt_val => $opt_label ) : ?>
 
@@ -164,51 +164,51 @@ $fbs_render_field = static function ( array $f, $compact = false ) use ( $prefil
 
 
 
-$fbs_listing_id  = isset( $fbs_listing_id ) ? (int) $fbs_listing_id : 0;
-if ( ! $fbs_listing_id && is_singular() ) {
+$ulbm_listing_id  = isset( $ulbm_listing_id ) ? (int) $ulbm_listing_id : 0;
+if ( ! $ulbm_listing_id && is_singular() ) {
 	$pt = get_post_type();
-	if ( $pt && 0 === strpos( (string) $pt, 'fbs_' ) && 'fbs_listing' !== $pt ) {
-		$fbs_listing_id = get_the_ID();
+	if ( $pt && \FlexBooking\PostTypes\BookingTypePostTypeRegistry::is_listing_post_type( (string) $pt ) ) {
+		$ulbm_listing_id = get_the_ID();
 	}
 }
-$fbs_marketplace = is_singular() && $fbs_listing_id > 0;
-$fbs_is_embedded = $fbs_marketplace || ( is_singular() && has_post_thumbnail() );
+$ulbm_marketplace = is_singular() && $ulbm_listing_id > 0;
+$ulbm_is_embedded = $ulbm_marketplace || ( is_singular() && has_post_thumbnail() );
 
 
 
-$fbs_nightly_price  = 0.0;
+$ulbm_nightly_price  = 0.0;
 
-$fbs_cleaning_fee   = 0.0;
+$ulbm_cleaning_fee   = 0.0;
 
-$fbs_service_fee    = 0.0;
+$ulbm_service_fee    = 0.0;
 
-$fbs_max_guests     = 1;
+$ulbm_max_guests     = 1;
 
-$fbs_price_suffix   = '/night';
+$ulbm_price_suffix   = '/night';
 
-$fbs_check_in_time  = '14:00';
+$ulbm_check_in_time  = '14:00';
 
-$fbs_check_out_time = '11:00';
+$ulbm_check_out_time = '11:00';
 
 
 
-if ( $fbs_marketplace ) {
+if ( $ulbm_marketplace ) {
 
-	$base = ListingMeta::get( $fbs_listing_id, ListingMeta::KEY_BASE_PRICE, 'string' );
+	$base = ListingMeta::get( $ulbm_listing_id, ListingMeta::KEY_BASE_PRICE, 'string' );
 
-	$sale = ListingMeta::get( $fbs_listing_id, ListingMeta::KEY_SALE_PRICE, 'string' );
+	$sale = ListingMeta::get( $ulbm_listing_id, ListingMeta::KEY_SALE_PRICE, 'string' );
 
-	$fbs_nightly_price  = (float) ( $sale ?: $base );
+	$ulbm_nightly_price  = (float) ( $sale ?: $base );
 
-	$fbs_max_guests     = max( 1, ListingMeta::get( $fbs_listing_id, ListingMeta::KEY_MAX_GUESTS, 'int' ) );
+	$ulbm_max_guests     = max( 1, ListingMeta::get( $ulbm_listing_id, ListingMeta::KEY_MAX_GUESTS, 'int' ) );
 
-	$fbs_price_suffix   = PriceFormatter::normalize_suffix( ListingMeta::get( $fbs_listing_id, ListingMeta::KEY_PRICE_SUFFIX, 'string' ) ?: '/night' );
+	$ulbm_price_suffix   = PriceFormatter::normalize_suffix( ListingMeta::get( $ulbm_listing_id, ListingMeta::KEY_PRICE_SUFFIX, 'string' ) ?: '/night' );
 
-	$fbs_check_in_time  = ListingMeta::get( $fbs_listing_id, ListingMeta::KEY_CHECK_IN_TIME, 'string' ) ?: '14:00';
+	$ulbm_check_in_time  = ListingMeta::get( $ulbm_listing_id, ListingMeta::KEY_CHECK_IN_TIME, 'string' ) ?: '14:00';
 
-	$fbs_check_out_time = ListingMeta::get( $fbs_listing_id, ListingMeta::KEY_CHECK_OUT_TIME, 'string' ) ?: '11:00';
+	$ulbm_check_out_time = ListingMeta::get( $ulbm_listing_id, ListingMeta::KEY_CHECK_OUT_TIME, 'string' ) ?: '11:00';
 
-	$extra_svc          = ListingMeta::get( $fbs_listing_id, ListingMeta::KEY_EXTRA_SERVICES, 'array' );
+	$extra_svc          = ListingMeta::get( $ulbm_listing_id, ListingMeta::KEY_EXTRA_SERVICES, 'array' );
 
 	foreach ( $extra_svc as $svc ) {
 
@@ -224,11 +224,11 @@ if ( $fbs_marketplace ) {
 
 		if ( false !== strpos( $name, 'clean' ) ) {
 
-			$fbs_cleaning_fee = $fee;
+			$ulbm_cleaning_fee = $fee;
 
 		} elseif ( false !== strpos( $name, 'service' ) ) {
 
-			$fbs_service_fee = $fee;
+			$ulbm_service_fee = $fee;
 
 		}
 
@@ -238,53 +238,53 @@ if ( $fbs_marketplace ) {
 
 
 
-$fbs_currency = PriceFormatter::currency_code();
+$ulbm_currency = PriceFormatter::currency_code();
 
 ?>
 
 <div
 
-	class="fbs-booking-form <?php echo $fbs_marketplace ? 'fbs-booking-form--marketplace' : ( $fbs_is_embedded ? '' : 'card border-0 shadow-sm' ); ?> w-100"
+	class="ulbm-booking-form <?php echo $ulbm_marketplace ? 'ulbm-booking-form--marketplace' : ( $ulbm_is_embedded ? '' : 'card border-0 shadow-sm' ); ?> w-100"
 
-	data-fbs-type="<?php echo esc_attr( $type ); ?>"
+	data-ulbm-type="<?php echo esc_attr( $type ); ?>"
 
-	data-fbs-type-id="<?php echo esc_attr( (string) $id ); ?>"
+	data-ulbm-type-id="<?php echo esc_attr( (string) $id ); ?>"
 
-	data-fbs-listing-id="<?php echo esc_attr( (string) $fbs_listing_id ); ?>"
+	data-ulbm-listing-id="<?php echo esc_attr( (string) $ulbm_listing_id ); ?>"
 
-	data-fbs-industry="<?php echo esc_attr( (string) $groups['industry'] ); ?>"
+	data-ulbm-industry="<?php echo esc_attr( (string) $groups['industry'] ); ?>"
 
-	<?php if ( $fbs_marketplace ) : ?>
+	<?php if ( $ulbm_marketplace ) : ?>
 
-	data-fbs-nightly="<?php echo esc_attr( (string) $fbs_nightly_price ); ?>"
+	data-ulbm-nightly="<?php echo esc_attr( (string) $ulbm_nightly_price ); ?>"
 
-	data-fbs-cleaning="<?php echo esc_attr( (string) $fbs_cleaning_fee ); ?>"
+	data-ulbm-cleaning="<?php echo esc_attr( (string) $ulbm_cleaning_fee ); ?>"
 
-	data-fbs-service="<?php echo esc_attr( (string) $fbs_service_fee ); ?>"
+	data-ulbm-service="<?php echo esc_attr( (string) $ulbm_service_fee ); ?>"
 
-	data-fbs-currency="<?php echo esc_attr( $fbs_currency ); ?>"
+	data-ulbm-currency="<?php echo esc_attr( $ulbm_currency ); ?>"
 
-	data-fbs-price-suffix="<?php echo esc_attr( $fbs_price_suffix ); ?>"
+	data-ulbm-price-suffix="<?php echo esc_attr( $ulbm_price_suffix ); ?>"
 
-	data-fbs-check-in-time="<?php echo esc_attr( $fbs_check_in_time ); ?>"
+	data-ulbm-check-in-time="<?php echo esc_attr( $ulbm_check_in_time ); ?>"
 
-	data-fbs-check-out-time="<?php echo esc_attr( $fbs_check_out_time ); ?>"
+	data-ulbm-check-out-time="<?php echo esc_attr( $ulbm_check_out_time ); ?>"
 
-	data-fbs-max-guests="<?php echo esc_attr( (string) $fbs_max_guests ); ?>"
+	data-ulbm-max-guests="<?php echo esc_attr( (string) $ulbm_max_guests ); ?>"
 
 	<?php endif; ?>
 
 >
 
-	<div class="<?php echo ( $fbs_marketplace || $fbs_is_embedded ) ? '' : 'card-body p-4'; ?>">
+	<div class="<?php echo ( $ulbm_marketplace || $ulbm_is_embedded ) ? '' : 'card-body p-4'; ?>">
 
-		<?php if ( ! $fbs_marketplace && ! $fbs_is_embedded ) : ?>
+		<?php if ( ! $ulbm_marketplace && ! $ulbm_is_embedded ) : ?>
 
-			<h2 class="h5 mb-1"><i class="bi bi-calendar-check me-1"></i><?php esc_html_e( 'Book Now', 'flex-multiple-listing-and-booking-system' ); ?></h2>
+			<h2 class="h5 mb-1"><i class="bi bi-calendar-check me-1"></i><?php esc_html_e( 'Book Now', 'flex-booking-system' ); ?></h2>
 
-			<?php if ( $fbs_type_name ) : ?>
+			<?php if ( $ulbm_type_name ) : ?>
 
-				<p class="text-muted small mb-3"><?php echo esc_html( $fbs_type_name ); ?></p>
+				<p class="text-muted small mb-3"><?php echo esc_html( $ulbm_type_name ); ?></p>
 
 			<?php endif; ?>
 
@@ -292,13 +292,13 @@ $fbs_currency = PriceFormatter::currency_code();
 
 
 
-		<?php if ( $fbs_type_name && $fbs_is_embedded && ! $fbs_marketplace ) : ?>
+		<?php if ( $ulbm_type_name && $ulbm_is_embedded && ! $ulbm_marketplace ) : ?>
 
 			<div class="alert alert-light border py-2 px-3 mb-3 small">
 
 				<i class="bi bi-tag me-1 text-primary"></i>
 
-				<strong><?php esc_html_e( 'Booking type:', 'flex-multiple-listing-and-booking-system' ); ?></strong> <?php echo esc_html( $fbs_type_name ); ?>
+				<strong><?php esc_html_e( 'Booking type:', 'flex-booking-system' ); ?></strong> <?php echo esc_html( $ulbm_type_name ); ?>
 
 			</div>
 
@@ -306,60 +306,60 @@ $fbs_currency = PriceFormatter::currency_code();
 
 
 
-		<form class="<?php echo $fbs_marketplace ? 'fbs-marketplace-form' : 'row g-2'; ?>" id="fbs-booking-form-fields" novalidate>
+		<form class="<?php echo $ulbm_marketplace ? 'ulbm-marketplace-form' : 'row g-2'; ?>" id="ulbm-booking-form-fields" novalidate>
 
 
 
-			<?php if ( $fbs_marketplace ) : ?>
+			<?php if ( $ulbm_marketplace ) : ?>
 
-				<div class="fbs-mp-fields">
+				<div class="ulbm-mp-fields">
 
-					<div class="fbs-mp-field">
+					<div class="ulbm-mp-field">
 
-						<label class="fbs-mp-label" for="fbs-checkin"><?php esc_html_e( 'Check-in', 'flex-multiple-listing-and-booking-system' ); ?></label>
+						<label class="ulbm-mp-label" for="ulbm-checkin"><?php esc_html_e( 'Check-in', 'flex-booking-system' ); ?></label>
 
-						<div class="fbs-mp-input-wrap">
+						<div class="ulbm-mp-input-wrap">
 
 							<i class="bi bi-calendar3" aria-hidden="true"></i>
 
-							<input type="date" class="fbs-mp-input fbs-mp-checkin" id="fbs-checkin" name="fbs_checkin" required>
+							<input type="date" class="ulbm-mp-input ulbm-mp-checkin" id="ulbm-checkin" name="ulbm_checkin" required>
 
 						</div>
 
 					</div>
 
-					<div class="fbs-mp-field">
+					<div class="ulbm-mp-field">
 
-						<label class="fbs-mp-label" for="fbs-checkout"><?php esc_html_e( 'Check-out', 'flex-multiple-listing-and-booking-system' ); ?></label>
+						<label class="ulbm-mp-label" for="ulbm-checkout"><?php esc_html_e( 'Check-out', 'flex-booking-system' ); ?></label>
 
-						<div class="fbs-mp-input-wrap">
+						<div class="ulbm-mp-input-wrap">
 
 							<i class="bi bi-calendar3" aria-hidden="true"></i>
 
-							<input type="date" class="fbs-mp-input fbs-mp-checkout" id="fbs-checkout" name="fbs_checkout" required>
+							<input type="date" class="ulbm-mp-input ulbm-mp-checkout" id="ulbm-checkout" name="ulbm_checkout" required>
 
 						</div>
 
 					</div>
 
-					<div class="fbs-mp-field">
+					<div class="ulbm-mp-field">
 
-						<label class="fbs-mp-label" for="fbs-guests"><?php esc_html_e( 'Guests', 'flex-multiple-listing-and-booking-system' ); ?></label>
+						<label class="ulbm-mp-label" for="ulbm-guests"><?php esc_html_e( 'Guests', 'flex-booking-system' ); ?></label>
 
-						<div class="fbs-mp-input-wrap">
+						<div class="ulbm-mp-input-wrap">
 
 							<i class="bi bi-people" aria-hidden="true"></i>
 
-							<select class="fbs-mp-input fbs-mp-guests" id="fbs-guests" name="guests_count">
+							<select class="ulbm-mp-input ulbm-mp-guests" id="ulbm-guests" name="guests_count">
 
-								<?php for ( $g = 1; $g <= $fbs_max_guests; $g++ ) : ?>
+								<?php for ( $g = 1; $g <= $ulbm_max_guests; $g++ ) : ?>
 
 									<option value="<?php echo esc_attr( (string) $g ); ?>"<?php selected( 2, $g ); ?>>
 
 										<?php
 										printf(
 											/* translators: %d: guest count */
-											esc_html( _n( '%d Guest', '%d Guests', $g, 'flex-multiple-listing-and-booking-system' ) ),
+											esc_html( _n( '%d Guest', '%d Guests', $g, 'flex-booking-system' ) ),
 											(int) $g
 										);
 										?>
@@ -378,43 +378,43 @@ $fbs_currency = PriceFormatter::currency_code();
 
 
 
-				<div class="fbs-price-breakdown" aria-live="polite">
+				<div class="ulbm-price-breakdown" aria-live="polite">
 
-					<div class="fbs-price-line fbs-price-line--nights">
+					<div class="ulbm-price-line ulbm-price-line--nights">
 
-						<span class="fbs-price-line-label"></span>
+						<span class="ulbm-price-line-label"></span>
 
-						<span class="fbs-price-line-value"></span>
-
-					</div>
-
-					<div class="fbs-price-line fbs-price-line--cleaning<?php echo $fbs_cleaning_fee <= 0 ? ' d-none' : ''; ?>">
-
-						<span class="fbs-price-line-label"><?php esc_html_e( 'Cleaning Fee', 'flex-multiple-listing-and-booking-system' ); ?></span>
-
-						<span class="fbs-price-line-value"></span>
+						<span class="ulbm-price-line-value"></span>
 
 					</div>
 
-					<div class="fbs-price-line fbs-price-line--service">
+					<div class="ulbm-price-line ulbm-price-line--cleaning<?php echo $ulbm_cleaning_fee <= 0 ? ' d-none' : ''; ?>">
 
-						<span class="fbs-price-line-label">
+						<span class="ulbm-price-line-label"><?php esc_html_e( 'Cleaning Fee', 'flex-booking-system' ); ?></span>
 
-							<?php esc_html_e( 'Service Fee', 'flex-multiple-listing-and-booking-system' ); ?>
+						<span class="ulbm-price-line-value"></span>
 
-							<i class="bi bi-info-circle fbs-fee-info" title="<?php esc_attr_e( 'Platform service fee', 'flex-multiple-listing-and-booking-system' ); ?>" aria-hidden="true"></i>
+					</div>
+
+					<div class="ulbm-price-line ulbm-price-line--service">
+
+						<span class="ulbm-price-line-label">
+
+							<?php esc_html_e( 'Service Fee', 'flex-booking-system' ); ?>
+
+							<i class="bi bi-info-circle ulbm-fee-info" title="<?php esc_attr_e( 'Platform service fee', 'flex-booking-system' ); ?>" aria-hidden="true"></i>
 
 						</span>
 
-						<span class="fbs-price-line-value"></span>
+						<span class="ulbm-price-line-value"></span>
 
 					</div>
 
-					<div class="fbs-price-total">
+					<div class="ulbm-price-total">
 
-						<span><?php esc_html_e( 'Total', 'flex-multiple-listing-and-booking-system' ); ?></span>
+						<span><?php esc_html_e( 'Total', 'flex-booking-system' ); ?></span>
 
-						<strong class="fbs-price-total-value"></strong>
+						<strong class="ulbm-price-total-value"></strong>
 
 					</div>
 
@@ -422,37 +422,37 @@ $fbs_currency = PriceFormatter::currency_code();
 
 
 
-				<input type="hidden" name="start" id="fbs-start" value="">
+				<input type="hidden" name="start" id="ulbm-start" value="">
 
-				<input type="hidden" name="end" id="fbs-end" value="">
+				<input type="hidden" name="end" id="ulbm-end" value="">
 
 			<?php else : ?>
 
-				<div class="col-12"><p class="text-uppercase text-muted fw-bold mb-1" style="font-size:.7rem;letter-spacing:.05em;"><i class="bi bi-person me-1"></i><?php esc_html_e( 'Your details', 'flex-multiple-listing-and-booking-system' ); ?></p></div>
+				<div class="col-12"><p class="text-uppercase text-muted fw-bold mb-1" style="font-size:.7rem;letter-spacing:.05em;"><i class="bi bi-person me-1"></i><?php esc_html_e( 'Your details', 'flex-booking-system' ); ?></p></div>
 
 				<?php foreach ( $groups['contact'] as $field ) : ?>
 
-					<?php $fbs_render_field( $field ); ?>
+					<?php $ulbm_render_field( $field ); ?>
 
 				<?php endforeach; ?>
 
 
 
-				<div class="col-12 mt-2"><p class="text-uppercase text-muted fw-bold mb-1" style="font-size:.7rem;letter-spacing:.05em;"><i class="bi bi-calendar3 me-1"></i><?php esc_html_e( 'Schedule', 'flex-multiple-listing-and-booking-system' ); ?></p></div>
+				<div class="col-12 mt-2"><p class="text-uppercase text-muted fw-bold mb-1" style="font-size:.7rem;letter-spacing:.05em;"><i class="bi bi-calendar3 me-1"></i><?php esc_html_e( 'Schedule', 'flex-booking-system' ); ?></p></div>
 
 				<div class="col-md-6">
 
-					<label class="form-label small fw-semibold" for="fbs-start"><?php esc_html_e( 'Start', 'flex-multiple-listing-and-booking-system' ); ?> <span class="text-danger">*</span></label>
+					<label class="form-label small fw-semibold" for="ulbm-start"><?php esc_html_e( 'Start', 'flex-booking-system' ); ?> <span class="text-danger">*</span></label>
 
-					<input type="datetime-local" class="form-control form-control-sm" name="start" id="fbs-start" required>
+					<input type="datetime-local" class="form-control form-control-sm" name="start" id="ulbm-start" required>
 
 				</div>
 
 				<div class="col-md-6">
 
-					<label class="form-label small fw-semibold" for="fbs-end"><?php esc_html_e( 'End', 'flex-multiple-listing-and-booking-system' ); ?> <span class="text-danger">*</span></label>
+					<label class="form-label small fw-semibold" for="ulbm-end"><?php esc_html_e( 'End', 'flex-booking-system' ); ?> <span class="text-danger">*</span></label>
 
-					<input type="datetime-local" class="form-control form-control-sm" name="end" id="fbs-end" required>
+					<input type="datetime-local" class="form-control form-control-sm" name="end" id="ulbm-end" required>
 
 				</div>
 
@@ -460,11 +460,11 @@ $fbs_currency = PriceFormatter::currency_code();
 
 				<?php if ( ! empty( $groups['extra'] ) ) : ?>
 
-					<div class="col-12 mt-2"><p class="text-uppercase text-muted fw-bold mb-1" style="font-size:.7rem;letter-spacing:.05em;"><i class="bi bi-list-check me-1"></i><?php echo esc_html( $groups['title'] ?: __( 'Booking details', 'flex-multiple-listing-and-booking-system' ) ); ?></p></div>
+					<div class="col-12 mt-2"><p class="text-uppercase text-muted fw-bold mb-1" style="font-size:.7rem;letter-spacing:.05em;"><i class="bi bi-list-check me-1"></i><?php echo esc_html( $groups['title'] ?: __( 'Booking details', 'flex-booking-system' ) ); ?></p></div>
 
 					<?php foreach ( $groups['extra'] as $field ) : ?>
 
-						<?php $fbs_render_field( $field ); ?>
+						<?php $ulbm_render_field( $field ); ?>
 
 					<?php endforeach; ?>
 
@@ -476,25 +476,25 @@ $fbs_currency = PriceFormatter::currency_code();
 
 			<input type="hidden" name="base_price" value="0">
 
-			<?php if ( $fbs_listing_id ) : ?>
+			<?php if ( $ulbm_listing_id ) : ?>
 
-				<input type="hidden" name="listing_id" value="<?php echo esc_attr( (string) $fbs_listing_id ); ?>">
+				<input type="hidden" name="listing_id" value="<?php echo esc_attr( (string) $ulbm_listing_id ); ?>">
 
 			<?php endif; ?>
 
 
 
-			<?php if ( $fbs_marketplace ) : ?>
+			<?php if ( $ulbm_marketplace ) : ?>
 
-				<div class="fbs-booking-contact-panel d-none">
+				<div class="ulbm-booking-contact-panel">
 
-					<p class="fbs-contact-panel-title"><?php esc_html_e( 'Your details', 'flex-multiple-listing-and-booking-system' ); ?></p>
+					<p class="ulbm-contact-panel-title"><?php esc_html_e( 'Your details', 'flex-booking-system' ); ?></p>
 
 					<div class="row g-2">
 
 						<?php foreach ( $groups['contact'] as $field ) : ?>
 
-							<?php $fbs_render_field( $field, true ); ?>
+							<?php $ulbm_render_field( $field, true ); ?>
 
 						<?php endforeach; ?>
 
@@ -502,7 +502,14 @@ $fbs_currency = PriceFormatter::currency_code();
 
 							<?php foreach ( $groups['extra'] as $field ) : ?>
 
-								<?php $fbs_render_field( $field, true ); ?>
+								<?php
+								$fname = isset( $field['name'] ) ? (string) $field['name'] : '';
+								// Marketplace already collects guests via .ulbm-mp-guests.
+								if ( 'guests_count' === $fname ) {
+									continue;
+								}
+								$ulbm_render_field( $field, true );
+								?>
 
 							<?php endforeach; ?>
 
@@ -514,9 +521,9 @@ $fbs_currency = PriceFormatter::currency_code();
 
 
 
-				<button type="submit" class="btn fbs-btn-request w-100">
+				<button type="submit" class="btn ulbm-btn-request w-100">
 
-					<?php esc_html_e( 'Request to Book', 'flex-multiple-listing-and-booking-system' ); ?>
+					<?php esc_html_e( 'Request to Book', 'flex-booking-system' ); ?>
 
 				</button>
 
@@ -526,7 +533,7 @@ $fbs_currency = PriceFormatter::currency_code();
 
 					<button type="submit" class="btn btn-primary w-100">
 
-						<i class="bi bi-check-circle me-1"></i><?php esc_html_e( 'Submit Booking', 'flex-multiple-listing-and-booking-system' ); ?>
+						<i class="bi bi-check-circle me-1"></i><?php esc_html_e( 'Submit Booking', 'flex-booking-system' ); ?>
 
 					</button>
 
@@ -536,9 +543,9 @@ $fbs_currency = PriceFormatter::currency_code();
 
 
 
-			<div class="<?php echo $fbs_marketplace ? '' : 'col-12'; ?>">
+			<div class="<?php echo $ulbm_marketplace ? '' : 'col-12'; ?>">
 
-				<div class="fbs-form-feedback d-none mt-2 alert py-2 small" role="alert"></div>
+				<div class="ulbm-form-feedback d-none mt-2 alert py-2 small" role="alert"></div>
 
 			</div>
 
