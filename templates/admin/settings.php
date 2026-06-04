@@ -9,13 +9,13 @@ use FlexBooking\Front\ColorSettings;
 
 defined( 'ABSPATH' ) || exit;
 
-$raw    = get_option( 'ulbm_general_settings', '{}' );
-$parsed = json_decode( (string) $raw, true );
-if ( ! is_array( $parsed ) ) {
-	$parsed = array();
+$ulbm_raw    = get_option( 'ulbm_general_settings', '{}' );
+$ulbm_parsed = json_decode( (string) $ulbm_raw, true );
+if ( ! is_array( $ulbm_parsed ) ) {
+	$ulbm_parsed = array();
 }
 
-$defaults = array(
+$ulbm_defaults = array(
 	'currency'           => 'USD',
 	'currency_position'  => 'left',
 	'date_format'        => 'Y-m-d',
@@ -54,26 +54,28 @@ $defaults = array(
 	'grid_show_amenities'    => true,
 	'grid_amenities_limit'   => 4,
 );
-$s = array_merge( $defaults, ColorSettings::defaults(), is_array( $parsed ) ? $parsed : array() );
-foreach ( ColorSettings::fields() as $color_field_key => $color_field ) {
-	$s[ $color_field_key ] = ColorSettings::sanitize_hex(
-		(string) ( $parsed[ $color_field_key ] ?? $s[ $color_field_key ] ?? $color_field['default'] ),
-		$color_field['default']
+$ulbm_s = array_merge( $ulbm_defaults, ColorSettings::defaults(), is_array( $ulbm_parsed ) ? $ulbm_parsed : array() );
+foreach ( ColorSettings::fields() as $ulbm_color_field_key => $ulbm_color_field ) {
+	$ulbm_s[ $ulbm_color_field_key ] = ColorSettings::sanitize_hex(
+		(string) ( $ulbm_parsed[ $ulbm_color_field_key ] ?? $ulbm_s[ $ulbm_color_field_key ] ?? $ulbm_color_field['default'] ),
+		$ulbm_color_field['default']
 	);
 }
 
 $ulbm_settings_tab = isset( $_GET['tab'] ) ? sanitize_key( wp_unslash( $_GET['tab'] ) ) : 'general'; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Admin redirect notice flag.
+$ulbm_settings_saved = isset( $_GET['ulbm-settings-saved'] ) ? sanitize_key( wp_unslash( $_GET['ulbm-settings-saved'] ) ) : '';
 
 // Auto-create partner pages when not configured yet.
 if ( \FlexBooking\Core\Capabilities::can_access_admin() ) {
 	\FlexBooking\Vendor\VendorPageProvisioner::maybe_auto_provision();
-	$parsed = json_decode( (string) get_option( 'ulbm_general_settings', '{}' ), true );
-	if ( is_array( $parsed ) ) {
-		$s = array_merge( $defaults, ColorSettings::defaults(), $parsed );
-		foreach ( ColorSettings::fields() as $color_field_key => $color_field ) {
-			$s[ $color_field_key ] = ColorSettings::sanitize_hex(
-				(string) ( $parsed[ $color_field_key ] ?? $s[ $color_field_key ] ?? $color_field['default'] ),
-				$color_field['default']
+	$ulbm_parsed = json_decode( (string) get_option( 'ulbm_general_settings', '{}' ), true );
+	if ( is_array( $ulbm_parsed ) ) {
+		$ulbm_s = array_merge( $ulbm_defaults, ColorSettings::defaults(), $ulbm_parsed );
+		foreach ( ColorSettings::fields() as $ulbm_color_field_key => $ulbm_color_field ) {
+			$ulbm_s[ $ulbm_color_field_key ] = ColorSettings::sanitize_hex(
+				(string) ( $ulbm_parsed[ $ulbm_color_field_key ] ?? $ulbm_s[ $ulbm_color_field_key ] ?? $ulbm_color_field['default'] ),
+				$ulbm_color_field['default']
 			);
 		}
 	}
@@ -94,22 +96,22 @@ $ulbm_shortcodes_help = array(
 $ulbm_type_repo_for_sc = new \FlexBooking\Booking\BookingTypeRepository();
 $ulbm_all_types_for_sc = $ulbm_type_repo_for_sc->get_all();
 foreach ( $ulbm_all_types_for_sc as $ulbm_sc_type ) {
-	$tid = (int) $ulbm_sc_type['id'];
+	$ulbm_tid = (int) $ulbm_sc_type['id'];
 	$ulbm_shortcodes_help[] = array(
-		'tag'         => 'ulbm_booking_form id="' . $tid . '"',
+		'tag'         => 'ulbm_booking_form id="' . $ulbm_tid . '"',
 		'description' => sprintf(
 			/* translators: %s: booking type name */
 			__( 'Form: %s', 'flex-multiple-listing-and-booking-system' ),
 			esc_html( (string) $ulbm_sc_type['name'] )
 		),
-		'example'     => '[ulbm_booking_form id="' . $tid . '"]',
-		'attrs'       => '<code>id="' . $tid . '"</code>',
+		'example'     => '[ulbm_booking_form id="' . $ulbm_tid . '"]',
+		'attrs'       => '<code>id="' . $ulbm_tid . '"</code>',
 	);
 }
 $ulbm_shortcodes_help = apply_filters( 'ulbm_settings_shortcodes_help', $ulbm_shortcodes_help );
 ?>
 <div class="wrap ulbm-admin-wrap container-fluid py-3">
-	<?php if ( ! empty( $_GET['ulbm-settings-saved'] ) ) : // phpcs:ignore WordPress.Security.NonceVerification.Recommended ?>
+	<?php if ( '1' === $ulbm_settings_saved ) : ?>
 		<div class="alert alert-success" role="status"><?php esc_html_e( 'Settings saved.', 'flex-multiple-listing-and-booking-system' ); ?></div>
 	<?php endif; ?>
 	<div class="ulbm-page-header mb-4">
@@ -144,24 +146,24 @@ $ulbm_shortcodes_help = apply_filters( 'ulbm_settings_shortcodes_help', $ulbm_sh
 					<div class="row g-3">
 						<div class="col-md-3">
 							<label class="form-label"><?php esc_html_e( 'Currency code', 'flex-multiple-listing-and-booking-system' ); ?></label>
-							<input class="form-control" name="ulbm_currency" value="<?php echo esc_attr( $s['currency'] ); ?>" maxlength="3">
+							<input class="form-control" name="ulbm_currency" value="<?php echo esc_attr( $ulbm_s['currency'] ); ?>" maxlength="3">
 						</div>
 						<div class="col-md-3">
 							<label class="form-label"><?php esc_html_e( 'Position', 'flex-multiple-listing-and-booking-system' ); ?></label>
 							<select class="form-select" name="ulbm_currency_position">
-								<?php foreach ( array( 'left' => 'Left ($99)', 'right' => 'Right (99$)', 'left_space' => 'Left space ($ 99)', 'right_space' => 'Right space (99 $)' ) as $pv => $pl ) : ?>
-									<option value="<?php echo esc_attr( $pv ); ?>" <?php selected( $s['currency_position'], $pv ); ?>><?php echo esc_html( $pl ); ?></option>
+								<?php foreach ( array( 'left' => 'Left ($99)', 'right' => 'Right (99$)', 'left_space' => 'Left space ($ 99)', 'right_space' => 'Right space (99 $)' ) as $ulbm_pv => $ulbm_pl ) : ?>
+									<option value="<?php echo esc_attr( $ulbm_pv ); ?>" <?php selected( $ulbm_s['currency_position'], $ulbm_pv ); ?>><?php echo esc_html( $ulbm_pl ); ?></option>
 								<?php endforeach; ?>
 							</select>
 						</div>
 						<div class="col-md-3">
 							<label class="form-label"><?php esc_html_e( 'Date format', 'flex-multiple-listing-and-booking-system' ); ?></label>
-							<input class="form-control" name="ulbm_date_format" value="<?php echo esc_attr( $s['date_format'] ); ?>">
+							<input class="form-control" name="ulbm_date_format" value="<?php echo esc_attr( $ulbm_s['date_format'] ); ?>">
 							<span class="form-text"><?php esc_html_e( 'PHP date format', 'flex-multiple-listing-and-booking-system' ); ?></span>
 						</div>
 						<div class="col-md-3">
 							<label class="form-label"><?php esc_html_e( 'Time format', 'flex-multiple-listing-and-booking-system' ); ?></label>
-							<input class="form-control" name="ulbm_time_format" value="<?php echo esc_attr( $s['time_format'] ); ?>">
+							<input class="form-control" name="ulbm_time_format" value="<?php echo esc_attr( $ulbm_s['time_format'] ); ?>">
 						</div>
 					</div>
 				</div>
@@ -175,13 +177,13 @@ $ulbm_shortcodes_help = apply_filters( 'ulbm_settings_shortcodes_help', $ulbm_sh
 						<button type="button" class="btn btn-outline-secondary btn-sm" id="ulbm-reset-colors"><?php esc_html_e( 'Reset all colors to defaults', 'flex-multiple-listing-and-booking-system' ); ?></button>
 					</div>
 					<p class="text-muted small mb-3"><?php esc_html_e( 'Colors apply only inside plugin listing grids and forms — not your whole WordPress page. Use the hex field (e.g. #f5f6f8) for each color, then Save All Settings.', 'flex-multiple-listing-and-booking-system' ); ?></p>
-					<?php if ( ! empty( $_GET['ulbm-settings-saved'] ) && 'colors' === $ulbm_settings_tab ) : // phpcs:ignore WordPress.Security.NonceVerification.Recommended ?>
+					<?php if ( '1' === $ulbm_settings_saved && 'colors' === $ulbm_settings_tab ) : ?>
 						<div class="alert alert-info small py-2 mb-3">
 							<?php
 							printf(
 								/* translators: %s: hex color */
 								esc_html__( 'Saved. Page background is now: %s', 'flex-multiple-listing-and-booking-system' ),
-								'<code>' . esc_html( (string) ( $s['color_page_bg'] ?? '' ) ) . '</code>'
+								'<code>' . esc_html( (string) ( $ulbm_s['color_page_bg'] ?? '' ) ) . '</code>'
 							);
 							?>
 						</div>
@@ -189,29 +191,29 @@ $ulbm_shortcodes_help = apply_filters( 'ulbm_settings_shortcodes_help', $ulbm_sh
 					<input type="hidden" name="ulbm_colors_json" id="ulbm_colors_json" value="">
 					<button type="button" class="btn btn-sm btn-outline-warning mb-3" id="ulbm-fix-page-bg"><?php esc_html_e( 'Fix red page background (reset to light gray)', 'flex-multiple-listing-and-booking-system' ); ?></button>
 					<?php
-					$color_fields = ColorSettings::fields();
-					$color_groups = ColorSettings::groups();
-					foreach ( $color_groups as $group_id => $group_label ) :
+					$ulbm_color_fields = ColorSettings::fields();
+					$ulbm_color_groups = ColorSettings::groups();
+					foreach ( $ulbm_color_groups as $ulbm_group_id => $ulbm_group_label ) :
 						?>
 						<div class="ulbm-color-group mb-4">
-							<h6 class="fw-semibold text-uppercase small text-muted mb-3 border-bottom pb-2"><?php echo esc_html( $group_label ); ?></h6>
+							<h6 class="fw-semibold text-uppercase small text-muted mb-3 border-bottom pb-2"><?php echo esc_html( $ulbm_group_label ); ?></h6>
 							<div class="row g-3">
 								<?php
-								foreach ( $color_fields as $field_key => $field ) :
-									if ( $field['group'] !== $group_id ) {
+								foreach ( $ulbm_color_fields as $ulbm_field_key => $ulbm_field ) :
+									if ( $ulbm_field['group'] !== $ulbm_group_id ) {
 										continue;
 									}
-									$preview_key = str_replace( 'color_', '', $field_key );
-									$val         = isset( $s[ $field_key ] ) ? (string) $s[ $field_key ] : $field['default'];
+									$ulbm_preview_key = str_replace( 'color_', '', $ulbm_field_key );
+									$ulbm_val         = isset( $ulbm_s[ $ulbm_field_key ] ) ? (string) $ulbm_s[ $ulbm_field_key ] : $ulbm_field['default'];
 									?>
 									<div class="col-md-6 col-lg-4 col-xl-3">
-										<label class="form-label small fw-semibold mb-1" for="<?php echo esc_attr( ColorSettings::post_key( $field_key ) ); ?>"><?php echo esc_html( $field['label'] ); ?></label>
+										<label class="form-label small fw-semibold mb-1" for="<?php echo esc_attr( ColorSettings::post_key( $ulbm_field_key ) ); ?>"><?php echo esc_html( $ulbm_field['label'] ); ?></label>
 										<div class="d-flex align-items-center gap-2">
-											<input type="color" class="form-control form-control-color ulbm-color-picker flex-shrink-0" data-ulbm-target="<?php echo esc_attr( ColorSettings::post_key( $field_key ) ); ?>" data-ulbm-color-key="<?php echo esc_attr( $preview_key ); ?>" data-ulbm-settings-key="<?php echo esc_attr( $field_key ); ?>" value="<?php echo esc_attr( $val ); ?>" aria-hidden="true" tabindex="-1">
-											<input type="text" id="<?php echo esc_attr( ColorSettings::post_key( $field_key ) ); ?>" class="form-control form-control-sm ulbm-color-input ulbm-color-hex-input" name="<?php echo esc_attr( ColorSettings::post_key( $field_key ) ); ?>" data-ulbm-color-key="<?php echo esc_attr( $preview_key ); ?>" data-ulbm-settings-key="<?php echo esc_attr( $field_key ); ?>" value="<?php echo esc_attr( $val ); ?>" maxlength="7" pattern="^#[0-9A-Fa-f]{6}$" spellcheck="false" autocomplete="off">
+											<input type="color" class="form-control form-control-color ulbm-color-picker flex-shrink-0" data-ulbm-target="<?php echo esc_attr( ColorSettings::post_key( $ulbm_field_key ) ); ?>" data-ulbm-color-key="<?php echo esc_attr( $ulbm_preview_key ); ?>" data-ulbm-settings-key="<?php echo esc_attr( $ulbm_field_key ); ?>" value="<?php echo esc_attr( $ulbm_val ); ?>" aria-hidden="true" tabindex="-1">
+											<input type="text" id="<?php echo esc_attr( ColorSettings::post_key( $ulbm_field_key ) ); ?>" class="form-control form-control-sm ulbm-color-input ulbm-color-hex-input" name="<?php echo esc_attr( ColorSettings::post_key( $ulbm_field_key ) ); ?>" data-ulbm-color-key="<?php echo esc_attr( $ulbm_preview_key ); ?>" data-ulbm-settings-key="<?php echo esc_attr( $ulbm_field_key ); ?>" value="<?php echo esc_attr( $ulbm_val ); ?>" maxlength="7" pattern="^#[0-9A-Fa-f]{6}$" spellcheck="false" autocomplete="off">
 										</div>
-										<?php if ( ! empty( $field['hint'] ) ) : ?>
-											<span class="form-text d-block"><?php echo esc_html( $field['hint'] ); ?></span>
+										<?php if ( ! empty( $ulbm_field['hint'] ) ) : ?>
+											<span class="form-text d-block"><?php echo esc_html( $ulbm_field['hint'] ); ?></span>
 										<?php endif; ?>
 									</div>
 								<?php endforeach; ?>
@@ -245,18 +247,18 @@ $ulbm_shortcodes_help = apply_filters( 'ulbm_settings_shortcodes_help', $ulbm_sh
 					<div class="row g-3 align-items-end">
 						<div class="col-md-4">
 							<label class="form-label" for="ulbm_container_width"><?php esc_html_e( 'Max container width (px)', 'flex-multiple-listing-and-booking-system' ); ?></label>
-							<input type="number" class="form-control" id="ulbm_container_width" name="ulbm_container_width" value="<?php echo esc_attr( (string) (int) ( $s['container_width'] ?? 1400 ) ); ?>" min="768" max="2400" step="10">
+							<input type="number" class="form-control" id="ulbm_container_width" name="ulbm_container_width" value="<?php echo esc_attr( (string) (int) ( $ulbm_s['container_width'] ?? 1400 ) ); ?>" min="768" max="2400" step="10">
 							<span class="form-text"><?php esc_html_e( 'Default: 1400px. Applies to listing pages, partner portal, grids, and forms.', 'flex-multiple-listing-and-booking-system' ); ?></span>
 						</div>
 						<div class="col-md-8">
 							<div class="border rounded p-3 bg-light small">
 								<strong><?php esc_html_e( 'Preview', 'flex-multiple-listing-and-booking-system' ); ?></strong>
-								<div class="mt-2 mx-auto border border-primary border-2 bg-white text-center py-2" style="max-width:<?php echo esc_attr( (string) (int) ( $s['container_width'] ?? 1400 ) ); ?>px;width:100%;">
+								<div class="mt-2 mx-auto border border-primary border-2 bg-white text-center py-2" style="max-width:<?php echo esc_attr( (string) (int) ( $ulbm_s['container_width'] ?? 1400 ) ); ?>px;width:100%;">
 									<?php
 									printf(
 										/* translators: %d: container max width in pixels */
 										esc_html__( 'Content area — %d px max', 'flex-multiple-listing-and-booking-system' ),
-										(int) ( $s['container_width'] ?? 1400 )
+										(int) ( $ulbm_s['container_width'] ?? 1400 )
 									);
 									?>
 								</div>
@@ -271,39 +273,39 @@ $ulbm_shortcodes_help = apply_filters( 'ulbm_settings_shortcodes_help', $ulbm_sh
 						<div class="col-md-3">
 							<label class="form-label"><?php esc_html_e( 'Grid columns', 'flex-multiple-listing-and-booking-system' ); ?></label>
 							<select class="form-select" name="ulbm_grid_columns">
-								<?php for ( $c = 2; $c <= 4; $c++ ) : ?>
-									<option value="<?php echo esc_attr( (string) $c ); ?>" <?php selected( (int) $s['grid_columns'], $c ); ?>><?php echo esc_html( (string) $c ); ?></option>
+								<?php for ( $ulbm_c = 2; $ulbm_c <= 4; $ulbm_c++ ) : ?>
+									<option value="<?php echo esc_attr( (string) $ulbm_c ); ?>" <?php selected( (int) $ulbm_s['grid_columns'], $ulbm_c ); ?>><?php echo esc_html( (string) $ulbm_c ); ?></option>
 								<?php endfor; ?>
 							</select>
 						</div>
 						<div class="col-md-3">
 							<label class="form-label"><?php esc_html_e( 'Posts per page', 'flex-multiple-listing-and-booking-system' ); ?></label>
-							<input type="number" class="form-control" name="ulbm_grid_per_page" value="<?php echo esc_attr( (string) (int) $s['grid_per_page'] ); ?>" min="1" max="100">
+							<input type="number" class="form-control" name="ulbm_grid_per_page" value="<?php echo esc_attr( (string) (int) $ulbm_s['grid_per_page'] ); ?>" min="1" max="100">
 						</div>
 						<div class="col-md-3">
 							<label class="form-label"><?php esc_html_e( 'Card border radius (px)', 'flex-multiple-listing-and-booking-system' ); ?></label>
-							<input type="number" class="form-control" name="ulbm_card_border_radius" value="<?php echo esc_attr( (string) (int) $s['card_border_radius'] ); ?>" min="0" max="50">
+							<input type="number" class="form-control" name="ulbm_card_border_radius" value="<?php echo esc_attr( (string) (int) $ulbm_s['card_border_radius'] ); ?>" min="0" max="50">
 						</div>
 						<div class="col-md-3">
 							<label class="form-label"><?php esc_html_e( 'Slider height (px)', 'flex-multiple-listing-and-booking-system' ); ?></label>
-							<input type="number" class="form-control" name="ulbm_slider_height" value="<?php echo esc_attr( (string) (int) $s['slider_height'] ); ?>" min="200" max="800">
+							<input type="number" class="form-control" name="ulbm_slider_height" value="<?php echo esc_attr( (string) (int) $ulbm_s['slider_height'] ); ?>" min="200" max="800">
 						</div>
 						<div class="col-md-3">
 							<label class="form-label"><?php esc_html_e( 'Sidebar position', 'flex-multiple-listing-and-booking-system' ); ?></label>
 							<select class="form-select" name="ulbm_sidebar_position">
-								<option value="right" <?php selected( $s['sidebar_position'], 'right' ); ?>><?php esc_html_e( 'Right (default)', 'flex-multiple-listing-and-booking-system' ); ?></option>
-								<option value="left" <?php selected( $s['sidebar_position'], 'left' ); ?>><?php esc_html_e( 'Left', 'flex-multiple-listing-and-booking-system' ); ?></option>
+								<option value="right" <?php selected( $ulbm_s['sidebar_position'], 'right' ); ?>><?php esc_html_e( 'Right (default)', 'flex-multiple-listing-and-booking-system' ); ?></option>
+								<option value="left" <?php selected( $ulbm_s['sidebar_position'], 'left' ); ?>><?php esc_html_e( 'Left', 'flex-multiple-listing-and-booking-system' ); ?></option>
 							</select>
 						</div>
 						<div class="col-md-4">
 							<div class="form-check mt-4">
-								<input class="form-check-input" type="checkbox" name="ulbm_card_shadow" id="ulbm_card_shadow" <?php checked( ! empty( $s['card_shadow'] ) ); ?>>
+								<input class="form-check-input" type="checkbox" name="ulbm_card_shadow" id="ulbm_card_shadow" <?php checked( ! empty( $ulbm_s['card_shadow'] ) ); ?>>
 								<label class="form-check-label" for="ulbm_card_shadow"><?php esc_html_e( 'Card shadow on hover', 'flex-multiple-listing-and-booking-system' ); ?></label>
 							</div>
 						</div>
 						<div class="col-md-4">
 							<div class="form-check mt-4">
-								<input class="form-check-input" type="checkbox" name="ulbm_show_filters" id="ulbm_show_filters" <?php checked( ! empty( $s['show_filters'] ) ); ?>>
+								<input class="form-check-input" type="checkbox" name="ulbm_show_filters" id="ulbm_show_filters" <?php checked( ! empty( $ulbm_s['show_filters'] ) ); ?>>
 								<label class="form-check-label" for="ulbm_show_filters"><?php esc_html_e( 'Show filter bar on grid', 'flex-multiple-listing-and-booking-system' ); ?></label>
 							</div>
 						</div>
@@ -316,27 +318,27 @@ $ulbm_shortcodes_help = apply_filters( 'ulbm_settings_shortcodes_help', $ulbm_sh
 					<div class="row g-3">
 						<div class="col-md-2">
 							<label class="form-label"><?php esc_html_e( 'Column gap (px)', 'flex-multiple-listing-and-booking-system' ); ?></label>
-							<input type="number" class="form-control" name="ulbm_grid_gap" value="<?php echo esc_attr( (string) (int) ( $s['grid_gap'] ?? 24 ) ); ?>" min="0" max="120">
+							<input type="number" class="form-control" name="ulbm_grid_gap" value="<?php echo esc_attr( (string) (int) ( $ulbm_s['grid_gap'] ?? 24 ) ); ?>" min="0" max="120">
 						</div>
 						<div class="col-md-2">
 							<label class="form-label"><?php esc_html_e( 'Padding X (px)', 'flex-multiple-listing-and-booking-system' ); ?></label>
-							<input type="number" class="form-control" name="ulbm_grid_padding_x" value="<?php echo esc_attr( (string) (int) ( $s['grid_padding_x'] ?? 0 ) ); ?>" min="0" max="120">
+							<input type="number" class="form-control" name="ulbm_grid_padding_x" value="<?php echo esc_attr( (string) (int) ( $ulbm_s['grid_padding_x'] ?? 0 ) ); ?>" min="0" max="120">
 						</div>
 						<div class="col-md-2">
 							<label class="form-label"><?php esc_html_e( 'Padding Y (px)', 'flex-multiple-listing-and-booking-system' ); ?></label>
-							<input type="number" class="form-control" name="ulbm_grid_padding_y" value="<?php echo esc_attr( (string) (int) ( $s['grid_padding_y'] ?? 0 ) ); ?>" min="0" max="120">
+							<input type="number" class="form-control" name="ulbm_grid_padding_y" value="<?php echo esc_attr( (string) (int) ( $ulbm_s['grid_padding_y'] ?? 0 ) ); ?>" min="0" max="120">
 						</div>
 						<div class="col-md-2">
 							<label class="form-label"><?php esc_html_e( 'Margin top (px)', 'flex-multiple-listing-and-booking-system' ); ?></label>
-							<input type="number" class="form-control" name="ulbm_grid_margin_top" value="<?php echo esc_attr( (string) (int) ( $s['grid_margin_top'] ?? 0 ) ); ?>" min="0" max="120">
+							<input type="number" class="form-control" name="ulbm_grid_margin_top" value="<?php echo esc_attr( (string) (int) ( $ulbm_s['grid_margin_top'] ?? 0 ) ); ?>" min="0" max="120">
 						</div>
 						<div class="col-md-2">
 							<label class="form-label"><?php esc_html_e( 'Margin bottom (px)', 'flex-multiple-listing-and-booking-system' ); ?></label>
-							<input type="number" class="form-control" name="ulbm_grid_margin_bottom" value="<?php echo esc_attr( (string) (int) ( $s['grid_margin_bottom'] ?? 0 ) ); ?>" min="0" max="120">
+							<input type="number" class="form-control" name="ulbm_grid_margin_bottom" value="<?php echo esc_attr( (string) (int) ( $ulbm_s['grid_margin_bottom'] ?? 0 ) ); ?>" min="0" max="120">
 						</div>
 						<div class="col-md-2">
 							<label class="form-label"><?php esc_html_e( 'Card padding (px)', 'flex-multiple-listing-and-booking-system' ); ?></label>
-							<input type="number" class="form-control" name="ulbm_grid_card_padding" value="<?php echo esc_attr( (string) (int) ( $s['grid_card_padding'] ?? 16 ) ); ?>" min="0" max="120">
+							<input type="number" class="form-control" name="ulbm_grid_card_padding" value="<?php echo esc_attr( (string) (int) ( $ulbm_s['grid_card_padding'] ?? 16 ) ); ?>" min="0" max="120">
 						</div>
 					</div>
 				</div>
@@ -348,20 +350,20 @@ $ulbm_shortcodes_help = apply_filters( 'ulbm_settings_shortcodes_help', $ulbm_sh
 						<div class="col-md-4">
 							<input type="hidden" name="ulbm_grid_show_rating" value="0" />
 							<div class="form-check">
-								<input class="form-check-input" type="checkbox" name="ulbm_grid_show_rating" id="ulbm_grid_show_rating" value="1" <?php checked( ! isset( $s['grid_show_rating'] ) || ! empty( $s['grid_show_rating'] ) ); ?>>
+								<input class="form-check-input" type="checkbox" name="ulbm_grid_show_rating" id="ulbm_grid_show_rating" value="1" <?php checked( ! isset( $ulbm_s['grid_show_rating'] ) || ! empty( $ulbm_s['grid_show_rating'] ) ); ?>>
 								<label class="form-check-label" for="ulbm_grid_show_rating"><?php esc_html_e( 'Show star rating & review count', 'flex-multiple-listing-and-booking-system' ); ?></label>
 							</div>
 						</div>
 						<div class="col-md-4">
 							<input type="hidden" name="ulbm_grid_show_amenities" value="0" />
 							<div class="form-check">
-								<input class="form-check-input" type="checkbox" name="ulbm_grid_show_amenities" id="ulbm_grid_show_amenities" value="1" <?php checked( ! isset( $s['grid_show_amenities'] ) || ! empty( $s['grid_show_amenities'] ) ); ?>>
+								<input class="form-check-input" type="checkbox" name="ulbm_grid_show_amenities" id="ulbm_grid_show_amenities" value="1" <?php checked( ! isset( $ulbm_s['grid_show_amenities'] ) || ! empty( $ulbm_s['grid_show_amenities'] ) ); ?>>
 								<label class="form-check-label" for="ulbm_grid_show_amenities"><?php esc_html_e( 'Show amenities on cards', 'flex-multiple-listing-and-booking-system' ); ?></label>
 							</div>
 						</div>
 						<div class="col-md-4">
 							<label class="form-label" for="ulbm_grid_amenities_limit"><?php esc_html_e( 'Max amenities per card', 'flex-multiple-listing-and-booking-system' ); ?></label>
-							<input type="number" class="form-control" id="ulbm_grid_amenities_limit" name="ulbm_grid_amenities_limit" value="<?php echo esc_attr( (string) (int) ( $s['grid_amenities_limit'] ?? 4 ) ); ?>" min="1" max="8">
+							<input type="number" class="form-control" id="ulbm_grid_amenities_limit" name="ulbm_grid_amenities_limit" value="<?php echo esc_attr( (string) (int) ( $ulbm_s['grid_amenities_limit'] ?? 4 ) ); ?>" min="1" max="8">
 						</div>
 					</div>
 				</div>
@@ -371,13 +373,13 @@ $ulbm_shortcodes_help = apply_filters( 'ulbm_settings_shortcodes_help', $ulbm_sh
 					<div class="row g-3">
 						<div class="col-md-6">
 							<div class="form-check">
-								<input class="form-check-input" type="checkbox" name="ulbm_reviews_enabled" id="ulbm_reviews_enabled" <?php checked( ! isset( $s['reviews_enabled'] ) || ! empty( $s['reviews_enabled'] ) ); ?>>
+								<input class="form-check-input" type="checkbox" name="ulbm_reviews_enabled" id="ulbm_reviews_enabled" <?php checked( ! isset( $ulbm_s['reviews_enabled'] ) || ! empty( $ulbm_s['reviews_enabled'] ) ); ?>>
 								<label class="form-check-label" for="ulbm_reviews_enabled"><?php esc_html_e( 'Allow guests to submit reviews on listing pages', 'flex-multiple-listing-and-booking-system' ); ?></label>
 							</div>
 						</div>
 						<div class="col-md-6">
 							<div class="form-check">
-								<input class="form-check-input" type="checkbox" name="ulbm_reviews_auto_approve" id="ulbm_reviews_auto_approve" <?php checked( ! empty( $s['reviews_auto_approve'] ) ); ?>>
+								<input class="form-check-input" type="checkbox" name="ulbm_reviews_auto_approve" id="ulbm_reviews_auto_approve" <?php checked( ! empty( $ulbm_s['reviews_auto_approve'] ) ); ?>>
 								<label class="form-check-label" for="ulbm_reviews_auto_approve"><?php esc_html_e( 'Publish reviews immediately (skip admin approval)', 'flex-multiple-listing-and-booking-system' ); ?></label>
 							</div>
 						</div>
@@ -393,23 +395,23 @@ $ulbm_shortcodes_help = apply_filters( 'ulbm_settings_shortcodes_help', $ulbm_sh
 					<div class="row g-3">
 						<div class="col-12">
 							<div class="form-check">
-								<input class="form-check-input" type="checkbox" name="ulbm_notify_customer_status" id="ulbm_notify_customer_status" <?php checked( ! empty( $s['notify_customer_status'] ) ); ?>>
+								<input class="form-check-input" type="checkbox" name="ulbm_notify_customer_status" id="ulbm_notify_customer_status" <?php checked( ! empty( $ulbm_s['notify_customer_status'] ) ); ?>>
 								<label class="form-check-label fw-semibold" for="ulbm_notify_customer_status"><?php esc_html_e( 'Enable customer emails on status changes', 'flex-multiple-listing-and-booking-system' ); ?></label>
 							</div>
 						</div>
 						<div class="col-md-6">
-							<div class="form-check"><input class="form-check-input" type="checkbox" name="ulbm_notify_on_confirmed" id="ulbm_nc1" <?php checked( ! empty( $s['notify_on_confirmed'] ) ); ?>><label class="form-check-label" for="ulbm_nc1"><?php esc_html_e( 'Confirmed / Accepted', 'flex-multiple-listing-and-booking-system' ); ?></label></div>
-							<div class="form-check"><input class="form-check-input" type="checkbox" name="ulbm_notify_on_completed" id="ulbm_nc2" <?php checked( ! empty( $s['notify_on_completed'] ) ); ?>><label class="form-check-label" for="ulbm_nc2"><?php esc_html_e( 'Completed', 'flex-multiple-listing-and-booking-system' ); ?></label></div>
-							<div class="form-check"><input class="form-check-input" type="checkbox" name="ulbm_notify_on_cancelled" id="ulbm_nc3" <?php checked( ! empty( $s['notify_on_cancelled'] ) ); ?>><label class="form-check-label" for="ulbm_nc3"><?php esc_html_e( 'Cancelled', 'flex-multiple-listing-and-booking-system' ); ?></label></div>
+							<div class="form-check"><input class="form-check-input" type="checkbox" name="ulbm_notify_on_confirmed" id="ulbm_nc1" <?php checked( ! empty( $ulbm_s['notify_on_confirmed'] ) ); ?>><label class="form-check-label" for="ulbm_nc1"><?php esc_html_e( 'Confirmed / Accepted', 'flex-multiple-listing-and-booking-system' ); ?></label></div>
+							<div class="form-check"><input class="form-check-input" type="checkbox" name="ulbm_notify_on_completed" id="ulbm_nc2" <?php checked( ! empty( $ulbm_s['notify_on_completed'] ) ); ?>><label class="form-check-label" for="ulbm_nc2"><?php esc_html_e( 'Completed', 'flex-multiple-listing-and-booking-system' ); ?></label></div>
+							<div class="form-check"><input class="form-check-input" type="checkbox" name="ulbm_notify_on_cancelled" id="ulbm_nc3" <?php checked( ! empty( $ulbm_s['notify_on_cancelled'] ) ); ?>><label class="form-check-label" for="ulbm_nc3"><?php esc_html_e( 'Cancelled', 'flex-multiple-listing-and-booking-system' ); ?></label></div>
 						</div>
 						<div class="col-md-6">
-							<div class="form-check"><input class="form-check-input" type="checkbox" name="ulbm_notify_on_rejected" id="ulbm_nc4" <?php checked( ! empty( $s['notify_on_rejected'] ) ); ?>><label class="form-check-label" for="ulbm_nc4"><?php esc_html_e( 'Rejected', 'flex-multiple-listing-and-booking-system' ); ?></label></div>
-							<div class="form-check"><input class="form-check-input" type="checkbox" name="ulbm_notify_on_hold" id="ulbm_nc5" <?php checked( ! empty( $s['notify_on_on_hold'] ) ); ?>><label class="form-check-label" for="ulbm_nc5"><?php esc_html_e( 'On hold', 'flex-multiple-listing-and-booking-system' ); ?></label></div>
-							<div class="form-check"><input class="form-check-input" type="checkbox" name="ulbm_notify_on_pending" id="ulbm_nc6" <?php checked( ! empty( $s['notify_on_pending'] ) ); ?>><label class="form-check-label" for="ulbm_nc6"><?php esc_html_e( 'Pending', 'flex-multiple-listing-and-booking-system' ); ?></label></div>
+							<div class="form-check"><input class="form-check-input" type="checkbox" name="ulbm_notify_on_rejected" id="ulbm_nc4" <?php checked( ! empty( $ulbm_s['notify_on_rejected'] ) ); ?>><label class="form-check-label" for="ulbm_nc4"><?php esc_html_e( 'Rejected', 'flex-multiple-listing-and-booking-system' ); ?></label></div>
+							<div class="form-check"><input class="form-check-input" type="checkbox" name="ulbm_notify_on_hold" id="ulbm_nc5" <?php checked( ! empty( $ulbm_s['notify_on_on_hold'] ) ); ?>><label class="form-check-label" for="ulbm_nc5"><?php esc_html_e( 'On hold', 'flex-multiple-listing-and-booking-system' ); ?></label></div>
+							<div class="form-check"><input class="form-check-input" type="checkbox" name="ulbm_notify_on_pending" id="ulbm_nc6" <?php checked( ! empty( $ulbm_s['notify_on_pending'] ) ); ?>><label class="form-check-label" for="ulbm_nc6"><?php esc_html_e( 'Pending', 'flex-multiple-listing-and-booking-system' ); ?></label></div>
 						</div>
 						<div class="col-md-6">
 							<label class="form-label"><?php esc_html_e( 'Reply-To address', 'flex-multiple-listing-and-booking-system' ); ?></label>
-							<input class="form-control" type="email" name="ulbm_notify_reply_to" value="<?php echo esc_attr( $s['notify_reply_to'] ); ?>" placeholder="<?php echo esc_attr( get_option( 'admin_email' ) ); ?>">
+							<input class="form-control" type="email" name="ulbm_notify_reply_to" value="<?php echo esc_attr( $ulbm_s['notify_reply_to'] ); ?>" placeholder="<?php echo esc_attr( get_option( 'admin_email' ) ); ?>">
 						</div>
 					</div>
 				</div>
@@ -430,12 +432,12 @@ $ulbm_shortcodes_help = apply_filters( 'ulbm_settings_shortcodes_help', $ulbm_sh
 								</tr>
 							</thead>
 							<tbody>
-								<?php foreach ( $ulbm_shortcodes_help as $row ) : ?>
+								<?php foreach ( $ulbm_shortcodes_help as $ulbm_row ) : ?>
 									<tr>
-										<td><code><?php echo esc_html( '[' . $row['tag'] . ']' ); ?></code></td>
-										<td class="small"><?php echo wp_kses_post( $row['attrs'] ); ?></td>
-										<td class="small"><?php echo wp_kses_post( $row['description'] ); ?></td>
-										<td><code class="user-select-all small"><?php echo esc_html( $row['example'] ); ?></code></td>
+										<td><code><?php echo esc_html( '[' . $ulbm_row['tag'] . ']' ); ?></code></td>
+										<td class="small"><?php echo wp_kses_post( $ulbm_row['attrs'] ); ?></td>
+										<td class="small"><?php echo wp_kses_post( $ulbm_row['description'] ); ?></td>
+										<td><code class="user-select-all small"><?php echo esc_html( $ulbm_row['example'] ); ?></code></td>
 									</tr>
 								<?php endforeach; ?>
 							</tbody>
@@ -462,17 +464,17 @@ $ulbm_shortcodes_help = apply_filters( 'ulbm_settings_shortcodes_help', $ulbm_sh
 								</thead>
 								<tbody>
 									<?php foreach ( $ulbm_all_types_for_sc as $ulbm_rpt ) :
-										$rpt_slug    = (string) $ulbm_rpt['slug'];
-										$rpt_cpt     = \FlexBooking\PostTypes\BookingTypePostTypeRegistry::cpt_name_from_slug( $rpt_slug );
-										$rpt_archive = home_url( '/' . $rpt_slug . '/' );
+										$ulbm_rpt_slug    = (string) $ulbm_rpt['slug'];
+										$ulbm_rpt_cpt     = \FlexBooking\PostTypes\BookingTypePostTypeRegistry::cpt_name_from_slug( $ulbm_rpt_slug );
+										$ulbm_rpt_archive = home_url( '/' . $ulbm_rpt_slug . '/' );
 									?>
 										<tr>
 											<td><strong><?php echo esc_html( (string) $ulbm_rpt['name'] ); ?></strong> <span class="text-muted small">#<?php echo esc_html( (string) (int) $ulbm_rpt['id'] ); ?></span></td>
-											<td><code><?php echo esc_html( $rpt_cpt ); ?></code></td>
-											<td class="small"><a href="<?php echo esc_url( $rpt_archive ); ?>" target="_blank"><?php echo esc_html( $rpt_archive ); ?></a></td>
+											<td><code><?php echo esc_html( $ulbm_rpt_cpt ); ?></code></td>
+											<td class="small"><a href="<?php echo esc_url( $ulbm_rpt_archive ); ?>" target="_blank"><?php echo esc_html( $ulbm_rpt_archive ); ?></a></td>
 											<td>
-												<a href="<?php echo esc_url( admin_url( 'edit.php?post_type=' . $rpt_cpt ) ); ?>" class="btn btn-sm btn-outline-primary me-1"><?php esc_html_e( 'View', 'flex-multiple-listing-and-booking-system' ); ?></a>
-												<a href="<?php echo esc_url( admin_url( 'post-new.php?post_type=' . $rpt_cpt ) ); ?>" class="btn btn-sm btn-outline-success"><?php esc_html_e( 'Add New', 'flex-multiple-listing-and-booking-system' ); ?></a>
+												<a href="<?php echo esc_url( admin_url( 'edit.php?post_type=' . $ulbm_rpt_cpt ) ); ?>" class="btn btn-sm btn-outline-primary me-1"><?php esc_html_e( 'View', 'flex-multiple-listing-and-booking-system' ); ?></a>
+												<a href="<?php echo esc_url( admin_url( 'post-new.php?post_type=' . $ulbm_rpt_cpt ) ); ?>" class="btn btn-sm btn-outline-success"><?php esc_html_e( 'Add New', 'flex-multiple-listing-and-booking-system' ); ?></a>
 											</td>
 										</tr>
 									<?php endforeach; ?>
@@ -519,17 +521,17 @@ $ulbm_shortcodes_help = apply_filters( 'ulbm_settings_shortcodes_help', $ulbm_sh
 								</thead>
 								<tbody>
 									<?php foreach ( $ulbm_all_types_for_sc as $ulbm_demo_type ) :
-										$demo_tid = (int) $ulbm_demo_type['id'];
-										$demo_cpt = \FlexBooking\PostTypes\BookingTypePostTypeRegistry::cpt_name_from_slug( (string) $ulbm_demo_type['slug'] );
-										$demo_cnt = \FlexBooking\Setup\DemoContentSeeder::count_demo_posts( $demo_cpt );
+										$ulbm_demo_tid = (int) $ulbm_demo_type['id'];
+										$ulbm_demo_cpt = \FlexBooking\PostTypes\BookingTypePostTypeRegistry::cpt_name_from_slug( (string) $ulbm_demo_type['slug'] );
+										$ulbm_demo_cnt = \FlexBooking\Setup\DemoContentSeeder::count_demo_posts( $ulbm_demo_cpt );
 									?>
 										<tr>
 											<td>
-												<input class="form-check-input ulbm-demo-type-cb" type="checkbox" value="<?php echo esc_attr( (string) $demo_tid ); ?>" checked>
+												<input class="form-check-input ulbm-demo-type-cb" type="checkbox" value="<?php echo esc_attr( (string) $ulbm_demo_tid ); ?>" checked>
 											</td>
 											<td><strong><?php echo esc_html( (string) $ulbm_demo_type['name'] ); ?></strong></td>
-											<td><code><?php echo esc_html( $demo_cpt ); ?></code></td>
-											<td><span class="badge text-bg-secondary ulbm-demo-count-<?php echo esc_attr( (string) $demo_tid ); ?>"><?php echo esc_html( (string) $demo_cnt ); ?></span></td>
+											<td><code><?php echo esc_html( $ulbm_demo_cpt ); ?></code></td>
+											<td><span class="badge text-bg-secondary ulbm-demo-count-<?php echo esc_attr( (string) $ulbm_demo_tid ); ?>"><?php echo esc_html( (string) $ulbm_demo_cnt ); ?></span></td>
 										</tr>
 									<?php endforeach; ?>
 								</tbody>
@@ -621,7 +623,7 @@ $ulbm_shortcodes_help = apply_filters( 'ulbm_settings_shortcodes_help', $ulbm_sh
 							wp_dropdown_pages(
 								array(
 									'name'              => 'ulbm_vendor_register_page',
-									'selected'          => (int) ( $s['vendor_register_page'] ?? 0 ),
+									'selected'          => (int) ( $ulbm_s['vendor_register_page'] ?? 0 ),
 									'show_option_none'  => esc_html__( '— Select page —', 'flex-multiple-listing-and-booking-system' ),
 									'option_none_value' => '0',
 									'class'             => 'form-select',
@@ -635,7 +637,7 @@ $ulbm_shortcodes_help = apply_filters( 'ulbm_settings_shortcodes_help', $ulbm_sh
 							wp_dropdown_pages(
 								array(
 									'name'              => 'ulbm_vendor_login_page',
-									'selected'          => (int) ( $s['vendor_login_page'] ?? 0 ),
+									'selected'          => (int) ( $ulbm_s['vendor_login_page'] ?? 0 ),
 									'show_option_none'  => esc_html__( '— Select page —', 'flex-multiple-listing-and-booking-system' ),
 									'option_none_value' => '0',
 									'class'             => 'form-select',
@@ -649,7 +651,7 @@ $ulbm_shortcodes_help = apply_filters( 'ulbm_settings_shortcodes_help', $ulbm_sh
 							wp_dropdown_pages(
 								array(
 									'name'              => 'ulbm_vendor_dashboard_page',
-									'selected'          => (int) ( $s['vendor_dashboard_page'] ?? 0 ),
+									'selected'          => (int) ( $ulbm_s['vendor_dashboard_page'] ?? 0 ),
 									'show_option_none'  => esc_html__( '— Select page —', 'flex-multiple-listing-and-booking-system' ),
 									'option_none_value' => '0',
 									'class'             => 'form-select',
@@ -659,19 +661,19 @@ $ulbm_shortcodes_help = apply_filters( 'ulbm_settings_shortcodes_help', $ulbm_sh
 						</div>
 						<div class="col-md-6">
 							<div class="form-check">
-								<input class="form-check-input" type="checkbox" name="ulbm_vendor_auto_approve" id="ulbm_vendor_auto_approve" <?php checked( ! empty( $s['vendor_auto_approve'] ) ); ?>>
+								<input class="form-check-input" type="checkbox" name="ulbm_vendor_auto_approve" id="ulbm_vendor_auto_approve" <?php checked( ! empty( $ulbm_s['vendor_auto_approve'] ) ); ?>>
 								<label class="form-check-label" for="ulbm_vendor_auto_approve"><?php esc_html_e( 'Auto-approve new partner registrations', 'flex-multiple-listing-and-booking-system' ); ?></label>
 							</div>
 						</div>
 						<div class="col-md-6">
 							<div class="form-check">
-								<input class="form-check-input" type="checkbox" name="ulbm_vendor_auto_publish" id="ulbm_vendor_auto_publish" <?php checked( ! empty( $s['vendor_auto_publish'] ) ); ?>>
+								<input class="form-check-input" type="checkbox" name="ulbm_vendor_auto_publish" id="ulbm_vendor_auto_publish" <?php checked( ! empty( $ulbm_s['vendor_auto_publish'] ) ); ?>>
 								<label class="form-check-label" for="ulbm_vendor_auto_publish"><?php esc_html_e( 'Publish partner listings immediately (otherwise pending review)', 'flex-multiple-listing-and-booking-system' ); ?></label>
 							</div>
 						</div>
 						<div class="col-12">
 							<div class="form-check">
-								<input class="form-check-input" type="checkbox" name="ulbm_enable_google_maps_embed" id="ulbm_enable_google_maps_embed" <?php checked( ! empty( $s['enable_google_maps_embed'] ) ); ?>>
+								<input class="form-check-input" type="checkbox" name="ulbm_enable_google_maps_embed" id="ulbm_enable_google_maps_embed" <?php checked( ! empty( $ulbm_s['enable_google_maps_embed'] ) ); ?>>
 								<label class="form-check-label" for="ulbm_enable_google_maps_embed"><?php esc_html_e( 'Allow visitors to opt in to embedded Google Maps on listing pages (off by default; otherwise only a link is shown)', 'flex-multiple-listing-and-booking-system' ); ?></label>
 							</div>
 						</div>

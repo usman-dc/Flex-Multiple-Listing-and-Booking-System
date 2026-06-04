@@ -81,11 +81,13 @@ final class Activator {
 	private static function maybe_seed_demo_booking_type() {
 		global $wpdb;
 
-		$tables = \FlexBooking\Database\Schema::tables();
-		$table  = $tables['booking_types'];
+		$table = \FlexBooking\Database\Schema::table( 'booking_types' );
+		if ( '' === $table ) {
+			return;
+		}
 
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		$count = (int) $wpdb->get_var( "SELECT COUNT(*) FROM `{$table}`" );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		$count = (int) $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM %i', $table ) );
 		if ( $count > 0 ) {
 			return;
 		}

@@ -28,8 +28,12 @@ final class ListingReviewRepository {
 
 		self::ensure_table_exists();
 
-		$tables = Schema::tables();
-		$now    = current_time( 'mysql' );
+		$table = Schema::table( 'listing_reviews' );
+		if ( '' === $table ) {
+			return 0;
+		}
+
+		$now = current_time( 'mysql' );
 
 		if ( isset( $data['wp_user_id'] ) && ( null === $data['wp_user_id'] || '' === $data['wp_user_id'] || 0 === (int) $data['wp_user_id'] ) ) {
 			unset( $data['wp_user_id'] );
@@ -47,7 +51,8 @@ final class ListingReviewRepository {
 
 		$formats = self::formats_for_row( $row );
 
-		$inserted = $wpdb->insert( $tables['listing_reviews'], $row, $formats );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+		$inserted = $wpdb->insert( $table, $row, $formats );
 
 		if ( false === $inserted ) {
 			return 0;
@@ -64,9 +69,12 @@ final class ListingReviewRepository {
 	public static function ensure_table_exists() {
 		global $wpdb;
 
-		$table = Schema::tables()['listing_reviews'];
+		$table = Schema::table( 'listing_reviews' );
+		if ( '' === $table ) {
+			return;
+		}
 
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table ) ) === $table ) {
 			return;
 		}
@@ -78,7 +86,7 @@ final class ListingReviewRepository {
 			dbDelta( $ddl['listing_reviews'] );
 		}
 
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table ) ) !== $table ) {
 			( new Migrator() )->install();
 		}
@@ -120,7 +128,11 @@ final class ListingReviewRepository {
 	public function update( $id, array $data ) {
 		global $wpdb;
 
-		$tables = Schema::tables();
+		$table = Schema::table( 'listing_reviews' );
+		if ( '' === $table ) {
+			return false;
+		}
+
 		$data['updated_at'] = current_time( 'mysql' );
 
 		$formats = array();
@@ -132,8 +144,9 @@ final class ListingReviewRepository {
 			$formats[] = '%s';
 		}
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$n = $wpdb->update(
-			$tables['listing_reviews'],
+			$table,
 			$data,
 			array( 'id' => (int) $id ),
 			$formats,
@@ -152,9 +165,16 @@ final class ListingReviewRepository {
 	public function get_by_id( $id ) {
 		global $wpdb;
 
-		$tables = Schema::tables();
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		$row = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM `{$tables['listing_reviews']}` WHERE id = %d LIMIT 1", (int) $id ), ARRAY_A );
+		$table = Schema::table( 'listing_reviews' );
+		if ( '' === $table ) {
+			return null;
+		}
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		$row = $wpdb->get_row(
+			$wpdb->prepare( 'SELECT * FROM %i WHERE id = %d LIMIT 1', $table, (int) $id ),
+			ARRAY_A
+		);
 
 		return is_array( $row ) ? $row : null;
 	}
@@ -169,13 +189,18 @@ final class ListingReviewRepository {
 	public function get_approved_for_listing( $listing_id, $limit = 50 ) {
 		global $wpdb;
 
-		$tables = Schema::tables();
-		$limit  = max( 1, min( 100, (int) $limit ) );
+		$table = Schema::table( 'listing_reviews' );
+		if ( '' === $table ) {
+			return array();
+		}
 
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$limit = max( 1, min( 100, (int) $limit ) );
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$rows = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT * FROM `{$tables['listing_reviews']}` WHERE listing_id = %d AND status = 'approved' ORDER BY created_at DESC LIMIT %d",
+				"SELECT * FROM %i WHERE listing_id = %d AND status = 'approved' ORDER BY created_at DESC LIMIT %d",
+				$table,
 				(int) $listing_id,
 				$limit
 			),
@@ -194,11 +219,19 @@ final class ListingReviewRepository {
 	public function approved_stats( $listing_id ) {
 		global $wpdb;
 
-		$tables = Schema::tables();
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$table = Schema::table( 'listing_reviews' );
+		if ( '' === $table ) {
+			return array(
+				'rating' => 0.0,
+				'count'  => 0,
+			);
+		}
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$row = $wpdb->get_row(
 			$wpdb->prepare(
-				"SELECT AVG(rating) AS avg_rating, COUNT(*) AS review_count FROM `{$tables['listing_reviews']}` WHERE listing_id = %d AND status = 'approved'",
+				"SELECT AVG(rating) AS avg_rating, COUNT(*) AS review_count FROM %i WHERE listing_id = %d AND status = 'approved'",
+				$table,
 				(int) $listing_id
 			),
 			ARRAY_A
@@ -228,27 +261,38 @@ final class ListingReviewRepository {
 	public function get_page( $page, $limit, $status = '' ) {
 		global $wpdb;
 
-		$tables = Schema::tables();
+		$table = Schema::table( 'listing_reviews' );
+		if ( '' === $table ) {
+			return array();
+		}
+
 		$page   = max( 1, (int) $page );
 		$limit  = max( 1, min( 100, (int) $limit ) );
 		$offset = ( $page - 1 ) * $limit;
 
-		$where = '1=1';
-		$args  = array();
-
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		if ( '' !== $status && in_array( $status, array( 'pending', 'approved', 'rejected' ), true ) ) {
-			$where  = 'status = %s';
-			$args[] = $status;
+			$rows = $wpdb->get_results(
+				$wpdb->prepare(
+					'SELECT * FROM %i WHERE status = %s ORDER BY created_at DESC LIMIT %d OFFSET %d',
+					$table,
+					$status,
+					$limit,
+					$offset
+				),
+				ARRAY_A
+			);
+		} else {
+			$rows = $wpdb->get_results(
+				$wpdb->prepare(
+					'SELECT * FROM %i ORDER BY created_at DESC LIMIT %d OFFSET %d',
+					$table,
+					$limit,
+					$offset
+				),
+				ARRAY_A
+			);
 		}
-
-		$args[] = $limit;
-		$args[] = $offset;
-
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		$sql = "SELECT * FROM `{$tables['listing_reviews']}` WHERE {$where} ORDER BY created_at DESC LIMIT %d OFFSET %d";
-
-		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-		$rows = $wpdb->get_results( $wpdb->prepare( $sql, $args ), ARRAY_A );
 
 		return is_array( $rows ) ? $rows : array();
 	}
@@ -262,15 +306,20 @@ final class ListingReviewRepository {
 	public function count_all( $status = '' ) {
 		global $wpdb;
 
-		$tables = Schema::tables();
-
-		if ( '' !== $status && in_array( $status, array( 'pending', 'approved', 'rejected' ), true ) ) {
-			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-			return (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM `{$tables['listing_reviews']}` WHERE status = %s", $status ) );
+		$table = Schema::table( 'listing_reviews' );
+		if ( '' === $table ) {
+			return 0;
 		}
 
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		return (int) $wpdb->get_var( "SELECT COUNT(*) FROM `{$tables['listing_reviews']}`" );
+		if ( '' !== $status && in_array( $status, array( 'pending', 'approved', 'rejected' ), true ) ) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+			return (int) $wpdb->get_var(
+				$wpdb->prepare( 'SELECT COUNT(*) FROM %i WHERE status = %s', $table, $status )
+			);
+		}
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		return (int) $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM %i', $table ) );
 	}
 
 	/**
@@ -282,8 +331,13 @@ final class ListingReviewRepository {
 	public function delete( $id ) {
 		global $wpdb;
 
-		$tables = Schema::tables();
-		$n      = $wpdb->delete( $tables['listing_reviews'], array( 'id' => (int) $id ), array( '%d' ) );
+		$table = Schema::table( 'listing_reviews' );
+		if ( '' === $table ) {
+			return false;
+		}
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		$n = $wpdb->delete( $table, array( 'id' => (int) $id ), array( '%d' ) );
 
 		return false !== $n && $n > 0;
 	}

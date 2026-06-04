@@ -81,19 +81,31 @@ final class BookingsController {
 	public function get_items( WP_REST_Request $request ) {
 		global $wpdb;
 
-		$tables = \FlexBooking\Database\Schema::tables();
-		$table  = $tables['bookings'];
+		$table  = \FlexBooking\Database\Schema::table( 'bookings' );
 		$page   = max( 1, (int) $request->get_param( 'page' ) );
 		$per    = min( 200, max( 1, (int) $request->get_param( 'per_page' ) ?: 20 ) );
 		$offset = ( $page - 1 ) * $per;
+		if ( '' === $table ) {
+			return new WP_REST_Response(
+				array(
+					'items'       => array(),
+					'total'       => 0,
+					'page'        => $page,
+					'per_page'    => $per,
+					'total_pages' => 0,
+				),
+				200
+			);
+		}
 
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- table name from schema.
-		$total = (int) $wpdb->get_var( "SELECT COUNT(*) FROM `{$table}`" );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		$total = (int) $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM %i', $table ) );
 
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$rows = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT * FROM `{$table}` ORDER BY id DESC LIMIT %d OFFSET %d",
+				'SELECT * FROM %i ORDER BY id DESC LIMIT %d OFFSET %d',
+				$table,
 				$per,
 				$offset
 			),
@@ -122,12 +134,14 @@ final class BookingsController {
 		global $wpdb;
 
 		$id     = absint( $request['id'] );
-		$tables = \FlexBooking\Database\Schema::tables();
-		$table  = $tables['bookings'];
+		$table = \FlexBooking\Database\Schema::table( 'bookings' );
+		if ( '' === $table ) {
+			return new WP_REST_Response( array( 'message' => 'Not found' ), 404 );
+		}
 
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$row = $wpdb->get_row(
-			$wpdb->prepare( "SELECT * FROM `{$table}` WHERE id = %d", $id ),
+			$wpdb->prepare( 'SELECT * FROM %i WHERE id = %d', $table, $id ),
 			ARRAY_A
 		);
 

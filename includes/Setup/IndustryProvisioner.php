@@ -42,7 +42,14 @@ final class IndustryProvisioner {
 
 		global $wpdb;
 
-		$table = Schema::tables()['booking_types'];
+		$table = Schema::table( 'booking_types' );
+		if ( '' === $table ) {
+			return array(
+				'enabled' => $clean,
+				'added'   => 0,
+				'skipped' => 0,
+			);
+		}
 		$now   = current_time( 'mysql' );
 		$added = 0;
 		$skipped = 0;
@@ -53,8 +60,8 @@ final class IndustryProvisioner {
 				continue;
 			}
 
-			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- table from schema.
-			$existing = $wpdb->get_var( $wpdb->prepare( "SELECT id FROM `{$table}` WHERE slug = %s LIMIT 1", $def['booking_slug'] ) );
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+			$existing = $wpdb->get_var( $wpdb->prepare( 'SELECT id FROM %i WHERE slug = %s LIMIT 1', $table, $def['booking_slug'] ) );
 			if ( $existing ) {
 				++$skipped;
 				continue;

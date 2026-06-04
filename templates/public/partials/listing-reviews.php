@@ -47,8 +47,8 @@ $ulbm_prefill_email = is_user_logged_in() ? $ulbm_user->user_email : '';
 							(int) $ulbm_review['rating']
 						);
 						?>">
-							<?php for ( $i = 1; $i <= 5; $i++ ) : ?>
-								<i class="bi bi-star<?php echo $i <= (int) $ulbm_review['rating'] ? '-fill' : ''; ?>" aria-hidden="true"></i>
+							<?php for ( $ulbm_i = 1; $ulbm_i <= 5; $ulbm_i++ ) : ?>
+								<i class="bi bi-star<?php echo $ulbm_i <= (int) $ulbm_review['rating'] ? '-fill' : ''; ?>" aria-hidden="true"></i>
 							<?php endfor; ?>
 						</span>
 						<time class="ulbm-review-date text-muted small" datetime="<?php echo esc_attr( (string) $ulbm_review['created_at'] ); ?>">

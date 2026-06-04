@@ -283,15 +283,15 @@ while ( have_posts() ) :
 					<div class="ulbm-section mb-4">
 						<h4 class="fw-bold mb-3"><i class="bi bi-question-circle me-2 text-primary"></i><?php esc_html_e( 'Frequently Asked Questions', 'flex-multiple-listing-and-booking-system' ); ?></h4>
 						<div class="accordion" id="ulbm-faq-accordion-<?php echo esc_attr( (string) $ulbm_post_id ); ?>">
-							<?php foreach ( $ulbm_faq_items as $idx => $ulbm_item ) : ?>
+							<?php foreach ( $ulbm_faq_items as $ulbm_idx => $ulbm_item ) : ?>
 								<div class="accordion-item">
 									<h2 class="accordion-header">
-										<button class="accordion-button <?php echo $idx > 0 ? 'collapsed' : ''; ?>" type="button"
-											data-bs-toggle="collapse" data-bs-target="#ulbm-faq-<?php echo esc_attr( (string) $ulbm_post_id . '-' . $idx ); ?>">
+										<button class="accordion-button <?php echo $ulbm_idx > 0 ? 'collapsed' : ''; ?>" type="button"
+											data-bs-toggle="collapse" data-bs-target="#ulbm-faq-<?php echo esc_attr( (string) $ulbm_post_id . '-' . $ulbm_idx ); ?>">
 											<?php echo esc_html( $ulbm_item['question'] ); ?>
 										</button>
 									</h2>
-									<div id="ulbm-faq-<?php echo esc_attr( (string) $ulbm_post_id . '-' . $idx ); ?>" class="accordion-collapse collapse <?php echo 0 === $idx ? 'show' : ''; ?>" data-bs-parent="#ulbm-faq-accordion-<?php echo esc_attr( (string) $ulbm_post_id ); ?>">
+									<div id="ulbm-faq-<?php echo esc_attr( (string) $ulbm_post_id . '-' . $ulbm_idx ); ?>" class="accordion-collapse collapse <?php echo 0 === $ulbm_idx ? 'show' : ''; ?>" data-bs-parent="#ulbm-faq-accordion-<?php echo esc_attr( (string) $ulbm_post_id ); ?>">
 										<div class="accordion-body">
 											<?php echo wp_kses_post( nl2br( esc_html( $ulbm_item['answer'] ?? '' ) ) ); ?>
 										</div>

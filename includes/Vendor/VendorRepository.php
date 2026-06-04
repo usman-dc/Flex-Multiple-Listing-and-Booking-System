@@ -27,7 +27,10 @@ final class VendorRepository {
 	public function create( $user_id, $business_name = '', $status = 'approved' ) {
 		global $wpdb;
 
-		$table = Schema::tables()['vendors'];
+		$table = Schema::table( 'vendors' );
+		if ( '' === $table ) {
+			return 0;
+		}
 		$now   = current_time( 'mysql' );
 
 		$wpdb->insert(
@@ -59,10 +62,14 @@ final class VendorRepository {
 	public function get_by_user_id( $user_id ) {
 		global $wpdb;
 
-		$table = Schema::tables()['vendors'];
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$table = Schema::table( 'vendors' );
+		if ( '' === $table ) {
+			return null;
+		}
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$row = $wpdb->get_row(
-			$wpdb->prepare( "SELECT * FROM `{$table}` WHERE wp_user_id = %d LIMIT 1", absint( $user_id ) ),
+			$wpdb->prepare( 'SELECT * FROM %i WHERE wp_user_id = %d LIMIT 1', $table, absint( $user_id ) ),
 			ARRAY_A
 		);
 

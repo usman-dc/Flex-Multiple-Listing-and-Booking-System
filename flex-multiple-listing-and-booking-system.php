@@ -4,7 +4,7 @@
  * Plugin URI: https://github.com/usman-dc/Flex-Multiple-Listing-and-Booking-System
  * Description: Multipurpose multiple-listing and booking engine for rentals, tours, appointments, and services ? listing grids, calendars, partner portal, and REST API.
  * Version: 1.0.2
- * Requires at least: 6.0
+ * Requires at least: 6.2
  * Requires PHP: 7.4
  * Author: Usman Ali
  * Author URI: https://wprogers.com/

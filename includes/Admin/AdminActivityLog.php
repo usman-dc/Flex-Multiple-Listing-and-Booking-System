@@ -25,13 +25,17 @@ final class AdminActivityLog {
 	public static function get_recent( $limit ) {
 		global $wpdb;
 
-		$table = Schema::tables()['activity_logs'];
+		$table = Schema::table( 'activity_logs' );
 		$lim   = min( 200, max( 1, (int) $limit ) );
+		if ( '' === $table ) {
+			return array();
+		}
 
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$rows = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT * FROM `{$table}` ORDER BY id DESC LIMIT %d",
+				'SELECT * FROM %i ORDER BY id DESC LIMIT %d',
+				$table,
 				$lim
 			),
 			ARRAY_A
@@ -48,9 +52,12 @@ final class AdminActivityLog {
 	public static function count_all() {
 		global $wpdb;
 
-		$table = Schema::tables()['activity_logs'];
+		$table = Schema::table( 'activity_logs' );
+		if ( '' === $table ) {
+			return 0;
+		}
 
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		return (int) $wpdb->get_var( "SELECT COUNT(*) FROM `{$table}`" );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		return (int) $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM %i', $table ) );
 	}
 }

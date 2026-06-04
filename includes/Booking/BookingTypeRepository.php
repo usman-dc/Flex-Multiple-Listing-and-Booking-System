@@ -24,10 +24,16 @@ final class BookingTypeRepository {
 	public function get_all() {
 		global $wpdb;
 
-		$table = Schema::tables()['booking_types'];
+		$table = Schema::table( 'booking_types' );
+		if ( '' === $table ) {
+			return array();
+		}
 
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- table from schema.
-		$rows = $wpdb->get_results( "SELECT * FROM `{$table}` ORDER BY id ASC", ARRAY_A );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		$rows = $wpdb->get_results(
+			$wpdb->prepare( 'SELECT * FROM %i ORDER BY id ASC', $table ),
+			ARRAY_A
+		);
 
 		return is_array( $rows ) ? $rows : array();
 	}
@@ -40,10 +46,13 @@ final class BookingTypeRepository {
 	public function count_all() {
 		global $wpdb;
 
-		$table = Schema::tables()['booking_types'];
+		$table = Schema::table( 'booking_types' );
+		if ( '' === $table ) {
+			return 0;
+		}
 
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		return (int) $wpdb->get_var( "SELECT COUNT(*) FROM `{$table}`" );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		return (int) $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM %i', $table ) );
 	}
 
 	/**
@@ -55,15 +64,15 @@ final class BookingTypeRepository {
 	public function get_by_id( $id ) {
 		global $wpdb;
 
-		$table = Schema::tables()['booking_types'];
+		$table = Schema::table( 'booking_types' );
 		$tid   = absint( $id );
-		if ( $tid < 1 ) {
+		if ( '' === $table || $tid < 1 ) {
 			return null;
 		}
 
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$row = $wpdb->get_row(
-			$wpdb->prepare( "SELECT * FROM `{$table}` WHERE id = %d LIMIT 1", $tid ),
+			$wpdb->prepare( 'SELECT * FROM %i WHERE id = %d LIMIT 1', $table, $tid ),
 			ARRAY_A
 		);
 
@@ -80,27 +89,29 @@ final class BookingTypeRepository {
 	public function slug_exists( $slug, $exclude_id = 0 ) {
 		global $wpdb;
 
-		$table = Schema::tables()['booking_types'];
+		$table = Schema::table( 'booking_types' );
 		$slug  = sanitize_title( (string) $slug );
-		if ( '' === $slug ) {
+		if ( '' === $table || '' === $slug ) {
 			return false;
 		}
 
 		$exclude_id = absint( $exclude_id );
 		if ( $exclude_id > 0 ) {
-			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 			$found = $wpdb->get_var(
 				$wpdb->prepare(
-					"SELECT id FROM `{$table}` WHERE slug = %s AND id != %d LIMIT 1",
+					'SELECT id FROM %i WHERE slug = %s AND id != %d LIMIT 1',
+					$table,
 					$slug,
 					$exclude_id
 				)
 			);
 		} else {
-			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 			$found = $wpdb->get_var(
 				$wpdb->prepare(
-					"SELECT id FROM `{$table}` WHERE slug = %s LIMIT 1",
+					'SELECT id FROM %i WHERE slug = %s LIMIT 1',
+					$table,
 					$slug
 				)
 			);
@@ -118,8 +129,12 @@ final class BookingTypeRepository {
 	public function insert_row( array $data ) {
 		global $wpdb;
 
-		$table = Schema::tables()['booking_types'];
-		$now   = current_time( 'mysql' );
+		$table = Schema::table( 'booking_types' );
+		if ( '' === $table ) {
+			return 0;
+		}
+
+		$now = current_time( 'mysql' );
 
 		$row = array_merge(
 			array(
@@ -141,6 +156,7 @@ final class BookingTypeRepository {
 			$formats[] = '%s';
 		}
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 		$ok = $wpdb->insert( $table, $row, $formats );
 
 		return $ok ? (int) $wpdb->insert_id : 0;
@@ -156,9 +172,9 @@ final class BookingTypeRepository {
 	public function update_row( $id, array $data ) {
 		global $wpdb;
 
-		$table = Schema::tables()['booking_types'];
+		$table = Schema::table( 'booking_types' );
 		$tid   = absint( $id );
-		if ( $tid < 1 ) {
+		if ( '' === $table || $tid < 1 ) {
 			return false;
 		}
 
@@ -173,6 +189,7 @@ final class BookingTypeRepository {
 			$formats[] = '%s';
 		}
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$result = $wpdb->update(
 			$table,
 			$data,
@@ -193,12 +210,13 @@ final class BookingTypeRepository {
 	public function delete_row( $id ) {
 		global $wpdb;
 
-		$table = Schema::tables()['booking_types'];
+		$table = Schema::table( 'booking_types' );
 		$tid   = absint( $id );
-		if ( $tid < 1 ) {
+		if ( '' === $table || $tid < 1 ) {
 			return false;
 		}
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$deleted = $wpdb->delete( $table, array( 'id' => $tid ), array( '%d' ) );
 
 		return false !== $deleted && $deleted > 0;

@@ -456,7 +456,8 @@ final class AjaxDispatcher {
 		);
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Same request; nonce verified above.
-		if ( ! empty( $_FILES['featured_image']['name'] ) ) {
+		$ulbm_featured_name = isset( $_FILES['featured_image']['name'] ) ? sanitize_file_name( wp_unslash( (string) $_FILES['featured_image']['name'] ) ) : '';
+		if ( '' !== $ulbm_featured_name && ! empty( $_FILES['featured_image']['tmp_name'] ) ) {
 			require_once ABSPATH . 'wp-admin/includes/file.php';
 			require_once ABSPATH . 'wp-admin/includes/media.php';
 			require_once ABSPATH . 'wp-admin/includes/image.php';

@@ -70,6 +70,36 @@ final class Schema {
 	}
 
 	/**
+	 * Validated table name for $wpdb->prepare( …, %i, … ) (WP 6.2+).
+	 *
+	 * @param string $logical_key Key from tables().
+	 * @return string Full table name or empty if invalid.
+	 */
+	public static function table( $logical_key ) {
+		$tables = self::tables();
+		$key    = (string) $logical_key;
+
+		if ( ! isset( $tables[ $key ] ) ) {
+			return '';
+		}
+
+		$name = $tables[ $key ];
+		global $wpdb;
+
+		$expected = $wpdb->prefix . self::PREFIX;
+		if ( 0 !== strpos( $name, $expected ) ) {
+			return '';
+		}
+
+		$suffix = substr( $name, strlen( $wpdb->prefix ) );
+		if ( ! preg_match( '/^' . preg_quote( self::PREFIX, '/' ) . '[a-z0-9_]+$/', $suffix ) ) {
+			return '';
+		}
+
+		return $name;
+	}
+
+	/**
 	 * Charset collate helper.
 	 *
 	 * @return string

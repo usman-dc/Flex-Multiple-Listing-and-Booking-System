@@ -96,18 +96,18 @@ $ulbm_payment_status_class = static function ( $payment_status ) {
 	return 'secondary';
 };
 
-$list_url = add_query_arg( 'page', 'ulbm-bookings', admin_url( 'admin.php' ) );
+$ulbm_list_url = add_query_arg( 'page', 'ulbm-bookings', admin_url( 'admin.php' ) );
 if ( '' !== $ulbm_status_filter ) {
-	$list_url = add_query_arg( 'ulbm_status', $ulbm_status_filter, $list_url );
+	$ulbm_list_url = add_query_arg( 'ulbm_status', $ulbm_status_filter, $ulbm_list_url );
 }
 if ( $ulbm_type_filter > 0 ) {
-	$list_url = add_query_arg( 'ulbm_type', (string) $ulbm_type_filter, $list_url );
+	$ulbm_list_url = add_query_arg( 'ulbm_type', (string) $ulbm_type_filter, $ulbm_list_url );
 }
-$pagination_base = esc_url_raw( add_query_arg( 'paged', '%#%', $list_url ) );
+$ulbm_pagination_base = esc_url_raw( add_query_arg( 'paged', '%#%', $ulbm_list_url ) );
 
-$pagination = paginate_links(
+$ulbm_pagination = paginate_links(
 	array(
-		'base'      => $pagination_base,
+		'base'      => $ulbm_pagination_base,
 		'format'    => '',
 		'prev_text' => '&laquo; ' . __( 'Previous', 'flex-multiple-listing-and-booking-system' ),
 		'next_text' => __( 'Next', 'flex-multiple-listing-and-booking-system' ) . ' &raquo;',
@@ -117,11 +117,11 @@ $pagination = paginate_links(
 	)
 );
 
-$showing_from = $ulbm_bookings_total > 0 ? ( ( (int) $ulbm_bookings_paged - 1 ) * (int) $ulbm_bookings_per_page ) + 1 : 0;
-$showing_to   = min( (int) $ulbm_bookings_total, ( (int) $ulbm_bookings_paged * (int) $ulbm_bookings_per_page ) );
+$ulbm_showing_from = $ulbm_bookings_total > 0 ? ( ( (int) $ulbm_bookings_paged - 1 ) * (int) $ulbm_bookings_per_page ) + 1 : 0;
+$ulbm_showing_to   = min( (int) $ulbm_bookings_total, ( (int) $ulbm_bookings_paged * (int) $ulbm_bookings_per_page ) );
 
-$statuses        = BookingAdminUpdater::booking_statuses();
-$payment_statuses = BookingAdminUpdater::payment_statuses();
+$ulbm_statuses         = BookingAdminUpdater::booking_statuses();
+$ulbm_payment_statuses = BookingAdminUpdater::payment_statuses();
 ?>
 <div class="wrap ulbm-admin-wrap ulbm-bookings-page container-fluid py-3">
 	<div class="ulbm-page-header d-flex align-items-start justify-content-between flex-wrap gap-2 mb-3">
@@ -142,9 +142,9 @@ $payment_statuses = BookingAdminUpdater::payment_statuses();
 					<label class="form-label small text-muted mb-0" for="ulbm_status"><?php esc_html_e( 'Filter by status', 'flex-multiple-listing-and-booking-system' ); ?></label>
 					<select class="form-select form-select-sm" name="ulbm_status" id="ulbm_status">
 						<option value=""><?php esc_html_e( 'All statuses', 'flex-multiple-listing-and-booking-system' ); ?></option>
-						<?php foreach ( $statuses as $st ) : ?>
-							<option value="<?php echo esc_attr( $st ); ?>" <?php selected( $ulbm_status_filter, $st ); ?>>
-								<?php echo esc_html( $st ); ?>
+						<?php foreach ( $ulbm_statuses as $ulbm_st ) : ?>
+							<option value="<?php echo esc_attr( $ulbm_st ); ?>" <?php selected( $ulbm_status_filter, $ulbm_st ); ?>>
+								<?php echo esc_html( $ulbm_st ); ?>
 							</option>
 						<?php endforeach; ?>
 					</select>
@@ -153,9 +153,9 @@ $payment_statuses = BookingAdminUpdater::payment_statuses();
 					<label class="form-label small text-muted mb-0" for="ulbm_type"><?php esc_html_e( 'Booking type', 'flex-multiple-listing-and-booking-system' ); ?></label>
 					<select class="form-select form-select-sm" name="ulbm_type" id="ulbm_type">
 						<option value="0"><?php esc_html_e( 'All types', 'flex-multiple-listing-and-booking-system' ); ?></option>
-						<?php foreach ( $ulbm_booking_type_options as $tto ) : ?>
-							<option value="<?php echo esc_attr( (string) (int) $tto['id'] ); ?>" <?php selected( $ulbm_type_filter, (int) $tto['id'] ); ?>>
-								<?php echo esc_html( (string) $tto['name'] ); ?>
+						<?php foreach ( $ulbm_booking_type_options as $ulbm_tto ) : ?>
+							<option value="<?php echo esc_attr( (string) (int) $ulbm_tto['id'] ); ?>" <?php selected( $ulbm_type_filter, (int) $ulbm_tto['id'] ); ?>>
+								<?php echo esc_html( (string) $ulbm_tto['name'] ); ?>
 							</option>
 						<?php endforeach; ?>
 					</select>
@@ -187,8 +187,8 @@ $payment_statuses = BookingAdminUpdater::payment_statuses();
 			printf(
 				/* translators: 1: first row index, 2: last row index */
 				esc_html__( 'Rows %1$d–%2$d on this page.', 'flex-multiple-listing-and-booking-system' ),
-				(int) $showing_from,
-				(int) $showing_to
+				(int) $ulbm_showing_from,
+				(int) $ulbm_showing_to
 			);
 			?>
 		</p>
@@ -226,58 +226,58 @@ $payment_statuses = BookingAdminUpdater::payment_statuses();
 								<td colspan="12" class="text-muted p-4"><?php esc_html_e( 'No bookings match this filter.', 'flex-multiple-listing-and-booking-system' ); ?></td>
 							</tr>
 						<?php else : ?>
-							<?php foreach ( $ulbm_bookings as $b ) : ?>
+							<?php foreach ( $ulbm_bookings as $ulbm_b ) : ?>
 								<?php
-								$bid = (int) $b['id'];
-								$cid = ! empty( $b['customer_id'] ) ? (int) $b['customer_id'] : 0;
-								$guest_email = '';
-								if ( $cid && isset( $ulbm_customer_emails[ $cid ] ) ) {
-									$guest_email = $ulbm_customer_emails[ $cid ];
-								} elseif ( ! empty( $b['wp_user_id'] ) ) {
-									$u = get_userdata( (int) $b['wp_user_id'] );
-									if ( $u ) {
-										$guest_email = $u->user_email;
+								$ulbm_bid = (int) $ulbm_b['id'];
+								$ulbm_cid = ! empty( $ulbm_b['customer_id'] ) ? (int) $ulbm_b['customer_id'] : 0;
+								$ulbm_guest_email = '';
+								if ( $ulbm_cid && isset( $ulbm_customer_emails[ $ulbm_cid ] ) ) {
+									$ulbm_guest_email = $ulbm_customer_emails[ $ulbm_cid ];
+								} elseif ( ! empty( $ulbm_b['wp_user_id'] ) ) {
+									$ulbm_u = get_userdata( (int) $ulbm_b['wp_user_id'] );
+									if ( $ulbm_u ) {
+										$ulbm_guest_email = $ulbm_u->user_email;
 									}
 								}
-								$answers_cell = $ulbm_format_form_answers_cell(
-									isset( $ulbm_booking_answers[ $bid ] ) ? $ulbm_booking_answers[ $bid ] : array()
+								$ulbm_answers_cell = $ulbm_format_form_answers_cell(
+									isset( $ulbm_booking_answers[ $ulbm_bid ] ) ? $ulbm_booking_answers[ $ulbm_bid ] : array()
 								);
 								?>
-								<tr data-booking-id="<?php echo esc_attr( (string) $bid ); ?>">
-									<td><?php echo esc_html( (string) $bid ); ?></td>
-									<td><code class="small"><?php echo esc_html( (string) $b['booking_uid'] ); ?></code></td>
+								<tr data-booking-id="<?php echo esc_attr( (string) $ulbm_bid ); ?>">
+									<td><?php echo esc_html( (string) $ulbm_bid ); ?></td>
+									<td><code class="small"><?php echo esc_html( (string) $ulbm_b['booking_uid'] ); ?></code></td>
 									<td class="small">
 										<?php
-										$btid = (int) $b['booking_type_id'];
-										$btnm = isset( $ulbm_type_names[ $btid ] ) ? $ulbm_type_names[ $btid ] : '';
-										echo $btnm ? esc_html( $btnm ) : esc_html( (string) $btid );
+										$ulbm_btid = (int) $ulbm_b['booking_type_id'];
+										$ulbm_btnm = isset( $ulbm_type_names[ $ulbm_btid ] ) ? $ulbm_type_names[ $ulbm_btid ] : '';
+										echo $ulbm_btnm ? esc_html( $ulbm_btnm ) : esc_html( (string) $ulbm_btid );
 										?>
-										<span class="text-muted"><?php echo $btnm ? ' · #' . esc_html( (string) $btid ) : ''; ?></span>
+										<span class="text-muted"><?php echo $ulbm_btnm ? ' · #' . esc_html( (string) $ulbm_btid ) : ''; ?></span>
 									</td>
 									<td class="small">
-										<?php echo $guest_email ? esc_html( $guest_email ) : '—'; ?>
+										<?php echo $ulbm_guest_email ? esc_html( $ulbm_guest_email ) : '—'; ?>
 									</td>
 									<td class="small text-break ulbm-col-form-answers" style="max-width: 14rem;">
-										<?php if ( '' !== $answers_cell['short'] ) : ?>
-											<span class="d-inline-block" title="<?php echo esc_attr( $answers_cell['title'] ); ?>"><?php echo esc_html( $answers_cell['short'] ); ?></span>
+										<?php if ( '' !== $ulbm_answers_cell['short'] ) : ?>
+											<span class="d-inline-block" title="<?php echo esc_attr( $ulbm_answers_cell['title'] ); ?>"><?php echo esc_html( $ulbm_answers_cell['short'] ); ?></span>
 										<?php else : ?>
 											<span class="text-muted">—</span>
 										<?php endif; ?>
 									</td>
 									<td>
-										<span class="badge rounded-pill text-bg-<?php echo esc_attr( $ulbm_booking_status_class( (string) $b['status'] ) ); ?> ulbm-cell-status">
-											<?php echo esc_html( (string) $b['status'] ); ?>
+										<span class="badge rounded-pill text-bg-<?php echo esc_attr( $ulbm_booking_status_class( (string) $ulbm_b['status'] ) ); ?> ulbm-cell-status">
+											<?php echo esc_html( (string) $ulbm_b['status'] ); ?>
 										</span>
 									</td>
 									<td>
-										<span class="badge rounded-pill text-bg-<?php echo esc_attr( $ulbm_payment_status_class( (string) $b['payment_status'] ) ); ?> ulbm-cell-payment">
-											<?php echo esc_html( (string) $b['payment_status'] ); ?>
+										<span class="badge rounded-pill text-bg-<?php echo esc_attr( $ulbm_payment_status_class( (string) $ulbm_b['payment_status'] ) ); ?> ulbm-cell-payment">
+											<?php echo esc_html( (string) $ulbm_b['payment_status'] ); ?>
 										</span>
 									</td>
-									<td class="text-end"><?php echo esc_html( number_format_i18n( (float) $b['total'], 2 ) ); ?> <?php echo esc_html( (string) $b['currency'] ); ?></td>
-									<td class="small"><?php echo esc_html( (string) $b['start_datetime'] ); ?></td>
-									<td class="small"><?php echo esc_html( (string) $b['end_datetime'] ); ?></td>
-									<td class="small"><?php echo esc_html( (string) $b['created_at'] ); ?></td>
+									<td class="text-end"><?php echo esc_html( number_format_i18n( (float) $ulbm_b['total'], 2 ) ); ?> <?php echo esc_html( (string) $ulbm_b['currency'] ); ?></td>
+									<td class="small"><?php echo esc_html( (string) $ulbm_b['start_datetime'] ); ?></td>
+									<td class="small"><?php echo esc_html( (string) $ulbm_b['end_datetime'] ); ?></td>
+									<td class="small"><?php echo esc_html( (string) $ulbm_b['created_at'] ); ?></td>
 									<td class="small">
 										<div class="d-flex flex-column gap-1" style="min-width: 12rem;">
 											<span class="text-muted text-uppercase" style="font-size: 0.65rem;"><?php esc_html_e( 'Booking', 'flex-multiple-listing-and-booking-system' ); ?></span>
@@ -291,9 +291,9 @@ $payment_statuses = BookingAdminUpdater::payment_statuses();
 											</div>
 											<span class="text-muted text-uppercase mt-1" style="font-size: 0.65rem;"><?php esc_html_e( 'Payment', 'flex-multiple-listing-and-booking-system' ); ?></span>
 											<div class="btn-group btn-group-sm flex-wrap" role="group">
-												<?php foreach ( $payment_statuses as $ps ) : ?>
-													<button type="button" class="btn btn-outline-secondary ulbm-booking-action" data-field="payment_status" data-value="<?php echo esc_attr( $ps ); ?>">
-														<?php echo esc_html( $ps ); ?>
+												<?php foreach ( $ulbm_payment_statuses as $ulbm_ps ) : ?>
+													<button type="button" class="btn btn-outline-secondary ulbm-booking-action" data-field="payment_status" data-value="<?php echo esc_attr( $ulbm_ps ); ?>">
+														<?php echo esc_html( $ulbm_ps ); ?>
 													</button>
 												<?php endforeach; ?>
 											</div>
@@ -306,11 +306,11 @@ $payment_statuses = BookingAdminUpdater::payment_statuses();
 				</table>
 			</div>
 		</div>
-		<?php if ( $pagination ) : ?>
+		<?php if ( $ulbm_pagination ) : ?>
 			<div class="ulbm-admin-panel-foot px-3 py-2 border-top bg-white d-flex flex-wrap justify-content-between align-items-center gap-2">
 				<span class="small text-muted"><?php esc_html_e( 'Use pagination to reach every row.', 'flex-multiple-listing-and-booking-system' ); ?></span>
 				<nav class="ulbm-pagination" aria-label="<?php esc_attr_e( 'Bookings pagination', 'flex-multiple-listing-and-booking-system' ); ?>">
-					<?php echo wp_kses_post( $pagination ); ?>
+					<?php echo wp_kses_post( $ulbm_pagination ); ?>
 				</nav>
 			</div>
 		<?php endif; ?>

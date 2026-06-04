@@ -48,11 +48,18 @@ final class BookingTypePostTypeRegistry {
 		}
 
 		global $wpdb;
-		$table = Schema::tables()['booking_types'];
+		$table = Schema::table( 'booking_types' );
+		if ( '' === $table ) {
+			self::$types_cache = array();
+			return self::$types_cache;
+		}
 
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$rows = $wpdb->get_results(
-			"SELECT * FROM `{$table}` WHERE status = 'publish' ORDER BY id ASC",
+			$wpdb->prepare(
+				"SELECT * FROM %i WHERE status = 'publish' ORDER BY id ASC",
+				$table
+			),
 			ARRAY_A
 		);
 

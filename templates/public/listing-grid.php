@@ -48,10 +48,10 @@ $ulbm_all_types = BookingTypePostTypeRegistry::get_registered_types();
 $ulbm_query_post_types = array();
 
 if ( $ulbm_grid_type ) {
-	foreach ( $ulbm_all_types as $bt ) {
-		if ( (string) $bt['slug'] === $ulbm_grid_type ) {
-			$ulbm_query_post_types[] = BookingTypePostTypeRegistry::cpt_name_from_slug( $bt['slug'] );
-			$ulbm_query_post_types[] = BookingTypePostTypeRegistry::legacy_cpt_name_from_slug( $bt['slug'] );
+	foreach ( $ulbm_all_types as $ulbm_bt ) {
+		if ( (string) $ulbm_bt['slug'] === $ulbm_grid_type ) {
+			$ulbm_query_post_types[] = BookingTypePostTypeRegistry::cpt_name_from_slug( $ulbm_bt['slug'] );
+			$ulbm_query_post_types[] = BookingTypePostTypeRegistry::legacy_cpt_name_from_slug( $ulbm_bt['slug'] );
 			break;
 		}
 	}
@@ -152,9 +152,9 @@ $ulbm_grid_style   = LayoutSettings::grid_inline_style( $ulbm_grid_spacing );
 
 						<option value=""><?php esc_html_e( 'All types', 'flex-multiple-listing-and-booking-system' ); ?></option>
 
-						<?php foreach ( $ulbm_all_types as $ft ) : ?>
+						<?php foreach ( $ulbm_all_types as $ulbm_ft ) : ?>
 
-							<option value="<?php echo esc_attr( (string) $ft['slug'] ); ?>"><?php echo esc_html( (string) $ft['name'] ); ?></option>
+							<option value="<?php echo esc_attr( (string) $ulbm_ft['slug'] ); ?>"><?php echo esc_html( (string) $ulbm_ft['name'] ); ?></option>
 
 						<?php endforeach; ?>
 

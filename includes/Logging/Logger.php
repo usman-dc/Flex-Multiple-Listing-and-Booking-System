@@ -28,9 +28,12 @@ final class Logger {
 	public function log( $context, $object_id, $action, $payload = array() ) {
 		global $wpdb;
 
-		$tables = Schema::tables();
-		$table  = $tables['activity_logs'];
+		$table = Schema::table( 'activity_logs' );
+		if ( '' === $table ) {
+			return;
+		}
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 		$wpdb->insert(
 			$table,
 			array(

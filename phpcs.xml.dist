@@ -5,6 +5,7 @@
 	<exclude-pattern>/vendor/*</exclude-pattern>
 	<exclude-pattern>/node_modules/*</exclude-pattern>
 	<exclude-pattern>/dist/*</exclude-pattern>
+	<exclude-pattern>/tests/*</exclude-pattern>
 	<rule ref="WordPress">
 		<exclude name="WordPress.Files.FileName"/>
 	</rule>
@@ -23,6 +24,25 @@
 				<element value="check_ajax_referer"/>
 				<element value="check_admin_referer"/>
 				<element value="wp_verify_nonce"/>
+				<element value="\FlexBooking\Security\PostData::allow_processing"/>
+			</property>
+		</properties>
+	</rule>
+	<rule ref="WordPress.Security.ValidatedSanitizedInput">
+		<properties>
+			<property name="customSanitizingFunctions" type="array">
+				<element value="absint"/>
+				<element value="sanitize_email"/>
+				<element value="sanitize_file_name"/>
+				<element value="sanitize_key"/>
+				<element value="sanitize_text_field"/>
+				<element value="sanitize_title"/>
+				<element value="wp_kses_post"/>
+				<element value="\FlexBooking\Security\PostData::string"/>
+				<element value="\FlexBooking\Security\PostData::email"/>
+				<element value="\FlexBooking\Security\PostData::int"/>
+				<element value="\FlexBooking\Security\PostData::key"/>
+				<element value="\FlexBooking\Security\PostData::float"/>
 			</property>
 		</properties>
 	</rule>

@@ -36,7 +36,7 @@ $type    = isset( $atts['type'] ) ? sanitize_title( $atts['type'] ) : '';
 
 $id      = isset( $atts['id'] ) ? absint( $atts['id'] ) : 0;
 
-$groups  = isset( $ulbm_form_groups ) && is_array( $ulbm_form_groups ) ? $ulbm_form_groups : array(
+$ulbm_groups = isset( $ulbm_form_groups ) && is_array( $ulbm_form_groups ) ? $ulbm_form_groups : array(
 
 	'industry' => 'generic',
 
@@ -48,7 +48,9 @@ $groups  = isset( $ulbm_form_groups ) && is_array( $ulbm_form_groups ) ? $ulbm_f
 
 );
 
-$prefill = isset( $ulbm_prefill ) && is_array( $ulbm_prefill ) ? $ulbm_prefill : array();
+if ( ! isset( $ulbm_prefill ) || ! is_array( $ulbm_prefill ) ) {
+	$ulbm_prefill = array();
+}
 
 
 
@@ -62,7 +64,7 @@ if ( $ulbm_booking_type && is_array( $ulbm_booking_type ) && ! empty( $ulbm_book
 
 
 
-$ulbm_render_field = static function ( array $f, $compact = false ) use ( $prefill ) {
+$ulbm_render_field = static function ( array $f, $compact = false ) use ( $ulbm_prefill ) {
 
 	$name     = isset( $f['name'] ) ? (string) $f['name'] : '';
 
@@ -76,7 +78,7 @@ $ulbm_render_field = static function ( array $f, $compact = false ) use ( $prefi
 
 	$ph       = isset( $f['placeholder'] ) ? (string) $f['placeholder'] : '';
 
-	$val      = $prefill[ $name ] ?? '';
+	$val      = $ulbm_prefill[ $name ] ?? '';
 
 
 
@@ -166,8 +168,8 @@ $ulbm_render_field = static function ( array $f, $compact = false ) use ( $prefi
 
 $ulbm_listing_id  = isset( $ulbm_listing_id ) ? (int) $ulbm_listing_id : 0;
 if ( ! $ulbm_listing_id && is_singular() ) {
-	$pt = get_post_type();
-	if ( $pt && \FlexBooking\PostTypes\BookingTypePostTypeRegistry::is_listing_post_type( (string) $pt ) ) {
+	$ulbm_pt = get_post_type();
+	if ( $ulbm_pt && \FlexBooking\PostTypes\BookingTypePostTypeRegistry::is_listing_post_type( (string) $ulbm_pt ) ) {
 		$ulbm_listing_id = get_the_ID();
 	}
 }
@@ -194,11 +196,11 @@ $ulbm_check_out_time = '11:00';
 
 if ( $ulbm_marketplace ) {
 
-	$base = ListingMeta::get( $ulbm_listing_id, ListingMeta::KEY_BASE_PRICE, 'string' );
+	$ulbm_base = ListingMeta::get( $ulbm_listing_id, ListingMeta::KEY_BASE_PRICE, 'string' );
 
-	$sale = ListingMeta::get( $ulbm_listing_id, ListingMeta::KEY_SALE_PRICE, 'string' );
+	$ulbm_sale = ListingMeta::get( $ulbm_listing_id, ListingMeta::KEY_SALE_PRICE, 'string' );
 
-	$ulbm_nightly_price  = (float) ( $sale ?: $base );
+	$ulbm_nightly_price  = (float) ( $ulbm_sale ?: $ulbm_base );
 
 	$ulbm_max_guests     = max( 1, ListingMeta::get( $ulbm_listing_id, ListingMeta::KEY_MAX_GUESTS, 'int' ) );
 
@@ -208,27 +210,27 @@ if ( $ulbm_marketplace ) {
 
 	$ulbm_check_out_time = ListingMeta::get( $ulbm_listing_id, ListingMeta::KEY_CHECK_OUT_TIME, 'string' ) ?: '11:00';
 
-	$extra_svc          = ListingMeta::get( $ulbm_listing_id, ListingMeta::KEY_EXTRA_SERVICES, 'array' );
+	$ulbm_extra_svc     = ListingMeta::get( $ulbm_listing_id, ListingMeta::KEY_EXTRA_SERVICES, 'array' );
 
-	foreach ( $extra_svc as $svc ) {
+	foreach ( $ulbm_extra_svc as $ulbm_svc ) {
 
-		if ( ! is_array( $svc ) ) {
+		if ( ! is_array( $ulbm_svc ) ) {
 
 			continue;
 
 		}
 
-		$name = strtolower( (string) ( $svc['name'] ?? '' ) );
+		$ulbm_svc_name = strtolower( (string) ( $ulbm_svc['name'] ?? '' ) );
 
-		$fee  = (float) ( $svc['price'] ?? 0 );
+		$ulbm_svc_fee  = (float) ( $ulbm_svc['price'] ?? 0 );
 
-		if ( false !== strpos( $name, 'clean' ) ) {
+		if ( false !== strpos( $ulbm_svc_name, 'clean' ) ) {
 
-			$ulbm_cleaning_fee = $fee;
+			$ulbm_cleaning_fee = $ulbm_svc_fee;
 
-		} elseif ( false !== strpos( $name, 'service' ) ) {
+		} elseif ( false !== strpos( $ulbm_svc_name, 'service' ) ) {
 
-			$ulbm_service_fee = $fee;
+			$ulbm_service_fee = $ulbm_svc_fee;
 
 		}
 
@@ -252,7 +254,7 @@ $ulbm_currency = PriceFormatter::currency_code();
 
 	data-ulbm-listing-id="<?php echo esc_attr( (string) $ulbm_listing_id ); ?>"
 
-	data-ulbm-industry="<?php echo esc_attr( (string) $groups['industry'] ); ?>"
+	data-ulbm-industry="<?php echo esc_attr( (string) $ulbm_groups['industry'] ); ?>"
 
 	<?php if ( $ulbm_marketplace ) : ?>
 
@@ -352,15 +354,15 @@ $ulbm_currency = PriceFormatter::currency_code();
 
 							<select class="ulbm-mp-input ulbm-mp-guests" id="ulbm-guests" name="guests_count">
 
-								<?php for ( $g = 1; $g <= $ulbm_max_guests; $g++ ) : ?>
+								<?php for ( $ulbm_g = 1; $ulbm_g <= $ulbm_max_guests; $ulbm_g++ ) : ?>
 
-									<option value="<?php echo esc_attr( (string) $g ); ?>"<?php selected( 2, $g ); ?>>
+									<option value="<?php echo esc_attr( (string) $ulbm_g ); ?>"<?php selected( 2, $ulbm_g ); ?>>
 
 										<?php
 										printf(
 											/* translators: %d: guest count */
-											esc_html( _n( '%d Guest', '%d Guests', $g, 'flex-multiple-listing-and-booking-system' ) ),
-											(int) $g
+											esc_html( _n( '%d Guest', '%d Guests', $ulbm_g, 'flex-multiple-listing-and-booking-system' ) ),
+											(int) $ulbm_g
 										);
 										?>
 
@@ -430,9 +432,9 @@ $ulbm_currency = PriceFormatter::currency_code();
 
 				<div class="col-12"><p class="text-uppercase text-muted fw-bold mb-1" style="font-size:.7rem;letter-spacing:.05em;"><i class="bi bi-person me-1"></i><?php esc_html_e( 'Your details', 'flex-multiple-listing-and-booking-system' ); ?></p></div>
 
-				<?php foreach ( $groups['contact'] as $field ) : ?>
+				<?php foreach ( $ulbm_groups['contact'] as $ulbm_field ) : ?>
 
-					<?php $ulbm_render_field( $field ); ?>
+					<?php $ulbm_render_field( $ulbm_field ); ?>
 
 				<?php endforeach; ?>
 
@@ -458,13 +460,13 @@ $ulbm_currency = PriceFormatter::currency_code();
 
 
 
-				<?php if ( ! empty( $groups['extra'] ) ) : ?>
+				<?php if ( ! empty( $ulbm_groups['extra'] ) ) : ?>
 
-					<div class="col-12 mt-2"><p class="text-uppercase text-muted fw-bold mb-1" style="font-size:.7rem;letter-spacing:.05em;"><i class="bi bi-list-check me-1"></i><?php echo esc_html( $groups['title'] ?: __( 'Booking details', 'flex-multiple-listing-and-booking-system' ) ); ?></p></div>
+					<div class="col-12 mt-2"><p class="text-uppercase text-muted fw-bold mb-1" style="font-size:.7rem;letter-spacing:.05em;"><i class="bi bi-list-check me-1"></i><?php echo esc_html( $ulbm_groups['title'] ?: __( 'Booking details', 'flex-multiple-listing-and-booking-system' ) ); ?></p></div>
 
-					<?php foreach ( $groups['extra'] as $field ) : ?>
+					<?php foreach ( $ulbm_groups['extra'] as $ulbm_field ) : ?>
 
-						<?php $ulbm_render_field( $field ); ?>
+						<?php $ulbm_render_field( $ulbm_field ); ?>
 
 					<?php endforeach; ?>
 
@@ -492,23 +494,23 @@ $ulbm_currency = PriceFormatter::currency_code();
 
 					<div class="row g-2">
 
-						<?php foreach ( $groups['contact'] as $field ) : ?>
+						<?php foreach ( $ulbm_groups['contact'] as $ulbm_field ) : ?>
 
-							<?php $ulbm_render_field( $field, true ); ?>
+							<?php $ulbm_render_field( $ulbm_field, true ); ?>
 
 						<?php endforeach; ?>
 
-						<?php if ( ! empty( $groups['extra'] ) ) : ?>
+						<?php if ( ! empty( $ulbm_groups['extra'] ) ) : ?>
 
-							<?php foreach ( $groups['extra'] as $field ) : ?>
+							<?php foreach ( $ulbm_groups['extra'] as $ulbm_field ) : ?>
 
 								<?php
-								$fname = isset( $field['name'] ) ? (string) $field['name'] : '';
+								$ulbm_fname = isset( $ulbm_field['name'] ) ? (string) $ulbm_field['name'] : '';
 								// Marketplace already collects guests via .ulbm-mp-guests.
-								if ( 'guests_count' === $fname ) {
+								if ( 'guests_count' === $ulbm_fname ) {
 									continue;
 								}
-								$ulbm_render_field( $field, true );
+								$ulbm_render_field( $ulbm_field, true );
 								?>
 
 							<?php endforeach; ?>

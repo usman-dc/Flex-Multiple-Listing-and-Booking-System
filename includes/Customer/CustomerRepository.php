@@ -34,11 +34,14 @@ final class CustomerRepository {
 
 		global $wpdb;
 
-		$table = Schema::tables()['customers'];
+		$table = Schema::table( 'customers' );
 		$now   = current_time( 'mysql' );
+		if ( '' === $table ) {
+			return null;
+		}
 
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		$existing = $wpdb->get_var( $wpdb->prepare( "SELECT id FROM `{$table}` WHERE email = %s LIMIT 1", $email ) );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		$existing = $wpdb->get_var( $wpdb->prepare( 'SELECT id FROM %i WHERE email = %s LIMIT 1', $table, $email ) );
 
 		$data = array(
 			'first_name' => sanitize_text_field( (string) $first_name ),

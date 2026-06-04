@@ -26,25 +26,25 @@ defined( 'ABSPATH' ) || exit;
 			</p>
 
 			<div class="row g-3 mb-4">
-				<?php foreach ( $ulbm_industry_catalog as $key => $def ) : ?>
+				<?php foreach ( $ulbm_industry_catalog as $ulbm_key => $ulbm_def ) : ?>
 					<div class="col-sm-6 col-lg-4 col-xxl-3">
 						<div class="ulbm-industry-panel h-100 border shadow-sm bg-white p-3">
 							<div class="form-check">
 								<input
 									class="form-check-input ulbm-industry-cb"
 									type="checkbox"
-									value="<?php echo esc_attr( (string) $key ); ?>"
-									id="ulbm-ind-<?php echo esc_attr( (string) $key ); ?>"
-									<?php checked( in_array( (string) $key, $ulbm_enabled_industries, true ) ); ?>
+									value="<?php echo esc_attr( (string) $ulbm_key ); ?>"
+									id="ulbm-ind-<?php echo esc_attr( (string) $ulbm_key ); ?>"
+									<?php checked( in_array( (string) $ulbm_key, $ulbm_enabled_industries, true ) ); ?>
 								/>
-								<label class="form-check-label fw-semibold" for="ulbm-ind-<?php echo esc_attr( (string) $key ); ?>">
-									<?php echo esc_html( (string) $def['select_label'] ); ?>
+								<label class="form-check-label fw-semibold" for="ulbm-ind-<?php echo esc_attr( (string) $ulbm_key ); ?>">
+									<?php echo esc_html( (string) $ulbm_def['select_label'] ); ?>
 								</label>
 							</div>
-							<p class="small text-muted mb-0 mt-2"><?php echo esc_html( (string) $def['description'] ); ?></p>
+							<p class="small text-muted mb-0 mt-2"><?php echo esc_html( (string) $ulbm_def['description'] ); ?></p>
 							<p class="small mb-0 mt-2">
 								<span class="text-muted"><?php esc_html_e( 'Creates:', 'flex-multiple-listing-and-booking-system' ); ?></span>
-								<code class="small"><?php echo esc_html( (string) $def['post_type'] ); ?></code>
+								<code class="small"><?php echo esc_html( (string) $ulbm_def['post_type'] ); ?></code>
 							</p>
 						</div>
 					</div>
@@ -64,16 +64,16 @@ defined( 'ABSPATH' ) || exit;
 								<?php esc_html_e( 'This plugin ships its own booking engine; listed items are optional complements for marketplaces or POS bridges.', 'flex-multiple-listing-and-booking-system' ); ?>
 							</p>
 							<div class="row g-4">
-								<?php foreach ( $ulbm_professional_links as $group ) : ?>
+								<?php foreach ( $ulbm_professional_links as $ulbm_group ) : ?>
 									<div class="col-md-6">
-										<h3 class="h6 text-uppercase text-muted"><?php echo esc_html( (string) $group['title'] ); ?></h3>
+										<h3 class="h6 text-uppercase text-muted"><?php echo esc_html( (string) $ulbm_group['title'] ); ?></h3>
 										<ul class="list-unstyled mb-0">
-											<?php foreach ( $group['items'] as $item ) : ?>
+											<?php foreach ( $ulbm_group['items'] as $ulbm_item ) : ?>
 												<li class="mb-3 pb-3 border-bottom border-light-subtle">
-													<a href="<?php echo esc_url( (string) $item['url'] ); ?>" target="_blank" rel="noopener noreferrer" class="fw-semibold text-decoration-none">
-														<?php echo esc_html( (string) $item['name'] ); ?>
+													<a href="<?php echo esc_url( (string) $ulbm_item['url'] ); ?>" target="_blank" rel="noopener noreferrer" class="fw-semibold text-decoration-none">
+														<?php echo esc_html( (string) $ulbm_item['name'] ); ?>
 													</a>
-													<span class="small text-muted d-block"><?php echo esc_html( (string) $item['note'] ); ?></span>
+													<span class="small text-muted d-block"><?php echo esc_html( (string) $ulbm_item['note'] ); ?></span>
 												</li>
 											<?php endforeach; ?>
 										</ul>

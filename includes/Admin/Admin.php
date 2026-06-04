@@ -362,9 +362,12 @@ final class Admin {
 	 */
 	private function count_customers() {
 		global $wpdb;
-		$table = Schema::tables()['customers'];
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		return (int) $wpdb->get_var( "SELECT COUNT(*) FROM `{$table}`" );
+		$table = Schema::table( 'customers' );
+		if ( '' === $table ) {
+			return 0;
+		}
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		return (int) $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM %i', $table ) );
 	}
 
 	/**
@@ -420,7 +423,7 @@ final class Admin {
 			return;
 		}
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Admin screen routing only.
-		if ( ! isset( $_GET['page'] ) || 'ulbm-booking-types' !== (string) wp_unslash( $_GET['page'] ) ) {
+		if ( ! isset( $_GET['page'] ) || 'ulbm-booking-types' !== sanitize_key( wp_unslash( $_GET['page'] ) ) ) {
 			return;
 		}
 		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Verified before processing.

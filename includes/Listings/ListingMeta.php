@@ -76,7 +76,17 @@ final class ListingMeta {
 					}
 					// Handle double-encoded JSON (stored with extra slashes).
 					$decoded = json_decode( wp_unslash( $val ), true );
-					return is_array( $decoded ) ? $decoded : array();
+					if ( is_array( $decoded ) ) {
+						return $decoded;
+					}
+					// Comma-separated IDs (legacy gallery field format).
+					if ( false !== strpos( $val, ',' ) || ctype_digit( trim( $val ) ) ) {
+						return array_values(
+							array_filter(
+								array_map( 'absint', explode( ',', $val ) )
+							)
+						);
+					}
 				}
 				return array();
 			default:

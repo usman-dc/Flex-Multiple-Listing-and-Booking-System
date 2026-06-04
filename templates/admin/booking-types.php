@@ -61,17 +61,17 @@ $ulbm_row_industry_value = static function ( $row ) {
 	return 'generic';
 };
 
-$edit_industry = 'generic';
+$ulbm_edit_industry = 'generic';
 if ( $ulbm_editing_type ) {
-	$edit_industry = $ulbm_row_industry_value( $ulbm_editing_type );
-	if ( '' === $edit_industry ) {
-		$edit_industry = 'generic';
+	$ulbm_edit_industry = $ulbm_row_industry_value( $ulbm_editing_type );
+	if ( '' === $ulbm_edit_industry ) {
+		$ulbm_edit_industry = 'generic';
 	}
 }
 
-$list_url  = admin_url( 'admin.php?page=ulbm-booking-types' );
-$new_url   = add_query_arg( 'ulbm_new', '1', $list_url );
-$edit_base = $list_url;
+$ulbm_list_url  = admin_url( 'admin.php?page=ulbm-booking-types' );
+$ulbm_new_url   = add_query_arg( 'ulbm_new', '1', $ulbm_list_url );
+$ulbm_edit_base = $ulbm_list_url;
 ?>
 <div class="wrap ulbm-admin-wrap container-fluid py-3">
 	<div class="ulbm-page-header d-flex flex-wrap align-items-start justify-content-between gap-2 mb-3">
@@ -85,7 +85,7 @@ $edit_base = $list_url;
 			</p>
 		</div>
 		<?php if ( ! $ulbm_show_type_form ) : ?>
-			<a class="btn btn-primary" href="<?php echo esc_url( $new_url ); ?>"><?php esc_html_e( 'Add booking type', 'flex-multiple-listing-and-booking-system' ); ?></a>
+			<a class="btn btn-primary" href="<?php echo esc_url( $ulbm_new_url ); ?>"><?php esc_html_e( 'Add booking type', 'flex-multiple-listing-and-booking-system' ); ?></a>
 		<?php endif; ?>
 	</div>
 
@@ -95,44 +95,44 @@ $edit_base = $list_url;
 
 	<?php if ( $ulbm_show_type_form ) : ?>
 		<?php
-		$is_edit   = (bool) $ulbm_editing_type;
-		$type_id   = $is_edit ? (int) $ulbm_editing_type['id'] : 0;
-		$val_name  = $is_edit ? (string) $ulbm_editing_type['name'] : '';
-		$val_slug  = $is_edit ? (string) $ulbm_editing_type['slug'] : '';
-		$val_desc  = $is_edit ? (string) $ulbm_editing_type['description'] : '';
-		$val_stat  = $is_edit ? (string) $ulbm_editing_type['status'] : 'publish';
-		$form_title = $is_edit ? __( 'Edit booking type', 'flex-multiple-listing-and-booking-system' ) : __( 'New booking type', 'flex-multiple-listing-and-booking-system' );
+		$ulbm_is_edit    = (bool) $ulbm_editing_type;
+		$ulbm_type_id    = $ulbm_is_edit ? (int) $ulbm_editing_type['id'] : 0;
+		$ulbm_val_name   = $ulbm_is_edit ? (string) $ulbm_editing_type['name'] : '';
+		$ulbm_val_slug   = $ulbm_is_edit ? (string) $ulbm_editing_type['slug'] : '';
+		$ulbm_val_desc   = $ulbm_is_edit ? (string) $ulbm_editing_type['description'] : '';
+		$ulbm_val_stat   = $ulbm_is_edit ? (string) $ulbm_editing_type['status'] : 'publish';
+		$ulbm_form_title = $ulbm_is_edit ? __( 'Edit booking type', 'flex-multiple-listing-and-booking-system' ) : __( 'New booking type', 'flex-multiple-listing-and-booking-system' );
 		?>
 		<div class="ulbm-admin-panel border rounded bg-white mb-4">
 			<div class="ulbm-admin-panel-head px-3 py-3 border-bottom bg-white">
-				<span class="fw-semibold"><?php echo esc_html( $form_title ); ?></span>
+				<span class="fw-semibold"><?php echo esc_html( $ulbm_form_title ); ?></span>
 			</div>
 			<div class="p-3">
-				<form method="post" action="<?php echo esc_url( $list_url ); ?>" class="row g-3">
+				<form method="post" action="<?php echo esc_url( $ulbm_list_url ); ?>" class="row g-3">
 					<?php wp_nonce_field( 'ulbm_booking_types', 'ulbm_booking_types_nonce' ); ?>
 					<input type="hidden" name="ulbm_type_action" value="save" />
-					<input type="hidden" name="ulbm_type_id" value="<?php echo esc_attr( (string) $type_id ); ?>" />
+					<input type="hidden" name="ulbm_type_id" value="<?php echo esc_attr( (string) $ulbm_type_id ); ?>" />
 
 					<div class="col-md-6">
 						<label class="form-label" for="ulbm_type_name"><?php esc_html_e( 'Name', 'flex-multiple-listing-and-booking-system' ); ?></label>
-						<input class="form-control" name="ulbm_type_name" id="ulbm_type_name" value="<?php echo esc_attr( $val_name ); ?>" required maxlength="191" />
+						<input class="form-control" name="ulbm_type_name" id="ulbm_type_name" value="<?php echo esc_attr( $ulbm_val_name ); ?>" required maxlength="191" />
 					</div>
 					<div class="col-md-6">
 						<label class="form-label" for="ulbm_type_slug"><?php esc_html_e( 'Slug', 'flex-multiple-listing-and-booking-system' ); ?></label>
-						<input class="form-control" name="ulbm_type_slug" id="ulbm_type_slug" value="<?php echo esc_attr( $val_slug ); ?>" maxlength="191" />
+						<input class="form-control" name="ulbm_type_slug" id="ulbm_type_slug" value="<?php echo esc_attr( $ulbm_val_slug ); ?>" maxlength="191" />
 						<p class="form-text small mb-0"><?php esc_html_e( 'URL-safe identifier; leave blank to generate from the name. Must be unique.', 'flex-multiple-listing-and-booking-system' ); ?></p>
 					</div>
 					<div class="col-12">
 						<label class="form-label" for="ulbm_type_description"><?php esc_html_e( 'Description', 'flex-multiple-listing-and-booking-system' ); ?></label>
-						<textarea class="form-control" name="ulbm_type_description" id="ulbm_type_description" rows="3"><?php echo esc_textarea( $val_desc ); ?></textarea>
+						<textarea class="form-control" name="ulbm_type_description" id="ulbm_type_description" rows="3"><?php echo esc_textarea( $ulbm_val_desc ); ?></textarea>
 					</div>
 					<div class="col-md-6">
 						<label class="form-label" for="ulbm_type_industry"><?php esc_html_e( 'Industry / form profile', 'flex-multiple-listing-and-booking-system' ); ?></label>
 						<select class="form-select" name="ulbm_type_industry" id="ulbm_type_industry">
-							<option value="generic" <?php selected( $edit_industry, 'generic' ); ?>><?php esc_html_e( 'Generic (simple notes only)', 'flex-multiple-listing-and-booking-system' ); ?></option>
-							<?php foreach ( $ulbm_industry_catalog as $ik => $idef ) : ?>
-								<option value="<?php echo esc_attr( (string) $ik ); ?>" <?php selected( $edit_industry, (string) $ik ); ?>>
-									<?php echo esc_html( (string) $idef['select_label'] ); ?>
+							<option value="generic" <?php selected( $ulbm_edit_industry, 'generic' ); ?>><?php esc_html_e( 'Generic (simple notes only)', 'flex-multiple-listing-and-booking-system' ); ?></option>
+							<?php foreach ( $ulbm_industry_catalog as $ulbm_ik => $ulbm_idef ) : ?>
+								<option value="<?php echo esc_attr( (string) $ulbm_ik ); ?>" <?php selected( $ulbm_edit_industry, (string) $ulbm_ik ); ?>>
+									<?php echo esc_html( (string) $ulbm_idef['select_label'] ); ?>
 								</option>
 							<?php endforeach; ?>
 						</select>
@@ -141,13 +141,13 @@ $edit_base = $list_url;
 					<div class="col-md-6">
 						<label class="form-label" for="ulbm_type_status"><?php esc_html_e( 'Status', 'flex-multiple-listing-and-booking-system' ); ?></label>
 						<select class="form-select" name="ulbm_type_status" id="ulbm_type_status">
-							<option value="publish" <?php selected( $val_stat, 'publish' ); ?>><?php esc_html_e( 'Published', 'flex-multiple-listing-and-booking-system' ); ?></option>
-							<option value="draft" <?php selected( $val_stat, 'draft' ); ?>><?php esc_html_e( 'Draft', 'flex-multiple-listing-and-booking-system' ); ?></option>
+							<option value="publish" <?php selected( $ulbm_val_stat, 'publish' ); ?>><?php esc_html_e( 'Published', 'flex-multiple-listing-and-booking-system' ); ?></option>
+							<option value="draft" <?php selected( $ulbm_val_stat, 'draft' ); ?>><?php esc_html_e( 'Draft', 'flex-multiple-listing-and-booking-system' ); ?></option>
 						</select>
 					</div>
 					<div class="col-12 d-flex flex-wrap gap-2">
-						<button type="submit" class="btn btn-primary"><?php echo $is_edit ? esc_html__( 'Update type', 'flex-multiple-listing-and-booking-system' ) : esc_html__( 'Create type', 'flex-multiple-listing-and-booking-system' ); ?></button>
-						<a class="btn btn-outline-secondary" href="<?php echo esc_url( $list_url ); ?>"><?php esc_html_e( 'Cancel', 'flex-multiple-listing-and-booking-system' ); ?></a>
+						<button type="submit" class="btn btn-primary"><?php echo $ulbm_is_edit ? esc_html__( 'Update type', 'flex-multiple-listing-and-booking-system' ) : esc_html__( 'Create type', 'flex-multiple-listing-and-booking-system' ); ?></button>
+						<a class="btn btn-outline-secondary" href="<?php echo esc_url( $ulbm_list_url ); ?>"><?php esc_html_e( 'Cancel', 'flex-multiple-listing-and-booking-system' ); ?></a>
 					</div>
 				</form>
 			</div>
@@ -157,13 +157,13 @@ $edit_base = $list_url;
 	<?php if ( ! $ulbm_show_type_form ) : ?>
 		<?php
 		$ulbm_existing_slugs = array();
-		foreach ( $ulbm_booking_types as $et ) {
-			$ulbm_existing_slugs[] = (string) $et['slug'];
+		foreach ( $ulbm_booking_types as $ulbm_et ) {
+			$ulbm_existing_slugs[] = (string) $ulbm_et['slug'];
 		}
 		$ulbm_available_industries = array();
-		foreach ( $ulbm_industry_catalog as $ikey => $idef ) {
-			if ( ! in_array( (string) $idef['booking_slug'], $ulbm_existing_slugs, true ) ) {
-				$ulbm_available_industries[ $ikey ] = $idef;
+		foreach ( $ulbm_industry_catalog as $ulbm_ikey => $ulbm_idef ) {
+			if ( ! in_array( (string) $ulbm_idef['booking_slug'], $ulbm_existing_slugs, true ) ) {
+				$ulbm_available_industries[ $ulbm_ikey ] = $ulbm_idef;
 			}
 		}
 		?>
@@ -176,13 +176,13 @@ $edit_base = $list_url;
 				</div>
 				<div class="p-3">
 					<div class="row g-2" id="ulbm-quick-add-grid">
-						<?php foreach ( $ulbm_available_industries as $qakey => $qadef ) : ?>
+						<?php foreach ( $ulbm_available_industries as $ulbm_qakey => $ulbm_qadef ) : ?>
 							<div class="col-sm-6 col-lg-4 col-xxl-3">
 								<label class="d-flex align-items-start gap-2 border rounded p-2 h-100" style="cursor:pointer;">
-									<input type="checkbox" class="form-check-input mt-1 ulbm-quick-add-cb" value="<?php echo esc_attr( (string) $qakey ); ?>" />
+									<input type="checkbox" class="form-check-input mt-1 ulbm-quick-add-cb" value="<?php echo esc_attr( (string) $ulbm_qakey ); ?>" />
 									<span>
-										<span class="fw-semibold small d-block"><?php echo esc_html( (string) $qadef['select_label'] ); ?></span>
-										<span class="text-muted" style="font-size:.75rem;"><?php echo esc_html( (string) $qadef['description'] ); ?></span>
+										<span class="fw-semibold small d-block"><?php echo esc_html( (string) $ulbm_qadef['select_label'] ); ?></span>
+										<span class="text-muted" style="font-size:.75rem;"><?php echo esc_html( (string) $ulbm_qadef['description'] ); ?></span>
 									</span>
 								</label>
 							</div>
@@ -236,36 +236,36 @@ $edit_base = $list_url;
 									</td>
 								</tr>
 							<?php else : ?>
-								<?php foreach ( $ulbm_booking_types as $t ) : ?>
+								<?php foreach ( $ulbm_booking_types as $ulbm_t ) : ?>
 									<?php
-									$tid      = (int) $t['id'];
-									$sc       = '[ulbm_booking_form id="' . $tid . '"]';
-									$cpt_slug = \FlexBooking\PostTypes\BookingTypePostTypeRegistry::cpt_name_from_slug( (string) $t['slug'] );
+									$ulbm_tid      = (int) $ulbm_t['id'];
+									$ulbm_sc       = '[ulbm_booking_form id="' . $ulbm_tid . '"]';
+									$ulbm_cpt_slug = \FlexBooking\PostTypes\BookingTypePostTypeRegistry::cpt_name_from_slug( (string) $ulbm_t['slug'] );
 									?>
 									<tr>
-										<td><?php echo esc_html( (string) $tid ); ?></td>
-										<td><strong><?php echo esc_html( (string) $t['name'] ); ?></strong></td>
-										<td><code><?php echo esc_html( (string) $t['slug'] ); ?></code></td>
+										<td><?php echo esc_html( (string) $ulbm_tid ); ?></td>
+										<td><strong><?php echo esc_html( (string) $ulbm_t['name'] ); ?></strong></td>
+										<td><code><?php echo esc_html( (string) $ulbm_t['slug'] ); ?></code></td>
 										<td>
-											<code class="small"><?php echo esc_html( $cpt_slug ); ?></code>
-											<?php if ( 'publish' === (string) $t['status'] ) : ?>
-												<a class="d-block small" href="<?php echo esc_url( admin_url( 'edit.php?post_type=' . $cpt_slug ) ); ?>"><?php esc_html_e( 'View posts', 'flex-multiple-listing-and-booking-system' ); ?></a>
+											<code class="small"><?php echo esc_html( $ulbm_cpt_slug ); ?></code>
+											<?php if ( 'publish' === (string) $ulbm_t['status'] ) : ?>
+												<a class="d-block small" href="<?php echo esc_url( admin_url( 'edit.php?post_type=' . $ulbm_cpt_slug ) ); ?>"><?php esc_html_e( 'View posts', 'flex-multiple-listing-and-booking-system' ); ?></a>
 											<?php endif; ?>
 										</td>
-										<td class="small"><?php echo esc_html( $ulbm_row_industry_label( $t ) ); ?></td>
+										<td class="small"><?php echo esc_html( $ulbm_row_industry_label( $ulbm_t ) ); ?></td>
 										<td>
-											<span class="badge rounded-pill <?php echo 'publish' === (string) $t['status'] ? 'text-bg-success' : 'text-bg-warning'; ?>">
-												<?php echo esc_html( (string) $t['status'] ); ?>
+											<span class="badge rounded-pill <?php echo 'publish' === (string) $ulbm_t['status'] ? 'text-bg-success' : 'text-bg-warning'; ?>">
+												<?php echo esc_html( (string) $ulbm_t['status'] ); ?>
 											</span>
 										</td>
-										<td><code class="small user-select-all text-break"><?php echo esc_html( $sc ); ?></code></td>
+										<td><code class="small user-select-all text-break"><?php echo esc_html( $ulbm_sc ); ?></code></td>
 										<td class="small">
 											<div class="d-flex flex-wrap gap-1">
-												<a class="btn btn-sm btn-outline-primary" href="<?php echo esc_url( add_query_arg( 'ulbm_edit', (string) $tid, $edit_base ) ); ?>"><?php esc_html_e( 'Edit', 'flex-multiple-listing-and-booking-system' ); ?></a>
-												<form method="post" action="<?php echo esc_url( $list_url ); ?>" class="d-inline" onsubmit="return confirm(<?php echo wp_json_encode( __( 'Delete this booking type? This cannot be undone.', 'flex-multiple-listing-and-booking-system' ) ); ?>);">
+												<a class="btn btn-sm btn-outline-primary" href="<?php echo esc_url( add_query_arg( 'ulbm_edit', (string) $ulbm_tid, $ulbm_edit_base ) ); ?>"><?php esc_html_e( 'Edit', 'flex-multiple-listing-and-booking-system' ); ?></a>
+												<form method="post" action="<?php echo esc_url( $ulbm_list_url ); ?>" class="d-inline" onsubmit="return confirm(<?php echo wp_json_encode( __( 'Delete this booking type? This cannot be undone.', 'flex-multiple-listing-and-booking-system' ) ); ?>);">
 													<?php wp_nonce_field( 'ulbm_booking_types', 'ulbm_booking_types_nonce' ); ?>
 													<input type="hidden" name="ulbm_type_action" value="delete" />
-													<input type="hidden" name="ulbm_type_id" value="<?php echo esc_attr( (string) $tid ); ?>" />
+													<input type="hidden" name="ulbm_type_id" value="<?php echo esc_attr( (string) $ulbm_tid ); ?>" />
 													<button type="submit" class="btn btn-sm btn-outline-danger"><?php esc_html_e( 'Delete', 'flex-multiple-listing-and-booking-system' ); ?></button>
 												</form>
 											</div>

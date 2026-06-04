@@ -45,7 +45,7 @@ final class ListingMetabox {
 		}
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Admin screen context only.
 		if ( ! $pt && isset( $_GET['post'] ) ) {
-			$pt = (string) get_post_type( absint( $_GET['post'] ) );
+			$pt = (string) get_post_type( absint( wp_unslash( $_GET['post'] ) ) );
 		}
 
 		if ( ! self::is_ulbm_post_type( $pt ) ) {
@@ -105,10 +105,10 @@ final class ListingMetabox {
 		wp_nonce_field( 'ulbm_listing_meta', 'ulbm_listing_meta_nonce' );
 		$id = $post->ID;
 
-		$type_repo     = new BookingTypeRepository();
-		$booking_types = $type_repo->get_all();
+		$type_repo            = new BookingTypeRepository();
+		$ulbm_booking_types   = $type_repo->get_all();
 
-		$meta = array();
+		$ulbm_meta = array();
 		foreach ( ListingMeta::defaults() as $key => $default ) {
 			$type = 'string';
 			if ( is_int( $default ) ) {
@@ -120,7 +120,7 @@ final class ListingMetabox {
 			} elseif ( is_array( $default ) ) {
 				$type = 'array';
 			}
-			$meta[ $key ] = ListingMeta::get( $id, $key, $type );
+			$ulbm_meta[ $key ] = ListingMeta::get( $id, $key, $type );
 		}
 
 		include ULBM_PLUGIN_DIR . 'templates/admin/listing-metabox.php';

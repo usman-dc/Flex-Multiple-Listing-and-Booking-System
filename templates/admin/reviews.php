@@ -14,8 +14,8 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$list_url = add_query_arg( 'page', 'ulbm-reviews', admin_url( 'admin.php' ) );
-$statuses = array(
+$ulbm_list_url = add_query_arg( 'page', 'ulbm-reviews', admin_url( 'admin.php' ) );
+$ulbm_statuses = array(
 	''         => __( 'All', 'flex-multiple-listing-and-booking-system' ),
 	'pending'  => __( 'Pending', 'flex-multiple-listing-and-booking-system' ),
 	'approved' => __( 'Approved', 'flex-multiple-listing-and-booking-system' ),
@@ -38,8 +38,8 @@ $statuses = array(
 			<div class="col-auto">
 				<label class="form-label small mb-1"><?php esc_html_e( 'Status', 'flex-multiple-listing-and-booking-system' ); ?></label>
 				<select name="ulbm_status" class="form-select form-select-sm">
-					<?php foreach ( $statuses as $key => $label ) : ?>
-						<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $ulbm_reviews_status_filter, $key ); ?>><?php echo esc_html( $label ); ?></option>
+					<?php foreach ( $ulbm_statuses as $ulbm_key => $ulbm_label ) : ?>
+						<option value="<?php echo esc_attr( $ulbm_key ); ?>" <?php selected( $ulbm_reviews_status_filter, $ulbm_key ); ?>><?php echo esc_html( $ulbm_label ); ?></option>
 					<?php endforeach; ?>
 				</select>
 			</div>
@@ -69,44 +69,44 @@ $statuses = array(
 							<td colspan="7" class="text-center text-muted py-5"><?php esc_html_e( 'No reviews found.', 'flex-multiple-listing-and-booking-system' ); ?></td>
 						</tr>
 					<?php else : ?>
-						<?php foreach ( $ulbm_reviews as $review ) : ?>
+						<?php foreach ( $ulbm_reviews as $ulbm_review ) : ?>
 							<?php
-							$listing_id   = (int) $review['listing_id'];
-							$listing_title = get_the_title( $listing_id );
-							$listing_link  = get_edit_post_link( $listing_id );
-							$status        = (string) $review['status'];
-							$badge_class   = 'approved' === $status ? 'text-bg-success' : ( 'pending' === $status ? 'text-bg-warning' : 'text-bg-secondary' );
+							$ulbm_listing_id    = (int) $ulbm_review['listing_id'];
+							$ulbm_listing_title = get_the_title( $ulbm_listing_id );
+							$ulbm_listing_link  = get_edit_post_link( $ulbm_listing_id );
+							$ulbm_status        = (string) $ulbm_review['status'];
+							$ulbm_badge_class   = 'approved' === $ulbm_status ? 'text-bg-success' : ( 'pending' === $ulbm_status ? 'text-bg-warning' : 'text-bg-secondary' );
 							?>
-							<tr data-review-id="<?php echo esc_attr( (string) $review['id'] ); ?>">
+							<tr data-review-id="<?php echo esc_attr( (string) $ulbm_review['id'] ); ?>">
 								<td>
-									<?php if ( $listing_link ) : ?>
-										<a href="<?php echo esc_url( $listing_link ); ?>"><?php echo esc_html( $listing_title ?: '#' . $listing_id ); ?></a>
+									<?php if ( $ulbm_listing_link ) : ?>
+										<a href="<?php echo esc_url( $ulbm_listing_link ); ?>"><?php echo esc_html( $ulbm_listing_title ?: '#' . $ulbm_listing_id ); ?></a>
 									<?php else : ?>
-										<?php echo esc_html( $listing_title ?: '#' . $listing_id ); ?>
+										<?php echo esc_html( $ulbm_listing_title ?: '#' . $ulbm_listing_id ); ?>
 									<?php endif; ?>
 								</td>
 								<td>
-									<div class="fw-semibold"><?php echo esc_html( (string) $review['author_name'] ); ?></div>
-									<div class="small text-muted"><?php echo esc_html( (string) $review['author_email'] ); ?></div>
+									<div class="fw-semibold"><?php echo esc_html( (string) $ulbm_review['author_name'] ); ?></div>
+									<div class="small text-muted"><?php echo esc_html( (string) $ulbm_review['author_email'] ); ?></div>
 								</td>
 								<td>
 									<span class="ulbm-admin-review-stars">
-										<?php for ( $i = 1; $i <= 5; $i++ ) : ?>
-											<i class="bi bi-star<?php echo $i <= (int) $review['rating'] ? '-fill text-warning' : ''; ?>"></i>
+										<?php for ( $ulbm_i = 1; $ulbm_i <= 5; $ulbm_i++ ) : ?>
+											<i class="bi bi-star<?php echo $ulbm_i <= (int) $ulbm_review['rating'] ? '-fill text-warning' : ''; ?>"></i>
 										<?php endfor; ?>
 									</span>
 								</td>
-								<td class="small" style="max-width:280px;"><?php echo esc_html( wp_trim_words( (string) $review['content'], 24 ) ); ?></td>
-								<td><span class="badge <?php echo esc_attr( $badge_class ); ?> ulbm-review-status-badge"><?php echo esc_html( ucfirst( $status ) ); ?></span></td>
-								<td class="small text-muted"><?php echo esc_html( mysql2date( 'Y-m-d H:i', (string) $review['created_at'] ) ); ?></td>
+								<td class="small" style="max-width:280px;"><?php echo esc_html( wp_trim_words( (string) $ulbm_review['content'], 24 ) ); ?></td>
+								<td><span class="badge <?php echo esc_attr( $ulbm_badge_class ); ?> ulbm-review-status-badge"><?php echo esc_html( ucfirst( $ulbm_status ) ); ?></span></td>
+								<td class="small text-muted"><?php echo esc_html( mysql2date( 'Y-m-d H:i', (string) $ulbm_review['created_at'] ) ); ?></td>
 								<td class="text-end text-nowrap">
-									<?php if ( 'pending' === $status || 'rejected' === $status ) : ?>
-										<button type="button" class="btn btn-sm btn-success ulbm-review-approve" data-id="<?php echo esc_attr( (string) $review['id'] ); ?>"><?php esc_html_e( 'Approve', 'flex-multiple-listing-and-booking-system' ); ?></button>
+									<?php if ( 'pending' === $ulbm_status || 'rejected' === $ulbm_status ) : ?>
+										<button type="button" class="btn btn-sm btn-success ulbm-review-approve" data-id="<?php echo esc_attr( (string) $ulbm_review['id'] ); ?>"><?php esc_html_e( 'Approve', 'flex-multiple-listing-and-booking-system' ); ?></button>
 									<?php endif; ?>
-									<?php if ( 'pending' === $status || 'approved' === $status ) : ?>
-										<button type="button" class="btn btn-sm btn-outline-secondary ulbm-review-reject" data-id="<?php echo esc_attr( (string) $review['id'] ); ?>"><?php esc_html_e( 'Reject', 'flex-multiple-listing-and-booking-system' ); ?></button>
+									<?php if ( 'pending' === $ulbm_status || 'approved' === $ulbm_status ) : ?>
+										<button type="button" class="btn btn-sm btn-outline-secondary ulbm-review-reject" data-id="<?php echo esc_attr( (string) $ulbm_review['id'] ); ?>"><?php esc_html_e( 'Reject', 'flex-multiple-listing-and-booking-system' ); ?></button>
 									<?php endif; ?>
-									<button type="button" class="btn btn-sm btn-outline-danger ulbm-review-delete" data-id="<?php echo esc_attr( (string) $review['id'] ); ?>"><?php esc_html_e( 'Delete', 'flex-multiple-listing-and-booking-system' ); ?></button>
+									<button type="button" class="btn btn-sm btn-outline-danger ulbm-review-delete" data-id="<?php echo esc_attr( (string) $ulbm_review['id'] ); ?>"><?php esc_html_e( 'Delete', 'flex-multiple-listing-and-booking-system' ); ?></button>
 								</td>
 							</tr>
 						<?php endforeach; ?>
@@ -119,9 +119,9 @@ $statuses = array(
 	<?php if ( $ulbm_reviews_total_pages > 1 ) : ?>
 		<nav class="mt-3" aria-label="<?php esc_attr_e( 'Reviews pagination', 'flex-multiple-listing-and-booking-system' ); ?>">
 			<ul class="pagination">
-				<?php for ( $p = 1; $p <= $ulbm_reviews_total_pages; $p++ ) : ?>
-					<li class="page-item <?php echo $p === $ulbm_reviews_paged ? 'active' : ''; ?>">
-						<a class="page-link" href="<?php echo esc_url( add_query_arg( array( 'paged' => $p, 'ulbm_status' => $ulbm_reviews_status_filter ), $list_url ) ); ?>"><?php echo esc_html( (string) $p ); ?></a>
+				<?php for ( $ulbm_p = 1; $ulbm_p <= $ulbm_reviews_total_pages; $ulbm_p++ ) : ?>
+					<li class="page-item <?php echo $ulbm_p === $ulbm_reviews_paged ? 'active' : ''; ?>">
+						<a class="page-link" href="<?php echo esc_url( add_query_arg( array( 'paged' => $ulbm_p, 'ulbm_status' => $ulbm_reviews_status_filter ), $ulbm_list_url ) ); ?>"><?php echo esc_html( (string) $ulbm_p ); ?></a>
 					</li>
 				<?php endfor; ?>
 			</ul>

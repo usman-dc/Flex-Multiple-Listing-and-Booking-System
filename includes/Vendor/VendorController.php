@@ -116,7 +116,7 @@ final class VendorController {
 		$ulbm_booking_types    = ( new \FlexBooking\Booking\BookingTypeRepository() )->get_all();
 		$ulbm_vendor_record    = ( new VendorRepository() )->get_by_user_id( $user_id );
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Edit query arg for own listing form.
-		$ulbm_edit_listing_id  = isset( $_GET['edit'] ) ? absint( $_GET['edit'] ) : 0;
+		$ulbm_edit_listing_id  = isset( $_GET['edit'] ) ? absint( wp_unslash( $_GET['edit'] ) ) : 0;
 		$ulbm_edit_listing     = null;
 		if ( $ulbm_edit_listing_id && VendorListingService::user_owns_listing( $user_id, $ulbm_edit_listing_id ) ) {
 			$ulbm_edit_listing = get_post( $ulbm_edit_listing_id );

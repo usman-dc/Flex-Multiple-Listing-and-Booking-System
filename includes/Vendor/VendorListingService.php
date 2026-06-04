@@ -222,14 +222,17 @@ final class VendorListingService {
 		}
 
 		$ids = wp_list_pluck( $listings, 'ID' );
-		$meta_table = \FlexBooking\Database\Schema::tables()['booking_meta'];
+		$meta_table = \FlexBooking\Database\Schema::table( 'booking_meta' );
+		if ( '' === $meta_table ) {
+			return 0;
+		}
+
 		$placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+		$sql          = 'SELECT COUNT(DISTINCT booking_id) FROM %i WHERE meta_key = %s AND meta_value IN (' . $placeholders . ')';
+		$args         = array_merge( array( $meta_table, 'listing_id' ), $ids );
 
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPlaceholder
-		$sql = "SELECT COUNT(DISTINCT booking_id) FROM `{$meta_table}` WHERE meta_key = 'listing_id' AND meta_value IN ($placeholders)";
-
-		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-		return (int) $wpdb->get_var( $wpdb->prepare( $sql, $ids ) );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		return (int) $wpdb->get_var( $wpdb->prepare( $sql, ...$args ) );
 	}
 
 	/**
@@ -248,20 +251,18 @@ final class VendorListingService {
 		}
 
 		$ids = array_map( 'absint', wp_list_pluck( $listings, 'ID' ) );
-		$meta_table     = \FlexBooking\Database\Schema::tables()['booking_meta'];
-		$bookings_table = \FlexBooking\Database\Schema::tables()['bookings'];
-		$placeholders   = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+		$meta_table     = \FlexBooking\Database\Schema::table( 'booking_meta' );
+		$bookings_table = \FlexBooking\Database\Schema::table( 'bookings' );
+		if ( '' === $meta_table || '' === $bookings_table ) {
+			return array();
+		}
 
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		$sql = "SELECT b.* FROM `{$bookings_table}` b
-			INNER JOIN `{$meta_table}` m ON m.booking_id = b.id
-			WHERE m.meta_key = 'listing_id' AND m.meta_value IN ($placeholders)
-			ORDER BY b.created_at DESC
-			LIMIT %d";
+		$placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+		$sql          = 'SELECT b.* FROM %i b INNER JOIN %i m ON m.booking_id = b.id WHERE m.meta_key = %s AND m.meta_value IN (' . $placeholders . ') ORDER BY b.created_at DESC LIMIT %d';
+		$args         = array_merge( array( $bookings_table, $meta_table, 'listing_id' ), $ids, array( absint( $limit ) ) );
 
-		$args = array_merge( $ids, array( absint( $limit ) ) );
-		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-		$rows = $wpdb->get_results( $wpdb->prepare( $sql, $args ), ARRAY_A );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		$rows = $wpdb->get_results( $wpdb->prepare( $sql, ...$args ), ARRAY_A );
 
 		return is_array( $rows ) ? $rows : array();
 	}

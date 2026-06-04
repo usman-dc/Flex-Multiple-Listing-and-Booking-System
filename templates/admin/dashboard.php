@@ -21,8 +21,8 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$general  = json_decode( (string) get_option( 'ulbm_general_settings', '{}' ), true );
-$currency = is_array( $general ) && ! empty( $general['currency'] ) ? $general['currency'] : 'USD';
+$ulbm_general  = json_decode( (string) get_option( 'ulbm_general_settings', '{}' ), true );
+$ulbm_currency = is_array( $ulbm_general ) && ! empty( $ulbm_general['currency'] ) ? $ulbm_general['currency'] : 'USD';
 
 $ulbm_dash_status_class = static function ( $status ) {
 	$s = strtolower( (string) $status );
@@ -33,36 +33,36 @@ $ulbm_dash_status_class = static function ( $status ) {
 };
 
 // Build chart data: fill in missing days with 0.
-$chart_labels   = array();
-$chart_bookings = array();
-$chart_revenue  = array();
-for ( $i = 29; $i >= 0; $i-- ) {
-	$d = wp_date( 'Y-m-d', strtotime( "-{$i} days", (int) current_time( 'timestamp' ) ) );
-	$chart_labels[]   = wp_date( 'M j', strtotime( $d ) );
-	$chart_bookings[] = isset( $ulbm_daily_bookings[ $d ] ) ? (int) $ulbm_daily_bookings[ $d ] : 0;
-	$chart_revenue[]  = isset( $ulbm_daily_revenue[ $d ] ) ? (float) $ulbm_daily_revenue[ $d ] : 0;
+$ulbm_chart_labels   = array();
+$ulbm_chart_bookings = array();
+$ulbm_chart_revenue  = array();
+for ( $ulbm_i = 29; $ulbm_i >= 0; $ulbm_i-- ) {
+	$ulbm_d = wp_date( 'Y-m-d', strtotime( "-{$ulbm_i} days", (int) current_time( 'timestamp' ) ) );
+	$ulbm_chart_labels[]   = wp_date( 'M j', strtotime( $ulbm_d ) );
+	$ulbm_chart_bookings[] = isset( $ulbm_daily_bookings[ $ulbm_d ] ) ? (int) $ulbm_daily_bookings[ $ulbm_d ] : 0;
+	$ulbm_chart_revenue[]  = isset( $ulbm_daily_revenue[ $ulbm_d ] ) ? (float) $ulbm_daily_revenue[ $ulbm_d ] : 0;
 }
 
 // Status donut data.
-$status_labels = array();
-$status_counts = array();
-$status_colors = array();
-$color_map = array(
+$ulbm_status_labels = array();
+$ulbm_status_counts = array();
+$ulbm_status_colors = array();
+$ulbm_color_map = array(
 	'pending'   => '#ffc107', 'confirmed' => '#198754', 'completed' => '#0d6efd',
 	'cancelled' => '#dc3545', 'rejected'  => '#6c757d', 'on_hold'   => '#fd7e14',
 );
-foreach ( $ulbm_count_by_status as $st => $cnt ) {
-	$status_labels[] = ucfirst( $st );
-	$status_counts[] = $cnt;
-	$status_colors[] = $color_map[ $st ] ?? '#adb5bd';
+foreach ( $ulbm_count_by_status as $ulbm_st => $ulbm_cnt ) {
+	$ulbm_status_labels[] = ucfirst( $ulbm_st );
+	$ulbm_status_counts[] = $ulbm_cnt;
+	$ulbm_status_colors[] = $ulbm_color_map[ $ulbm_st ] ?? '#adb5bd';
 }
 
 // Per-type bar data.
-$type_labels = array();
-$type_counts = array();
-foreach ( $ulbm_count_by_type as $tid => $cnt ) {
-	$type_labels[] = isset( $ulbm_type_names[ $tid ] ) ? $ulbm_type_names[ $tid ] : '#' . $tid;
-	$type_counts[] = $cnt;
+$ulbm_type_labels = array();
+$ulbm_type_counts = array();
+foreach ( $ulbm_count_by_type as $ulbm_tid => $ulbm_cnt ) {
+	$ulbm_type_labels[] = isset( $ulbm_type_names[ $ulbm_tid ] ) ? $ulbm_type_names[ $ulbm_tid ] : '#' . $ulbm_tid;
+	$ulbm_type_counts[] = $ulbm_cnt;
 }
 ?>
 
@@ -101,7 +101,7 @@ foreach ( $ulbm_count_by_type as $tid => $cnt ) {
 					<span class="small text-muted"><?php esc_html_e( 'Revenue (30d)', 'flex-multiple-listing-and-booking-system' ); ?></span>
 				</div>
 				<p class="fs-3 fw-bold mb-0"><?php echo esc_html( number_format_i18n( (float) $ulbm_stat_revenue_30d, 2 ) ); ?></p>
-				<p class="small text-muted mb-0"><?php echo esc_html( $currency ); ?></p>
+				<p class="small text-muted mb-0"><?php echo esc_html( $ulbm_currency ); ?></p>
 			</div>
 		</div>
 		<div class="col-6 col-lg-3">
@@ -136,7 +136,7 @@ foreach ( $ulbm_count_by_type as $tid => $cnt ) {
 		<div class="col-lg-4">
 			<div class="border rounded bg-white p-3 h-100">
 				<h6 class="fw-semibold mb-3"><?php esc_html_e( 'Status Breakdown', 'flex-multiple-listing-and-booking-system' ); ?></h6>
-				<?php if ( ! empty( $status_counts ) ) : ?>
+				<?php if ( ! empty( $ulbm_status_counts ) ) : ?>
 					<canvas id="ulbm-chart-status" height="200"></canvas>
 				<?php else : ?>
 					<p class="text-muted small text-center mt-5"><?php esc_html_e( 'No bookings yet.', 'flex-multiple-listing-and-booking-system' ); ?></p>
@@ -150,7 +150,7 @@ foreach ( $ulbm_count_by_type as $tid => $cnt ) {
 		<div class="col-lg-6">
 			<div class="border rounded bg-white p-3 h-100">
 				<h6 class="fw-semibold mb-3"><?php esc_html_e( 'Bookings by Type', 'flex-multiple-listing-and-booking-system' ); ?></h6>
-				<?php if ( ! empty( $type_counts ) ) : ?>
+				<?php if ( ! empty( $ulbm_type_counts ) ) : ?>
 					<canvas id="ulbm-chart-types" height="180"></canvas>
 				<?php else : ?>
 					<p class="text-muted small text-center mt-4"><?php esc_html_e( 'No data yet.', 'flex-multiple-listing-and-booking-system' ); ?></p>
@@ -216,13 +216,13 @@ foreach ( $ulbm_count_by_type as $tid => $cnt ) {
 								<?php if ( empty( $ulbm_recent_bookings ) ) : ?>
 									<tr><td colspan="5" class="text-muted p-4"><?php esc_html_e( 'No bookings yet.', 'flex-multiple-listing-and-booking-system' ); ?></td></tr>
 								<?php else : ?>
-									<?php foreach ( $ulbm_recent_bookings as $row ) : ?>
+									<?php foreach ( $ulbm_recent_bookings as $ulbm_row ) : ?>
 										<tr>
-											<td>#<?php echo esc_html( (string) (int) $row['id'] ); ?></td>
-											<td class="small"><?php echo isset( $ulbm_type_names[ (int) $row['booking_type_id'] ] ) ? esc_html( $ulbm_type_names[ (int) $row['booking_type_id'] ] ) : '#' . esc_html( (string) (int) $row['booking_type_id'] ); ?></td>
-											<td><span class="badge rounded-pill text-bg-<?php echo esc_attr( $ulbm_dash_status_class( (string) $row['status'] ) ); ?>"><?php echo esc_html( (string) $row['status'] ); ?></span></td>
-											<td class="text-end"><?php echo esc_html( number_format_i18n( (float) $row['total'], 2 ) ); ?> <?php echo esc_html( $currency ); ?></td>
-											<td class="small"><?php echo esc_html( wp_date( 'M j, H:i', strtotime( (string) $row['created_at'] ) ) ); ?></td>
+											<td>#<?php echo esc_html( (string) (int) $ulbm_row['id'] ); ?></td>
+											<td class="small"><?php echo isset( $ulbm_type_names[ (int) $ulbm_row['booking_type_id'] ] ) ? esc_html( $ulbm_type_names[ (int) $ulbm_row['booking_type_id'] ] ) : '#' . esc_html( (string) (int) $ulbm_row['booking_type_id'] ); ?></td>
+											<td><span class="badge rounded-pill text-bg-<?php echo esc_attr( $ulbm_dash_status_class( (string) $ulbm_row['status'] ) ); ?>"><?php echo esc_html( (string) $ulbm_row['status'] ); ?></span></td>
+											<td class="text-end"><?php echo esc_html( number_format_i18n( (float) $ulbm_row['total'], 2 ) ); ?> <?php echo esc_html( $ulbm_currency ); ?></td>
+											<td class="small"><?php echo esc_html( wp_date( 'M j, H:i', strtotime( (string) $ulbm_row['created_at'] ) ) ); ?></td>
 										</tr>
 									<?php endforeach; ?>
 								<?php endif; ?>
@@ -252,11 +252,11 @@ foreach ( $ulbm_count_by_type as $tid => $cnt ) {
 								<?php if ( empty( $ulbm_recent_activity ) ) : ?>
 									<tr><td colspan="3" class="text-muted p-4"><?php esc_html_e( 'No activity yet.', 'flex-multiple-listing-and-booking-system' ); ?></td></tr>
 								<?php else : ?>
-									<?php foreach ( $ulbm_recent_activity as $log ) : ?>
+									<?php foreach ( $ulbm_recent_activity as $ulbm_log ) : ?>
 										<tr>
-											<td><code><?php echo esc_html( (string) $log['action'] ); ?></code></td>
-											<td>#<?php echo esc_html( (string) (int) $log['object_id'] ); ?></td>
-											<td><?php echo esc_html( wp_date( 'M j, H:i', strtotime( (string) $log['created_at'] ) ) ); ?></td>
+											<td><code><?php echo esc_html( (string) $ulbm_log['action'] ); ?></code></td>
+											<td>#<?php echo esc_html( (string) (int) $ulbm_log['object_id'] ); ?></td>
+											<td><?php echo esc_html( wp_date( 'M j, H:i', strtotime( (string) $ulbm_log['created_at'] ) ) ); ?></td>
 										</tr>
 									<?php endforeach; ?>
 								<?php endif; ?>

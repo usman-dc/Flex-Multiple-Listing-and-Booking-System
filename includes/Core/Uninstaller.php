@@ -32,11 +32,13 @@ final class Uninstaller {
 			return;
 		}
 
-		$tables = \FlexBooking\Database\Schema::table_names();
-
-		foreach ( $tables as $table ) {
-			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- table name from controlled list.
-			$wpdb->query( "DROP TABLE IF EXISTS `{$table}`" );
+		foreach ( \FlexBooking\Database\Schema::tables() as $logical_key => $table ) {
+			$validated = \FlexBooking\Database\Schema::table( (string) $logical_key );
+			if ( '' === $validated || $validated !== $table ) {
+				continue;
+			}
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.SchemaChange
+			$wpdb->query( $wpdb->prepare( 'DROP TABLE IF EXISTS %i', $validated ) );
 		}
 
 		$options = array(
