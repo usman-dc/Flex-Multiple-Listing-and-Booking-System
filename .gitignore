@@ -55,3 +55,9 @@ wp-config.php
 
 # Misc
 *.map
+
+# Local PHPCS (rules live in dev-tools/; never ship to WordPress.org)
+/phpcs.xml.dist
+
+# Release ZIP from bin/build-plugin-zip.ps1 (sibling of plugin folder)
+../*.zip

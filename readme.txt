@@ -74,8 +74,13 @@ If you clone from Git, run `npm install && npm run build` before use so `/dist` 
 WordPress.org does **not** install plugins directly from GitHub. Use this flow:
 
 1. Download or clone from [GitHub](https://github.com/usman-dc/Flex-Multiple-Listing-and-Booking-System).
-2. Create a ZIP of the **`flex-multiple-listing-and-booking-system`** folder (plugin root must contain `flex-multiple-listing-and-booking-system.php` and `readme.txt`).
-3. **Exclude** from the ZIP: `node_modules/`, `vendor/`, `.git/`, `.cursor/`, `.vscode/`, `.env`, `tests/` (the included `/dist` folder **must** stay in the ZIP).
+2. Build a release ZIP (recommended — excludes dev files and **all hidden/dot files** WordPress.org rejects):
+
+`powershell -ExecutionPolicy Bypass -File bin/build-plugin-zip.ps1`
+
+The ZIP is created next to the plugin folder as `flex-multiple-listing-and-booking-system.zip`.
+
+3. If you zip manually, the archive must contain **only** the plugin folder with runtime files. **Do not include** any file or folder whose name starts with `.` (for example `.gitignore`, `.distignore`, `.editorconfig`), `phpcs.xml.dist`, `node_modules/`, `vendor/`, `tests/`, `bin/`, `assets/src/`, or `package.json`. The `/dist` folder **must** be included.
 4. Submit the ZIP at [WordPress.org Add Plugin](https://wordpress.org/plugins/developers/add/) (requires a WordPress.org account).
 5. After approval, releases are published via WordPress.org SVN — keep GitHub and SVN versions in sync.
 

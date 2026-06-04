@@ -1,11 +1,14 @@
 <?xml version="1.0"?>
+<!-- Local PHPCS only: copy to plugin root as phpcs.xml.dist when developing, or run: phpcs --standard=dev-tools/phpcs.xml.dist -->
 <ruleset name="Flex Booking System">
 	<description>PHPCS rules for Flex Listings and Booking Manager.</description>
-	<file>.</file>
+	<file>..</file>
 	<exclude-pattern>/vendor/*</exclude-pattern>
 	<exclude-pattern>/node_modules/*</exclude-pattern>
 	<exclude-pattern>/dist/*</exclude-pattern>
 	<exclude-pattern>/tests/*</exclude-pattern>
+	<exclude-pattern>/dev-tools/*</exclude-pattern>
+	<exclude-pattern>/bin/*</exclude-pattern>
 	<rule ref="WordPress">
 		<exclude name="WordPress.Files.FileName"/>
 	</rule>
