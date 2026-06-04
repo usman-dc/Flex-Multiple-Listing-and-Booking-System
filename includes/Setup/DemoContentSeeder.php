@@ -86,8 +86,8 @@ final class DemoContentSeeder {
 			);
 		}
 
-		// phpcs:ignore Squiz.PHP.DiscouragedFunctions.Discouraged -- Batch demo import may exceed default PHP timeout.
 		if ( function_exists( 'set_time_limit' ) ) {
+			// phpcs:ignore Squiz.PHP.DiscouragedFunctions.Discouraged -- Batch demo import may exceed default PHP timeout.
 			set_time_limit( 300 );
 		}
 
