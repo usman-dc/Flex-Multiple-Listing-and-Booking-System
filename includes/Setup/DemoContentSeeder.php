@@ -214,7 +214,7 @@ final class DemoContentSeeder {
 		$pool = array();
 		$seeds = array( 101, 102, 103, 104, 105, 106, 107, 108 );
 		foreach ( $seeds as $seed ) {
-			$url = 'https://picsum.photos/seed/fbs' . $seed . '/1200/800.jpg';
+			$url = 'https://picsum.photos/seed/ulbm' . $seed . '/1200/800.jpg';
 			$id  = self::sideload_image( $url, 'ulbm-demo-' . $seed );
 			if ( $id ) {
 				$pool[] = $id;

@@ -47,7 +47,7 @@ Source code (development, issues, releases): [GitHub repository](https://github.
 
 **Optional — Google Maps (not affiliated with Google):** If the site owner enables embedded maps under **Settings → Partner Portal**, listing pages can show a button for visitors to opt in before loading an iframe from `https://maps.google.com/`. Until the visitor clicks that button, no request is sent to Google. When loaded, the visitor’s IP address and map coordinates may be processed by Google. Terms: https://www.google.com/intl/en/policies/terms/ — Privacy: https://policies.google.com/privacy
 
-**Optional — Picsum Photos:** The demo content importer (Settings → Demo Content, admin-only) may download placeholder images from `https://picsum.photos/` when an administrator runs the import. No front-end visitor data is sent. Site owners can skip demo import. Terms: https://picsum.photos/terms — Privacy: https://picsum.photos/privacy
+**Optional — Picsum Photos:** The demo content importer (Settings → Demo Content, admin-only) may download placeholder images from `https://picsum.photos/` when an administrator runs the import. No front-end visitor data is sent. Site owners can skip demo import. Picsum is an open-source placeholder service; see the project repository at https://github.com/DMaroo/picsum-photos
 
 **Optional:** Listing video embeds use WordPress `wp_oembed_get()` for URLs the site owner adds (e.g. YouTube). WooCommerce integration loads only when WooCommerce is active.
 
@@ -74,15 +74,9 @@ If you clone from Git, run `npm install && npm run build` before use so `/dist` 
 WordPress.org does **not** install plugins directly from GitHub. Use this flow:
 
 1. Download or clone from [GitHub](https://github.com/usman-dc/Flex-Multiple-Listing-and-Booking-System).
-2. Build a release ZIP (recommended — excludes dev files and **all hidden/dot files** WordPress.org rejects):
-
-`powershell -ExecutionPolicy Bypass -File bin/build-plugin-zip.ps1`
-
-The ZIP is created next to the plugin folder as `flex-multiple-listing-and-booking-system.zip`.
-
-3. If you zip manually, the archive must contain **only** the plugin folder with runtime files. **Do not include** any file or folder whose name starts with `.` (for example `.gitignore`, `.distignore`, `.editorconfig`), `phpcs.xml.dist`, `node_modules/`, `vendor/`, `tests/`, `bin/`, `assets/src/`, or `package.json`. The `/dist` folder **must** be included.
-4. Submit the ZIP at [WordPress.org Add Plugin](https://wordpress.org/plugins/developers/add/) (requires a WordPress.org account).
-5. After approval, releases are published via WordPress.org SVN — keep GitHub and SVN versions in sync.
+2. Create a ZIP of the **`flex-multiple-listing-and-booking-system`** folder containing **only runtime plugin files**. **Do not include** any file or folder whose name starts with `.` (for example `.gitignore`), `dev-tools/`, `node_modules/`, `vendor/`, `assets/src/`, or `package.json`. The `/dist` folder **must** be included.
+3. Submit the ZIP at [WordPress.org Add Plugin](https://wordpress.org/plugins/developers/add/) (requires a WordPress.org account).
+4. After approval, releases are published via WordPress.org SVN — keep GitHub and SVN versions in sync.
 
 Reviewers may read the GitHub repo for context; the ZIP upload is still required for review.
 

@@ -152,19 +152,6 @@ final class PostData {
 	}
 
 	/**
-	 * Full POST array (unslashed) for bulk merges after nonce verification.
-	 *
-	 * @return array<string, mixed>
-	 */
-	public static function all() {
-		if ( ! self::$allowed ) {
-			return array();
-		}
-		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Gated by allow_processing().
-		return wp_unslash( $_POST );
-	}
-
-	/**
 	 * Array value (e.g. industries[]); each element unslashed, not deeply sanitized.
 	 *
 	 * @param string $key Field name.

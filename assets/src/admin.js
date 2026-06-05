@@ -69,7 +69,7 @@ import './admin.scss';
 				.addClass( isError ? 'alert-danger' : 'alert-success' )
 				.text( text );
 		}
-		function fbsBookingBadgeTone( status ) {
+		function ulbmBookingBadgeTone( status ) {
 			const s = String( status || '' ).toLowerCase();
 			if ( [ 'confirmed', 'completed', 'approved' ].indexOf( s ) !== -1 ) {
 				return 'success';
@@ -82,7 +82,7 @@ import './admin.scss';
 			}
 			return 'secondary';
 		}
-		function fbsPaymentBadgeTone( ps ) {
+		function ulbmPaymentBadgeTone( ps ) {
 			const s = String( ps || '' ).toLowerCase();
 			if ( s.indexOf( 'paid' ) !== -1 || s === 'captured' ) {
 				return 'success';
@@ -127,8 +127,8 @@ import './admin.scss';
 				.done( function ( res ) {
 					if ( res && res.success && res.data && res.data.booking ) {
 						const b = res.data.booking;
-						const st = fbsBookingBadgeTone( b.status );
-						const pt = fbsPaymentBadgeTone( b.payment_status );
+						const st = ulbmBookingBadgeTone( b.status );
+						const pt = ulbmPaymentBadgeTone( b.payment_status );
 						$row
 							.find( '.ulbm-cell-status' )
 							.attr( 'class', 'badge rounded-pill text-bg-' + st + ' ulbm-cell-status' )
@@ -351,7 +351,7 @@ import './admin.scss';
 			} );
 		}
 
-		function fbsNormalizeHex( val ) {
+		function ulbmNormalizeHex( val ) {
 			if ( ! val ) {
 				return '';
 			}
@@ -365,18 +365,18 @@ import './admin.scss';
 			return /^#[0-9A-Fa-f]{6}$/.test( hex ) ? hex.toLowerCase() : '';
 		}
 
-		function fbsSyncColorPair( $source ) {
+		function ulbmSyncColorPair( $source ) {
 			const targetId = $source.data( 'ulbm-target' );
 			const settingsKey = $source.data( 'ulbm-settings-key' );
 			let hex = '';
 
 			if ( $source.hasClass( 'ulbm-color-picker' ) ) {
-				hex = fbsNormalizeHex( $source.val() );
+				hex = ulbmNormalizeHex( $source.val() );
 				if ( targetId && hex ) {
 					$( '#' + targetId ).val( hex );
 				}
 			} else {
-				hex = fbsNormalizeHex( $source.val() );
+				hex = ulbmNormalizeHex( $source.val() );
 				if ( hex ) {
 					$source.val( hex );
 				}
@@ -386,7 +386,7 @@ import './admin.scss';
 			}
 		}
 
-		function fbsUpdateColorPreview() {
+		function ulbmUpdateColorPreview() {
 			const $preview = $( '#ulbm-color-preview' );
 			if ( ! $preview.length ) {
 				return;
@@ -395,7 +395,7 @@ import './admin.scss';
 			const cssVars = {};
 			$( '.ulbm-color-hex-input' ).each( function () {
 				const key = $( this ).data( 'ulbm-color-key' );
-				const val = fbsNormalizeHex( $( this ).val() );
+				const val = ulbmNormalizeHex( $( this ).val() );
 				if ( key && val ) {
 					colors[ key ] = val;
 					cssVars[ '--ulbm-preview-' + key ] = val;
@@ -405,18 +405,18 @@ import './admin.scss';
 		}
 
 		$( document ).on( 'input change', '.ulbm-color-picker', function () {
-			fbsSyncColorPair( $( this ) );
-			fbsUpdateColorPreview();
+			ulbmSyncColorPair( $( this ) );
+			ulbmUpdateColorPreview();
 		} );
 
 		$( document ).on( 'input change', '.ulbm-color-hex-input', function () {
-			fbsSyncColorPair( $( this ) );
-			fbsUpdateColorPreview();
+			ulbmSyncColorPair( $( this ) );
+			ulbmUpdateColorPreview();
 		} );
 
-		fbsUpdateColorPreview();
+		ulbmUpdateColorPreview();
 
-		function fbsCollectColorPayload() {
+		function ulbmCollectColorPayload() {
 			const defs =
 				typeof ulbmAdmin !== 'undefined' && ulbmAdmin.colorDefaults
 					? ulbmAdmin.colorDefaults
@@ -428,9 +428,9 @@ import './admin.scss';
 				if ( ! settingsKey ) {
 					return;
 				}
-				let val = fbsNormalizeHex( $( this ).val() );
+				let val = ulbmNormalizeHex( $( this ).val() );
 				if ( ! val && defs[ settingsKey ] ) {
-					val = fbsNormalizeHex( defs[ settingsKey ] );
+					val = ulbmNormalizeHex( defs[ settingsKey ] );
 				}
 				if ( val ) {
 					$( this ).val( val );
@@ -441,8 +441,8 @@ import './admin.scss';
 			return colors;
 		}
 
-		function fbsSyncColorsJsonField() {
-			const colors = fbsCollectColorPayload();
+		function ulbmSyncColorsJsonField() {
+			const colors = ulbmCollectColorPayload();
 			$( '#ulbm_colors_json' ).val( JSON.stringify( colors ) );
 		}
 
@@ -458,7 +458,7 @@ import './admin.scss';
 					$( this ).val( defs[ settingsKey ] ).trigger( 'input' );
 				}
 			} );
-			fbsSyncColorsJsonField();
+			ulbmSyncColorsJsonField();
 		} );
 
 		$( '#ulbm-fix-page-bg' ).on( 'click', function ( e ) {
@@ -467,13 +467,13 @@ import './admin.scss';
 			if ( $pageBg.length ) {
 				$pageBg.val( '#f5f6f8' ).trigger( 'input' );
 			}
-			fbsSyncColorsJsonField();
+			ulbmSyncColorsJsonField();
 		} );
 
-		fbsSyncColorsJsonField();
+		ulbmSyncColorsJsonField();
 
 		$( '#ulbm-settings-form' ).on( 'submit', function () {
-			fbsSyncColorsJsonField();
+			ulbmSyncColorsJsonField();
 		} );
 
 		$( '#ulbm-settings-tabs [data-ulbm-tab]' ).on( 'shown.bs.tab', function ( e ) {
@@ -484,7 +484,7 @@ import './admin.scss';
 		} );
 
 		const $reviewsFeedback = $( '#ulbm-reviews-feedback' );
-		function fbsReviewsFeedback( msg, ok ) {
+		function ulbmReviewsFeedback( msg, ok ) {
 			if ( ! $reviewsFeedback.length ) return;
 			$reviewsFeedback
 				.removeClass( 'd-none alert-success alert-danger' )
@@ -492,7 +492,7 @@ import './admin.scss';
 				.text( msg );
 		}
 
-		function fbsReviewModerate( reviewId, action, $row ) {
+		function ulbmReviewModerate( reviewId, action, $row ) {
 			if ( typeof ulbmAdmin === 'undefined' ) return;
 			$.post( ulbmAdmin.ajaxUrl, {
 				action: 'ulbm_review_moderate',
@@ -504,7 +504,7 @@ import './admin.scss';
 					if ( res && res.success ) {
 						if ( res.data && res.data.deleted ) {
 							$row.remove();
-							fbsReviewsFeedback( res.data.message || 'Deleted.', true );
+							ulbmReviewsFeedback( res.data.message || 'Deleted.', true );
 							return;
 						}
 						const status = res.data && res.data.status ? res.data.status : '';
@@ -522,17 +522,17 @@ import './admin.scss';
 								.text( status.charAt( 0 ).toUpperCase() + status.slice( 1 ) );
 						}
 						$row.find( '.ulbm-review-approve, .ulbm-review-reject, .ulbm-review-delete' ).prop( 'disabled', false );
-						fbsReviewsFeedback( res.data.message || 'Updated.', true );
+						ulbmReviewsFeedback( res.data.message || 'Updated.', true );
 						setTimeout( () => window.location.reload(), 600 );
 					} else {
-						fbsReviewsFeedback(
+						ulbmReviewsFeedback(
 							res && res.data && res.data.message ? res.data.message : 'Update failed.',
 							false
 						);
 					}
 				} )
 				.fail( function () {
-					fbsReviewsFeedback( 'Request failed.', false );
+					ulbmReviewsFeedback( 'Request failed.', false );
 				} );
 		}
 
@@ -551,7 +551,7 @@ import './admin.scss';
 				action = 'delete';
 			}
 			$btn.prop( 'disabled', true );
-			fbsReviewModerate( id, action, $row );
+			ulbmReviewModerate( id, action, $row );
 		} );
 	} );
 } )( jQuery );

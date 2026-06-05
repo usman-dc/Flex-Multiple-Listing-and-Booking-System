@@ -334,7 +334,7 @@ final class Admin {
 
 		wp_localize_script(
 			'ulbm-dashboard-charts',
-			'fbsDashboardCharts',
+			'ulbmDashboardCharts',
 			array(
 				'labels'        => $labels,
 				'bookings'      => $bookings,

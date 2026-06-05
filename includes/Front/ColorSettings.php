@@ -7,6 +7,8 @@
 
 namespace FlexBooking\Front;
 
+use FlexBooking\Security\PostData;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -223,13 +225,13 @@ final class ColorSettings {
 	 * @param array<string, mixed> $post POST data.
 	 * @return array<string, string>
 	 */
-	public static function merge_from_post( array $prev, array $post ) {
+	public static function merge_from_post( array $prev ) {
 		$defaults = self::defaults();
 		$out      = array();
 		$json_in  = array();
 
-		if ( ! empty( $post['ulbm_colors_json'] ) ) {
-			$decoded = json_decode( (string) $post['ulbm_colors_json'], true );
+		if ( PostData::has( 'ulbm_colors_json' ) ) {
+			$decoded = json_decode( PostData::string( 'ulbm_colors_json' ), true );
 			if ( is_array( $decoded ) ) {
 				$json_in = $decoded;
 			}
@@ -241,8 +243,8 @@ final class ColorSettings {
 
 			if ( array_key_exists( $key, $json_in ) ) {
 				$out[ $key ] = self::sanitize_hex( (string) $json_in[ $key ], $default );
-			} elseif ( array_key_exists( $post_key, $post ) ) {
-				$out[ $key ] = self::sanitize_hex( (string) $post[ $post_key ], $default );
+			} elseif ( PostData::has( $post_key ) ) {
+				$out[ $key ] = self::sanitize_hex( PostData::string( $post_key ), $default );
 			} elseif ( isset( $prev[ $key ] ) && '' !== (string) $prev[ $key ] ) {
 				$out[ $key ] = self::sanitize_hex( (string) $prev[ $key ], $default );
 			} else {

@@ -326,6 +326,7 @@ final class AjaxDispatcher {
 	 */
 	public function vendor_register() {
 		check_ajax_referer( 'ulbm_public_booking', 'nonce' );
+		$this->throttle_auth_request( 'vendor_register' );
 		PostData::allow_processing();
 
 		$result = VendorAuth::register(
@@ -353,6 +354,7 @@ final class AjaxDispatcher {
 	 */
 	public function vendor_login() {
 		check_ajax_referer( 'ulbm_public_booking', 'nonce' );
+		$this->throttle_auth_request( 'vendor_login' );
 		PostData::allow_processing();
 
 		$result = VendorAuth::login(
@@ -686,11 +688,28 @@ final class AjaxDispatcher {
 	}
 
 	/**
-	 * Sanitize dynamic booking form key/value pairs from JSON.
+	 * Limit repeated partner auth attempts per IP.
 	 *
-	 * @param array<mixed, mixed> $input Raw decoded array.
-	 * @return array<string, string>
+	 * @param string $action Action key.
+	 * @return void
 	 */
+	private function throttle_auth_request( $action ) {
+		$ip = isset( $_SERVER['REMOTE_ADDR'] )
+			? sanitize_text_field( wp_unslash( (string) $_SERVER['REMOTE_ADDR'] ) )
+			: 'unknown';
+		$key   = 'ulbm_auth_' . sanitize_key( (string) $action ) . '_' . md5( $ip );
+		$count = (int) get_transient( $key );
+		if ( $count >= 10 ) {
+			wp_send_json_error(
+				array(
+					'message' => __( 'Too many attempts. Please wait a few minutes and try again.', 'flex-multiple-listing-and-booking-system' ),
+				),
+				429
+			);
+		}
+		set_transient( $key, $count + 1, 5 * MINUTE_IN_SECONDS );
+	}
+
 	/**
 	 * Meta query clause matching ulbm or legacy fbs meta keys.
 	 *

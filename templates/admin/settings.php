@@ -662,7 +662,7 @@ $ulbm_shortcodes_help = apply_filters( 'ulbm_settings_shortcodes_help', $ulbm_sh
 						<div class="col-md-6">
 							<div class="form-check">
 								<input class="form-check-input" type="checkbox" name="ulbm_vendor_auto_approve" id="ulbm_vendor_auto_approve" <?php checked( ! empty( $ulbm_s['vendor_auto_approve'] ) ); ?>>
-								<label class="form-check-label" for="ulbm_vendor_auto_approve"><?php esc_html_e( 'Auto-approve new partner registrations', 'flex-multiple-listing-and-booking-system' ); ?></label>
+								<label class="form-check-label" for="ulbm_vendor_auto_approve"><?php esc_html_e( 'Auto-approve partner upgrades (logged-in users only)', 'flex-multiple-listing-and-booking-system' ); ?></label>
 							</div>
 						</div>
 						<div class="col-md-6">

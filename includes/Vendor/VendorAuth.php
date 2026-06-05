@@ -17,6 +17,10 @@ final class VendorAuth {
 	/**
 	 * Register new partner account.
 	 *
+	 * Public self-registration always creates a pending partner request.
+	 * Administrators approve partners in the admin; optional auto-approve
+	 * applies only to logged-in "become a partner" requests.
+	 *
 	 * @param array<string,mixed> $data Form data.
 	 * @return array{success:bool,message?:string,redirect?:string,user_id?:int}
 	 */
@@ -70,42 +74,14 @@ final class VendorAuth {
 			update_user_meta( (int) $user_id, 'ulbm_phone', $phone );
 		}
 
-		$settings = VendorPages::settings();
-		$status   = ! empty( $settings['vendor_auto_approve'] ) ? 'approved' : 'pending';
-
 		$repo = new VendorRepository();
-		$repo->create( (int) $user_id, $business ? $business : trim( $first . ' ' . $last ), $status );
-
-		if ( 'approved' === $status ) {
-			$user = get_userdata( (int) $user_id );
-			if ( $user ) {
-				$user->set_role( VendorRole::ROLE );
-			}
-			$signon = wp_signon(
-				array(
-					'user_login'    => $username,
-					'user_password' => $password,
-					'remember'      => true,
-				),
-				is_ssl()
-			);
-			if ( is_wp_error( $signon ) ) {
-				return array(
-					'success'  => true,
-					'user_id'  => (int) $user_id,
-					'message'  => __( 'Account created. Please log in.', 'flex-multiple-listing-and-booking-system' ),
-					'redirect' => VendorPages::login_url(),
-				);
-			}
-		}
+		$repo->create( (int) $user_id, $business ? $business : trim( $first . ' ' . $last ), 'pending' );
 
 		return array(
 			'success'  => true,
 			'user_id'  => (int) $user_id,
-			'message'  => 'approved' === $status
-				? __( 'Welcome! Your partner account is ready.', 'flex-multiple-listing-and-booking-system' )
-				: __( 'Registration received. Your account is pending approval. You can log in after an administrator approves your partner request.', 'flex-multiple-listing-and-booking-system' ),
-			'redirect' => 'approved' === $status ? VendorPages::dashboard_url() : VendorPages::login_url(),
+			'message'  => __( 'Registration received. Your partner account is pending approval. You can log in after an administrator approves your request.', 'flex-multiple-listing-and-booking-system' ),
+			'redirect' => VendorPages::login_url(),
 		);
 	}
 

@@ -6,11 +6,11 @@
 ( function () {
 	'use strict';
 
-	if ( typeof window.Chart === 'undefined' || ! window.fbsDashboardCharts ) {
+	if ( typeof window.Chart === 'undefined' || ! window.ulbmDashboardCharts ) {
 		return;
 	}
 
-	var cfg = window.fbsDashboardCharts;
+	var cfg = window.ulbmDashboardCharts;
 
 	document.addEventListener( 'DOMContentLoaded', function () {
 		var mainCtx = document.getElementById( 'ulbm-chart-main' );

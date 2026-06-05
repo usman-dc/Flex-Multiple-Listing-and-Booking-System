@@ -368,6 +368,10 @@ body.ulbm-admin-screen {
 	}
 
 	// Pagination
+	.pagination .page-item.active .page-link {
+		color: #fff;
+	}
+
 	.ulbm-pagination {
 		.page-numbers {
 			display: inline-flex;
