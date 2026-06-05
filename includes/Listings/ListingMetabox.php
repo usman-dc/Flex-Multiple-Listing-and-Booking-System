@@ -39,14 +39,14 @@ final class ListingMetabox {
 		if ( ! $pt && $post instanceof \WP_Post ) {
 			$pt = $post->post_type;
 		}
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Admin screen context only.
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Admin edit screen context; read-only $_GET for script enqueue.
 		if ( ! $pt && isset( $_GET['post_type'] ) ) {
 			$pt = sanitize_key( wp_unslash( $_GET['post_type'] ) );
 		}
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Admin screen context only.
 		if ( ! $pt && isset( $_GET['post'] ) ) {
 			$pt = (string) get_post_type( absint( wp_unslash( $_GET['post'] ) ) );
 		}
+		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
 		if ( ! self::is_ulbm_post_type( $pt ) ) {
 			return;
