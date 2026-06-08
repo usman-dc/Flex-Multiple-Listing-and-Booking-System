@@ -41,7 +41,8 @@ $ulbm_showing_end = min( $ulbm_per_page, $ulbm_total );
 	<div class="container ulbm-container">
 
 		<?php $ulbm_grid_style = LayoutSettings::grid_inline_style(); ?>
-		<div class="ulbm-listing-grid ulbm-marketplace-ui" id="<?php echo esc_attr( $ulbm_uid ); ?>" style="<?php echo esc_attr( $ulbm_grid_style ); ?>" data-type="<?php echo esc_attr( $ulbm_type_slug ); ?>" data-per-page="<?php echo esc_attr( (string) $ulbm_per_page ); ?>">
+		<?php $ulbm_grid_columns = (int) ( $ulbm_general['grid_columns'] ?? 3 ); ?>
+		<div class="ulbm-listing-grid ulbm-marketplace-ui" id="<?php echo esc_attr( $ulbm_uid ); ?>" style="<?php echo esc_attr( $ulbm_grid_style ); ?>" data-type="<?php echo esc_attr( $ulbm_type_slug ); ?>" data-per-page="<?php echo esc_attr( (string) $ulbm_per_page ); ?>" data-columns="<?php echo esc_attr( (string) $ulbm_grid_columns ); ?>">
 
 			<header class="ulbm-grid-hero">
 				<h1 class="ulbm-grid-hero-title"><?php echo esc_html( $ulbm_type_name ?: post_type_archive_title( '', false ) ); ?></h1>
@@ -102,7 +103,8 @@ $ulbm_showing_end = min( $ulbm_per_page, $ulbm_total );
 					}
 					?>
 				</span>
-				<div class="d-flex align-items-center gap-2">
+				<div class="d-flex align-items-center gap-2 flex-wrap justify-content-end">
+					<?php ListingDisplay::render_view_toggle( $ulbm_uid ); ?>
 					<label class="small text-muted mb-0" for="<?php echo esc_attr( $ulbm_uid ); ?>-sort"><?php esc_html_e( 'Sort by:', 'flex-multiple-listing-and-booking-system' ); ?></label>
 					<select class="form-select form-select-sm ulbm-filter-sort-select" id="<?php echo esc_attr( $ulbm_uid ); ?>-sort" style="width:auto;">
 						<option value="date"><?php esc_html_e( 'Newest', 'flex-multiple-listing-and-booking-system' ); ?></option>
@@ -114,7 +116,7 @@ $ulbm_showing_end = min( $ulbm_per_page, $ulbm_total );
 				</div>
 			</div>
 
-			<div class="ulbm-grid-results row">
+			<div class="ulbm-grid-results row ulbm-view-grid">
 				<?php if ( have_posts() ) : ?>
 					<?php while ( have_posts() ) : the_post(); ?>
 						<?php ListingDisplay::render_grid_card( get_the_ID(), $ulbm_col_class ); ?>

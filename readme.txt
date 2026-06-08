@@ -4,7 +4,7 @@ Tags: booking, listings, rental, appointment, calendar
 Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.0.2
+Stable tag: 1.0.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -47,9 +47,7 @@ Source code (development, issues, releases): [GitHub repository](https://github.
 
 **Optional — Google Maps (not affiliated with Google):** If the site owner enables embedded maps under **Settings → Partner Portal**, listing pages can show a button for visitors to opt in before loading an iframe from `https://maps.google.com/`. Until the visitor clicks that button, no request is sent to Google. When loaded, the visitor’s IP address and map coordinates may be processed by Google. Terms: https://www.google.com/intl/en/policies/terms/ — Privacy: https://policies.google.com/privacy
 
-**Optional — Picsum Photos:** The demo content importer (Settings → Demo Content, admin-only) may download placeholder images from `https://picsum.photos/` when an administrator runs the import. No front-end visitor data is sent. Site owners can skip demo import. Picsum is an open-source placeholder service; see the project repository at https://github.com/DMaroo/picsum-photos
-
-**Optional:** Listing video embeds use WordPress `wp_oembed_get()` for URLs the site owner adds (e.g. YouTube). WooCommerce integration loads only when WooCommerce is active.
+**Optional:** Listing video embeds use WordPress `wp_oembed_get()` for URLs the site owner adds (e.g. YouTube). WooCommerce integration loads only when WooCommerce is active. Demo content uses placeholder images bundled in `assets/demo/` (no remote downloads).
 
 = Privacy =
 
@@ -123,6 +121,10 @@ Custom database tables and plugin options are removed on uninstall. Use the `ulb
 5. Partner portal — vendor dashboard and listing management
 
 == Changelog ==
+
+= 1.0.3 =
+* Demo content: bundled local placeholder images in `assets/demo/` (no remote Picsum downloads)
+* Removed invalid external-service link from readme
 
 = 1.0.2 =
 * Plugin slug and text domain: flex-multiple-listing-and-booking-system

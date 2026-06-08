@@ -211,11 +211,16 @@ final class DemoContentSeeder {
 		require_once ABSPATH . 'wp-admin/includes/file.php';
 		require_once ABSPATH . 'wp-admin/includes/image.php';
 
-		$pool = array();
-		$seeds = array( 101, 102, 103, 104, 105, 106, 107, 108 );
-		foreach ( $seeds as $seed ) {
-			$url = 'https://picsum.photos/seed/ulbm' . $seed . '/1200/800.jpg';
-			$id  = self::sideload_image( $url, 'ulbm-demo-' . $seed );
+		$pool    = array();
+		$demo_dir = trailingslashit( ULBM_PLUGIN_DIR ) . 'assets/demo/';
+		$files   = glob( $demo_dir . 'placeholder-*.jpg' );
+		if ( ! is_array( $files ) ) {
+			$files = array();
+		}
+		sort( $files, SORT_NATURAL );
+		foreach ( $files as $file ) {
+			$basename = pathinfo( $file, PATHINFO_FILENAME );
+			$id       = self::sideload_local_image( $file, $basename );
 			if ( $id ) {
 				$pool[] = $id;
 			}
@@ -229,13 +234,25 @@ final class DemoContentSeeder {
 	}
 
 	/**
-	 * @param string $url     Remote image URL.
-	 * @param string $filename Base filename.
+	 * Import a bundled demo placeholder into the media library.
+	 *
+	 * @param string $source_path Absolute path to a local image file.
+	 * @param string $filename    Base filename (without extension).
 	 * @return int Attachment ID or 0.
 	 */
-	private static function sideload_image( $url, $filename ) {
-		$tmp = download_url( $url, 30 );
-		if ( is_wp_error( $tmp ) ) {
+	private static function sideload_local_image( $source_path, $filename ) {
+		if ( ! is_readable( $source_path ) ) {
+			return 0;
+		}
+
+		$tmp = wp_tempnam( $filename );
+		if ( ! $tmp ) {
+			return 0;
+		}
+
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_copy -- Temp copy for media_handle_sideload.
+		if ( ! copy( $source_path, $tmp ) ) {
+			wp_delete_file( $tmp );
 			return 0;
 		}
 

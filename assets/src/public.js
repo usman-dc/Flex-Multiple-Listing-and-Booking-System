@@ -287,20 +287,59 @@ function initGridFilters() {
 
 		if ( ! resultsEl ) return;
 
+		const viewToggleBtns = grid.querySelectorAll( '.ulbm-view-toggle-btn' );
+		const storageKey     = 'ulbm_grid_view_' + ( grid.id || 'default' );
+
+		function setGridView( view ) {
+			const mode = view === 'list' ? 'list' : 'grid';
+			resultsEl.classList.remove( 'ulbm-view-grid', 'ulbm-view-list' );
+			resultsEl.classList.add( mode === 'list' ? 'ulbm-view-list' : 'ulbm-view-grid' );
+			viewToggleBtns.forEach( ( btn ) => {
+				const active = btn.dataset.view === mode;
+				btn.classList.toggle( 'active', active );
+				btn.setAttribute( 'aria-pressed', active ? 'true' : 'false' );
+			} );
+			try {
+				localStorage.setItem( storageKey, mode );
+			} catch {
+				// Ignore storage errors (private browsing).
+			}
+		}
+
+		if ( viewToggleBtns.length ) {
+			let savedView = 'grid';
+			try {
+				savedView = localStorage.getItem( storageKey ) || 'grid';
+			} catch {
+				savedView = 'grid';
+			}
+			setGridView( savedView );
+			viewToggleBtns.forEach( ( btn ) => {
+				btn.addEventListener( 'click', () => setGridView( btn.dataset.view ) );
+			} );
+		}
+
 		let currentPage = 1;
 		let totalPages  = paginEl ? parseInt( paginEl.dataset.pages || '1', 10 ) : 1;
 		const perPage   = parseInt( grid.dataset.perPage || '12', 10 );
+		const columns   = parseInt( grid.dataset.columns || '3', 10 );
 		const baseType  = grid.dataset.type || '';
+		const i18n      = ( typeof ulbmPublic !== 'undefined' && ulbmPublic.i18n ) ? ulbmPublic.i18n : {};
 
 		function formatCount( data ) {
 			const total = data.count || 0;
 			if ( total <= 0 ) {
-				return 'No properties found';
+				return i18n.noProperties || 'No properties found';
 			}
 			const start = data.showing_start || 1;
 			const end   = data.showing_end || Math.min( perPage, total );
-			return 'Showing ' + start + '' + end + ' of ' + total + ' properties';
+			const tpl   = i18n.showingCount || 'Showing %1$d\u2013%2$d of %3$d properties';
+			return tpl
+				.replace( '%1$d', String( start ) )
+				.replace( '%2$d', String( end ) )
+				.replace( '%3$d', String( total ) );
 		}
+
 
 		function getFilters() {
 			const sortVal = sortSelect ? sortSelect.value : ( sortHidden ? sortHidden.value : 'date' );
@@ -325,6 +364,7 @@ function initGridFilters() {
 			body.append( 'nonce', ulbmPublic.bookingNonce || '' );
 			body.append( 'page', String( page ) );
 			body.append( 'per_page', String( perPage ) );
+			body.append( 'columns', String( columns ) );
 			Object.keys( filters ).forEach( ( k ) => { if ( filters[ k ] ) body.append( k, filters[ k ] ); } );
 
 			try {
@@ -342,9 +382,13 @@ function initGridFilters() {
 					if ( countEl ) countEl.textContent = formatCount( json.data );
 					updatePagination();
 					initFavorites( grid );
+				} else {
+					const msg = i18n.sessionExpired || 'Session expired. Please refresh the page and try again.';
+					resultsEl.innerHTML = '<div class="col-12"><p class="text-muted text-center py-4">' + msg + '</p></div>';
 				}
 			} catch {
-				resultsEl.innerHTML = '<div class="col-12"><p class="text-danger">Filter request failed.</p></div>';
+				const msg = i18n.filterFailed || 'Filter request failed.';
+				resultsEl.innerHTML = '<div class="col-12"><p class="text-danger text-center py-4">' + msg + '</p></div>';
 			} finally {
 				if ( spinnerEl ) spinnerEl.classList.add( 'd-none' );
 				if ( filterBtn ) filterBtn.disabled = false;

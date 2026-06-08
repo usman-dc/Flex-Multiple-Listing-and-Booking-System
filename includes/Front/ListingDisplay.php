@@ -19,18 +19,36 @@ final class ListingDisplay {
 	/**
 	 * Bootstrap column class for grid.
 	 *
-	 * @param int $columns Columns 2-4.
+	 * @param int $columns Columns 1-6.
 	 * @return string
 	 */
 	public static function grid_col_class( $columns = 3 ) {
-		$columns = max( 2, min( 4, (int) $columns ) );
+		$columns = max( 1, min( 6, (int) $columns ) );
 		$map     = array(
-			2 => 'col-lg-6',
-			3 => 'col-lg-4',
-			4 => 'col-lg-3',
+			1 => 'col-12',
+			2 => 'col-sm-6 col-lg-6',
+			3 => 'col-sm-6 col-lg-4',
+			4 => 'col-sm-6 col-lg-3',
+			5 => 'col-sm-6 col-lg-4 ulbm-col-5',
+			6 => 'col-sm-6 col-lg-2',
 		);
 
-		return 'col-sm-6 ' . ( $map[ $columns ] ?? 'col-lg-4' );
+		return $map[ $columns ] ?? 'col-sm-6 col-lg-4';
+	}
+
+	/**
+	 * Allow only Bootstrap Icons class names on the front end.
+	 *
+	 * @param string $icon Raw icon class from listing meta.
+	 * @return string
+	 */
+	public static function sanitize_icon_class( $icon ) {
+		$icon = sanitize_html_class( (string) $icon );
+		if ( preg_match( '/^bi-[a-z0-9-]+$/', $icon ) ) {
+			return $icon;
+		}
+
+		return 'bi-check-circle';
 	}
 
 	/**
@@ -149,7 +167,7 @@ final class ListingDisplay {
 			}
 			$out[] = array(
 				'label' => $label,
-				'icon'  => ! empty( $feat['icon'] ) ? (string) $feat['icon'] : 'bi-check-circle',
+				'icon'  => self::sanitize_icon_class( ! empty( $feat['icon'] ) ? (string) $feat['icon'] : 'bi-check-circle' ),
 			);
 			if ( count( $out ) >= $limit ) {
 				break;
@@ -212,6 +230,28 @@ final class ListingDisplay {
 			<?php if ( $count > 0 ) : ?>
 				<span class="ulbm-stars-count">(<?php echo esc_html( self::format_review_count( $count ) ); ?>)</span>
 			<?php endif; ?>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Grid / list view toggle for listing grids.
+	 *
+	 * @param string $uid_prefix Unique id prefix for accessibility.
+	 * @return void
+	 */
+	public static function render_view_toggle( $uid_prefix = 'ulbm' ) {
+		$group_id = sanitize_html_class( $uid_prefix ) . '-view';
+		?>
+		<div class="btn-group btn-group-sm ulbm-view-toggle" role="group" aria-label="<?php esc_attr_e( 'Listing layout', 'flex-multiple-listing-and-booking-system' ); ?>">
+			<button type="button" class="btn btn-outline-secondary ulbm-view-toggle-btn active" data-view="grid" id="<?php echo esc_attr( $group_id ); ?>-grid" aria-pressed="true" title="<?php esc_attr_e( 'Grid view', 'flex-multiple-listing-and-booking-system' ); ?>">
+				<i class="bi bi-grid-3x3-gap" aria-hidden="true"></i>
+				<span class="visually-hidden"><?php esc_html_e( 'Grid view', 'flex-multiple-listing-and-booking-system' ); ?></span>
+			</button>
+			<button type="button" class="btn btn-outline-secondary ulbm-view-toggle-btn" data-view="list" id="<?php echo esc_attr( $group_id ); ?>-list" aria-pressed="false" title="<?php esc_attr_e( 'List view', 'flex-multiple-listing-and-booking-system' ); ?>">
+				<i class="bi bi-list-ul" aria-hidden="true"></i>
+				<span class="visually-hidden"><?php esc_html_e( 'List view', 'flex-multiple-listing-and-booking-system' ); ?></span>
+			</button>
 		</div>
 		<?php
 	}

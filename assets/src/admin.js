@@ -553,5 +553,77 @@ import './admin.scss';
 			$btn.prop( 'disabled', true );
 			ulbmReviewModerate( id, action, $row );
 		} );
+
+		const $partnersFeedback = $( '#ulbm-partners-feedback' );
+		function ulbmPartnersFeedback( msg, ok ) {
+			if ( ! $partnersFeedback.length ) return;
+			$partnersFeedback
+				.removeClass( 'd-none alert-success alert-danger' )
+				.addClass( ok ? 'alert-success' : 'alert-danger' )
+				.text( msg );
+		}
+
+		function ulbmPartnerModerate( vendorId, action, $row, extra ) {
+			if ( typeof ulbmAdmin === 'undefined' ) return;
+			const payload = {
+				action: 'ulbm_partner_moderate',
+				nonce: ulbmAdmin.nonce,
+				vendor_id: vendorId,
+				partner_action: action,
+			};
+			if ( extra ) {
+				Object.assign( payload, extra );
+			}
+			$.post( ulbmAdmin.ajaxUrl, payload )
+				.done( function ( res ) {
+					if ( res && res.success ) {
+						if ( res.data && res.data.deleted ) {
+							$row.remove();
+							ulbmPartnersFeedback( res.data.message || 'Removed.', true );
+							return;
+						}
+						if ( action === 'update_business' ) {
+							ulbmPartnersFeedback( res.data.message || 'Saved.', true );
+							return;
+						}
+						ulbmPartnersFeedback( res.data.message || 'Updated.', true );
+						setTimeout( () => window.location.reload(), 600 );
+					} else {
+						ulbmPartnersFeedback(
+							res && res.data && res.data.message ? res.data.message : 'Update failed.',
+							false
+						);
+					}
+				} )
+				.fail( function () {
+					ulbmPartnersFeedback( 'Request failed.', false );
+				} );
+		}
+
+		$( document ).on( 'click', '.ulbm-partner-approve, .ulbm-partner-suspend, .ulbm-partner-delete', function ( e ) {
+			e.preventDefault();
+			const $btn = $( this );
+			const id = parseInt( $btn.data( 'id' ), 10 );
+			const $row = $btn.closest( '[data-partner-id]' );
+			let action = 'approve';
+			if ( $btn.hasClass( 'ulbm-partner-suspend' ) ) {
+				action = 'suspend';
+			} else if ( $btn.hasClass( 'ulbm-partner-delete' ) ) {
+				if ( ! window.confirm( 'Remove this partner account? The WordPress user will be kept but partner access is revoked.' ) ) {
+					return;
+				}
+				action = 'delete';
+			}
+			$btn.prop( 'disabled', true );
+			ulbmPartnerModerate( id, action, $row );
+		} );
+
+		$( document ).on( 'change', '.ulbm-partner-business-input', function () {
+			const $input = $( this );
+			const id = parseInt( $input.data( 'vendor-id' ), 10 );
+			const $row = $input.closest( '[data-partner-id]' );
+			if ( ! id ) return;
+			ulbmPartnerModerate( id, 'update_business', $row, { business_name: $input.val() } );
+		} );
 	} );
 } )( jQuery );

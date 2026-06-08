@@ -108,17 +108,7 @@ $ulbm_grid_spacing = isset( $ulbm_grid_spacing ) && is_array( $ulbm_grid_spacing
 $ulbm_grid_style   = LayoutSettings::grid_inline_style( $ulbm_grid_spacing );
 
 ?>
-<div class="ulbm-listing-grid ulbm-marketplace-ui" id="<?php echo esc_attr( $ulbm_uid ); ?>" style="<?php echo esc_attr( $ulbm_grid_style ); ?>" data-type="<?php echo esc_attr( $ulbm_grid_type ); ?>" data-per-page="<?php echo esc_attr( (string) $ulbm_grid_limit ); ?>">
-
-
-
-	<header class="ulbm-grid-hero">
-
-		<h2 class="ulbm-grid-hero-title"><?php esc_html_e( 'Find Your Perfect Stay', 'flex-multiple-listing-and-booking-system' ); ?></h2>
-
-		<p class="ulbm-grid-hero-sub"><?php esc_html_e( 'Search by location, price, and guests to discover available listings.', 'flex-multiple-listing-and-booking-system' ); ?></p>
-
-	</header>
+<div class="ulbm-listing-grid ulbm-marketplace-ui" id="<?php echo esc_attr( $ulbm_uid ); ?>" style="<?php echo esc_attr( $ulbm_grid_style ); ?>" data-type="<?php echo esc_attr( $ulbm_grid_type ); ?>" data-per-page="<?php echo esc_attr( (string) $ulbm_grid_limit ); ?>" data-columns="<?php echo esc_attr( (string) $ulbm_grid_columns ); ?>">
 
 
 
@@ -231,7 +221,9 @@ $ulbm_grid_style   = LayoutSettings::grid_inline_style( $ulbm_grid_spacing );
 
 		</span>
 
-		<div class="d-flex align-items-center gap-2">
+		<div class="d-flex align-items-center gap-2 flex-wrap justify-content-end">
+
+			<?php ListingDisplay::render_view_toggle( $ulbm_uid ); ?>
 
 			<label class="small text-muted mb-0" for="<?php echo esc_attr( $ulbm_uid ); ?>-sort"><?php esc_html_e( 'Sort by:', 'flex-multiple-listing-and-booking-system' ); ?></label>
 
@@ -255,7 +247,7 @@ $ulbm_grid_style   = LayoutSettings::grid_inline_style( $ulbm_grid_spacing );
 
 
 
-	<div class="ulbm-grid-results row">
+	<div class="ulbm-grid-results row ulbm-view-grid">
 
 		<?php if ( $ulbm_grid_query->have_posts() ) : ?>
 

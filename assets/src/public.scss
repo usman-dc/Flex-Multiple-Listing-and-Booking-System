@@ -13,13 +13,13 @@
 	flex-shrink: 0;
 }
 
-// Shared max-width container for all FBS UI.
+// Shared max-width container for all FBS UI (!important beats theme + block editor).
 .ulbm-container,
 .ulbm-root {
-	width: 100%;
-	max-width: var(--ulbm-container-width);
-	margin-left: auto;
-	margin-right: auto;
+	width: 100% !important;
+	max-width: var(--ulbm-container-width) !important;
+	margin-left: auto !important;
+	margin-right: auto !important;
 	padding-left: var(--ulbm-container-padding-x);
 	padding-right: var(--ulbm-container-padding-x);
 }
@@ -41,7 +41,7 @@
 .ulbm-root.ulbm-listing-grid-wrap {
 	padding-top: var(--ulbm-container-padding-y);
 	padding-bottom: var(--ulbm-container-padding-y);
-	background: var(--ulbm-page-bg);
+	background: #ffffff;
 	border-radius: var(--ulbm-radius, 12px);
 	overflow: hidden;
 }
@@ -425,6 +425,12 @@ body.ulbm-booking-active {
 .ulbm-marketplace-ui,
 .ulbm-single-listing-wrap.ulbm-marketplace-ui {
 	background: var(--ulbm-page-bg, #f5f6f8);
+}
+
+// Listing grid widget — white canvas (hero, filters, toolbar, cards).
+.ulbm-listing-grid.ulbm-marketplace-ui,
+.ulbm-single-listing-wrap.ulbm-marketplace-ui:has(.ulbm-listing-grid) {
+	background: #ffffff;
 }
 
 // Gallery mosaic (single page).
@@ -1107,6 +1113,16 @@ body.admin-bar .ulbm-single-listing-wrap.ulbm-marketplace-ui:has(.ulbm-account-t
 				width: calc((100% - var(--ulbm-grid-gap, 24px)) / 2);
 				max-width: calc((100% - var(--ulbm-grid-gap, 24px)) / 2);
 			}
+
+			> .col-lg-2 {
+				width: calc((100% - 5 * var(--ulbm-grid-gap, 24px)) / 6);
+				max-width: calc((100% - 5 * var(--ulbm-grid-gap, 24px)) / 6);
+			}
+
+			> .ulbm-col-5 {
+				width: calc((100% - 4 * var(--ulbm-grid-gap, 24px)) / 5);
+				max-width: calc((100% - 4 * var(--ulbm-grid-gap, 24px)) / 5);
+			}
 		}
 	}
 
@@ -1170,6 +1186,66 @@ body.admin-bar .ulbm-single-listing-wrap.ulbm-marketplace-ui:has(.ulbm-account-t
 		align-items: center;
 		justify-content: space-between;
 		gap: 0.75rem;
+	}
+
+	.ulbm-view-toggle {
+		.ulbm-view-toggle-btn.active {
+			background: var(--ulbm-primary);
+			border-color: var(--ulbm-primary);
+			color: #fff;
+		}
+	}
+
+	.ulbm-grid-results.ulbm-view-list {
+		> .ulbm-grid-item,
+		> [class*='col-'] {
+			width: 100% !important;
+			max-width: 100% !important;
+		}
+
+		.ulbm-listing-card {
+			flex-direction: row;
+			align-items: stretch;
+
+			&:hover {
+				transform: none;
+			}
+		}
+
+		.ulbm-card-media {
+			flex: 0 0 min(320px, 38%);
+			max-width: min(320px, 38%);
+		}
+
+		.ulbm-card-thumb {
+			height: 100%;
+			min-height: 200px;
+		}
+
+		.ulbm-card-body {
+			flex: 1;
+			min-width: 0;
+		}
+
+		.ulbm-card-footer {
+			margin-top: auto;
+		}
+
+		@media (max-width: 767.98px) {
+			.ulbm-listing-card {
+				flex-direction: column;
+			}
+
+			.ulbm-card-media {
+				flex: none;
+				max-width: 100%;
+			}
+
+			.ulbm-card-thumb {
+				height: 220px;
+				min-height: 0;
+			}
+		}
 	}
 
 	.ulbm-grid-pagination {
@@ -1267,8 +1343,8 @@ body.admin-bar .ulbm-single-listing-wrap.ulbm-marketplace-ui:has(.ulbm-account-t
 		top: 0.75rem;
 		right: 0.75rem;
 		z-index: 2;
-		width: 36px;
-		height: 36px;
+		width: 28px;
+		height: 28px;
 		border-radius: 50%;
 		border: 0;
 		background: rgba(255, 255, 255, 0.92);
@@ -1279,13 +1355,22 @@ body.admin-bar .ulbm-single-listing-wrap.ulbm-marketplace-ui:has(.ulbm-account-t
 		cursor: pointer;
 		transition: transform 0.2s, color 0.2s;
 		color: var(--ulbm-secondary);
+		font-size: 0.75rem !important;
+		line-height: 1 !important;
+		padding: 0;
 
-		&:hover {
-			transform: scale(1.08);
+		i {
+			font-size: 0.75rem !important;
+			line-height: 1 !important;
 		}
 
-		&.active {
-			color: var(--ulbm-accent);
+		&:hover {
+			transform: scale(1.06);
+		}
+
+		&.active,
+		&.active i {
+			color: #ff0000 !important;
 		}
 	}
 
@@ -1456,6 +1541,16 @@ body.admin-bar .ulbm-single-listing-wrap.ulbm-marketplace-ui:has(.ulbm-account-t
 	.ulbm-review-form-wrap {
 		border-top: 1px solid rgba(0, 0, 0, 0.08);
 		padding-top: 1.5rem;
+	}
+}
+
+// Block editor — SSR block previews (iframe canvas).
+.editor-styles-wrapper,
+.is-root-container {
+	.ulbm-listing-grid,
+	.ulbm-booking-form,
+	.ulbm-search-root {
+		max-width: 100%;
 	}
 }
 

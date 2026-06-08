@@ -41,23 +41,20 @@ final class BlocksRegistrar {
 	 */
 
 	public static function register() {
+		\FlexBooking\Front\FrontController::register_public_assets();
 
 		add_action( 'enqueue_block_editor_assets', array( __CLASS__, 'enqueue_editor_assets' ) );
 
-
+		$block_styles = array( 'ulbm-bootstrap', 'ulbm-bootstrap-icons', 'ulbm-public' );
 
 		register_block_type(
-
 			'ulbm-booking/form',
-
 			array(
-
 				'api_version'     => 2,
-
 				'title'           => __( 'Flex Listings Booking Form', 'flex-multiple-listing-and-booking-system' ),
-
+				'editor_style'    => $block_styles,
+				'style'           => $block_styles,
 				'render_callback' => array( __CLASS__, 'render_booking_form' ),
-
 				'attributes'      => array(
 
 					'type' => array( 'type' => 'string', 'default' => '' ),
@@ -73,37 +70,27 @@ final class BlocksRegistrar {
 
 
 		register_block_type(
-
 			'ulbm-booking/grid',
-
 			array(
-
 				'api_version'     => 2,
-
 				'title'           => __( 'Usman Listing Grid', 'flex-multiple-listing-and-booking-system' ),
-
+				'editor_style'    => $block_styles,
+				'style'           => $block_styles,
 				'render_callback' => array( __CLASS__, 'render_listing_grid' ),
-
 				'attributes'      => self::grid_block_attributes(),
-
 			)
-
 		);
 
 
 
 		register_block_type(
-
 			'ulbm-booking/search',
-
 			array(
-
 				'api_version'     => 2,
-
 				'title'           => __( 'Usman Listing Search', 'flex-multiple-listing-and-booking-system' ),
-
+				'editor_style'    => $block_styles,
+				'style'           => $block_styles,
 				'render_callback' => array( __CLASS__, 'render_search' ),
-
 				'attributes'      => array(
 
 					'layout' => array( 'type' => 'string', 'default' => 'horizontal' ),

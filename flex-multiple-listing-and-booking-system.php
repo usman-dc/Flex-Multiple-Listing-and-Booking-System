@@ -3,7 +3,7 @@
  * Plugin Name: Flex Listings and Booking Manager
  * Plugin URI: https://github.com/usman-dc/Flex-Multiple-Listing-and-Booking-System
  * Description: Multipurpose multiple-listing and booking engine for rentals, tours, appointments, and services ? listing grids, calendars, partner portal, and REST API.
- * Version: 1.0.2
+ * Version: 1.0.3
  * Requires at least: 6.2
  * Requires PHP: 7.4
  * Author: Usman Ali
@@ -18,7 +18,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'ULBM_VERSION', '1.0.2' );
+define( 'ULBM_VERSION', '1.0.3' );
 define( 'ULBM_PLUGIN_FILE', __FILE__ );
 define( 'ULBM_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'ULBM_PLUGIN_URL', plugin_dir_url( __FILE__ ) );

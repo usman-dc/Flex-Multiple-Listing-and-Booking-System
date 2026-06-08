@@ -17,6 +17,7 @@ use FlexBooking\Database\Schema;
 use FlexBooking\Setup\IndustryCatalog;
 use FlexBooking\Assets\VendorAssets;
 use FlexBooking\Listings\ListingReviewRepository;
+use FlexBooking\Vendor\VendorRepository;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -144,6 +145,22 @@ final class Admin {
 			$cap,
 			'ulbm-reviews',
 			array( $this, 'render_reviews' )
+		);
+
+		$pending_partners = ( new VendorRepository() )->count_all( 'pending' );
+		$partners_label   = __( 'Partners', 'flex-multiple-listing-and-booking-system' );
+		if ( $pending_partners > 0 ) {
+			/* translators: %d: number of pending partner requests */
+			$partners_label .= sprintf( ' <span class="awaiting-mod count-%d"><span class="pending-count">%d</span></span>', $pending_partners, $pending_partners );
+		}
+
+		add_submenu_page(
+			'ulbm-dashboard',
+			__( 'Partners', 'flex-multiple-listing-and-booking-system' ),
+			$partners_label,
+			$cap,
+			'ulbm-partners',
+			array( $this, 'render_partners' )
 		);
 
 		add_submenu_page(
@@ -714,6 +731,47 @@ final class Admin {
 				'ulbm_reviews_per_page'      => $per_page,
 				'ulbm_reviews_total_pages'   => $total_pages,
 				'ulbm_reviews_status_filter' => $status_filter,
+			)
+		);
+	}
+
+	/**
+	 * Partner accounts — approve, suspend, and manage vendors.
+	 *
+	 * @return void
+	 */
+	public function render_partners() {
+		if ( ! Capabilities::can_access_admin() ) {
+			wp_die( esc_html__( 'You do not have permission to access this page.', 'flex-multiple-listing-and-booking-system' ) );
+		}
+
+		$repo = new VendorRepository();
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- List table pagination.
+		$paged    = isset( $_GET['paged'] ) ? max( 1, absint( wp_unslash( $_GET['paged'] ) ) ) : 1;
+		$per_page = (int) apply_filters( 'ulbm_admin_partners_per_page', 30 );
+		$per_page = min( 100, max( 1, $per_page ) );
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- List filter query arg.
+		$status_filter = isset( $_GET['ulbm_status'] ) ? sanitize_key( wp_unslash( $_GET['ulbm_status'] ) ) : '';
+		if ( '' !== $status_filter && ! in_array( $status_filter, VendorRepository::statuses(), true ) ) {
+			$status_filter = '';
+		}
+
+		$total       = $repo->count_all( $status_filter );
+		$total_pages = $total > 0 ? (int) ceil( $total / $per_page ) : 1;
+		if ( $paged > $total_pages ) {
+			$paged = $total_pages;
+		}
+
+		$this->render_view(
+			'partners',
+			array(
+				'ulbm_partners'               => $repo->get_page( $paged, $per_page, $status_filter ),
+				'ulbm_partners_total'         => $total,
+				'ulbm_partners_paged'         => $paged,
+				'ulbm_partners_per_page'      => $per_page,
+				'ulbm_partners_total_pages'   => $total_pages,
+				'ulbm_partners_status_filter' => $status_filter,
 			)
 		);
 	}

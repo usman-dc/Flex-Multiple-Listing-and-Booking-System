@@ -68,6 +68,7 @@ final class FrontController {
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue' ) );
 
 		add_action( 'enqueue_block_editor_assets', array( __CLASS__, 'enqueue_block_editor_assets' ), 20 );
+		add_action( 'enqueue_block_assets', array( __CLASS__, 'enqueue_block_assets' ) );
 
 		add_filter( 'body_class', array( __CLASS__, 'body_class' ) );
 
@@ -137,29 +138,43 @@ final class FrontController {
 
 
 	/**
-
-	 * Enqueue public assets for block editor previews.
-
+	 * Styles for block editor chrome (sidebar, toolbar).
 	 *
-
 	 * @return void
-
 	 */
-
 	public static function enqueue_block_editor_assets() {
+		self::enqueue_editor_block_styles();
+	}
 
+	/**
+	 * Styles inside the block editor canvas iframe (ServerSideRender previews).
+	 *
+	 * @return void
+	 */
+	public static function enqueue_block_assets() {
+		if ( ! is_admin() ) {
+			return;
+		}
+
+		self::enqueue_editor_block_styles();
+	}
+
+	/**
+	 * Bootstrap + plugin CSS for Gutenberg block previews.
+	 *
+	 * @return void
+	 */
+	private static function enqueue_editor_block_styles() {
 		self::register_public_assets();
 
+		wp_enqueue_style( 'ulbm-bootstrap' );
+		wp_enqueue_style( 'ulbm-bootstrap-icons' );
 		wp_enqueue_style( 'ulbm-public' );
 
 		$inline = ColorSettings::inline_css();
-
 		if ( '' !== $inline ) {
-
 			wp_add_inline_style( 'ulbm-public', $inline );
-
 		}
-
 	}
 
 
@@ -233,23 +248,20 @@ final class FrontController {
 
 
 		wp_localize_script(
-
 			'ulbm-public',
-
 			'ulbmPublic',
-
 			array(
-
-				'restUrl'       => esc_url_raw( rest_url( 'ulbm/v1' ) ),
-
-				'nonce'         => wp_create_nonce( 'wp_rest' ),
-
-				'ajaxUrl'       => admin_url( 'admin-ajax.php' ),
-
-				'bookingNonce'  => wp_create_nonce( 'ulbm_public_booking' ),
-
+				'restUrl'      => esc_url_raw( rest_url( 'ulbm/v1' ) ),
+				'nonce'        => wp_create_nonce( 'wp_rest' ),
+				'ajaxUrl'      => admin_url( 'admin-ajax.php' ),
+				'bookingNonce' => wp_create_nonce( 'ulbm_public_booking' ),
+				'i18n'         => array(
+					'noProperties'    => __( 'No properties found', 'flex-multiple-listing-and-booking-system' ),
+					'showingCount'    => __( 'Showing %1$d–%2$d of %3$d properties', 'flex-multiple-listing-and-booking-system' ),
+					'filterFailed'    => __( 'Filter request failed.', 'flex-multiple-listing-and-booking-system' ),
+					'sessionExpired'  => __( 'Session expired. Please refresh the page and try again.', 'flex-multiple-listing-and-booking-system' ),
+				),
 			)
-
 		);
 
 	}

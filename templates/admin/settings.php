@@ -567,6 +567,16 @@ $ulbm_shortcodes_help = apply_filters( 'ulbm_settings_shortcodes_help', $ulbm_sh
 					<h5 class="fw-bold mb-2"><i class="bi bi-people me-2"></i><?php esc_html_e( 'Partner / Vendor Portal', 'flex-multiple-listing-and-booking-system' ); ?></h5>
 					<p class="text-muted small mb-3"><?php esc_html_e( 'Partner pages are created automatically with the correct shortcodes. You can reassign pages below or click Create Pages to repair missing pages.', 'flex-multiple-listing-and-booking-system' ); ?></p>
 
+					<div class="alert alert-light border small mb-4">
+						<?php
+						printf(
+							/* translators: %s: admin Partners page link */
+							esc_html__( 'Approve or manage partner accounts under %s.', 'flex-multiple-listing-and-booking-system' ),
+							'<a href="' . esc_url( admin_url( 'admin.php?page=ulbm-partners' ) ) . '">' . esc_html__( 'Flex Listings & Booking → Partners', 'flex-multiple-listing-and-booking-system' ) . '</a>'
+						);
+						?>
+					</div>
+
 					<div class="d-flex flex-wrap gap-2 align-items-center mb-4">
 						<button type="button" class="btn btn-primary" id="ulbm-provision-vendor-pages">
 							<i class="bi bi-magic me-1"></i><?php esc_html_e( 'Create / repair partner pages', 'flex-multiple-listing-and-booking-system' ); ?>

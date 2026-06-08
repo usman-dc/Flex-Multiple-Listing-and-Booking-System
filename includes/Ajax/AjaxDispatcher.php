@@ -18,6 +18,7 @@ use FlexBooking\Security\Nonce;
 use FlexBooking\Security\PostData;
 use FlexBooking\Setup\DemoContentSeeder;
 use FlexBooking\Setup\IndustryProvisioner;
+use FlexBooking\Vendor\VendorAdminService;
 use FlexBooking\Vendor\VendorAuth;
 use FlexBooking\Vendor\VendorListingService;
 use FlexBooking\Vendor\VendorPageProvisioner;
@@ -64,6 +65,7 @@ final class AjaxDispatcher {
 		add_action( 'wp_ajax_nopriv_ulbm_submit_review', array( $this, 'submit_review' ) );
 		add_action( 'wp_ajax_ulbm_submit_review', array( $this, 'submit_review' ) );
 		add_action( 'wp_ajax_ulbm_review_moderate', array( $this, 'review_moderate' ) );
+		add_action( 'wp_ajax_ulbm_partner_moderate', array( $this, 'partner_moderate' ) );
 
 		do_action( 'ulbm_register_ajax_actions', $plugin );
 	}
@@ -536,8 +538,12 @@ final class AjaxDispatcher {
 		$max_price = PostData::float( 'max_price' );
 		$guests    = PostData::int( 'guests' );
 		$sort      = PostData::has( 'sort' ) ? PostData::key( 'sort', 'date' ) : 'date';
-		$page      = max( 1, PostData::int( 'page', 1 ) );
-		$per_page  = max( 1, min( 50, PostData::int( 'per_page', 12 ) ) );
+		$allowed   = array( 'date', 'price_asc', 'price_desc', 'title' );
+		if ( ! in_array( $sort, $allowed, true ) ) {
+			$sort = 'date';
+		}
+		$page     = max( 1, PostData::int( 'page', 1 ) );
+		$per_page = max( 1, min( 100, PostData::int( 'per_page', 12 ) ) );
 
 		$args = array(
 			'post_type'      => $post_types,
@@ -590,11 +596,11 @@ final class AjaxDispatcher {
 
 		$query = new \WP_Query( $args );
 
-		$general  = json_decode( (string) get_option( 'ulbm_general_settings', '{}' ), true );
-		$currency = is_array( $general ) && ! empty( $general['currency'] ) ? $general['currency'] : 'USD';
+		$general   = json_decode( (string) get_option( 'ulbm_general_settings', '{}' ), true );
+		$columns   = PostData::has( 'columns' ) ? PostData::int( 'columns' ) : (int) ( is_array( $general ) ? ( $general['grid_columns'] ?? 3 ) : 3 );
+		$col_class = ListingDisplay::grid_col_class( $columns );
 
 		ob_start();
-		$col_class = ListingDisplay::grid_col_class( (int) ( $general['grid_columns'] ?? 3 ) );
 		if ( $query->have_posts() ) {
 			while ( $query->have_posts() ) {
 				$query->the_post();
@@ -681,6 +687,60 @@ final class AjaxDispatcher {
 		wp_send_json_success(
 			array(
 				'message' => __( 'Review updated.', 'flex-multiple-listing-and-booking-system' ),
+				'status'  => $status,
+				'deleted' => 'delete' === $action,
+			)
+		);
+	}
+
+	/**
+	 * Approve, suspend, update, or remove a partner from wp-admin.
+	 *
+	 * @return void
+	 */
+	public function partner_moderate() {
+		check_ajax_referer( Nonce::ACTION_AJAX, 'nonce' );
+		PostData::allow_processing();
+		if ( ! Capabilities::can_access_admin() ) {
+			wp_send_json_error( array( 'message' => 'Forbidden' ), 403 );
+		}
+
+		$vendor_id = PostData::int( 'vendor_id' );
+		$action    = PostData::key( 'partner_action' );
+
+		if ( $vendor_id < 1 || ! in_array( $action, array( 'approve', 'suspend', 'delete', 'update_business' ), true ) ) {
+			wp_send_json_error( array( 'message' => __( 'Invalid request.', 'flex-multiple-listing-and-booking-system' ) ), 400 );
+		}
+
+		$service = new VendorAdminService();
+		$ok      = false;
+		$status  = '';
+		$message = __( 'Partner updated.', 'flex-multiple-listing-and-booking-system' );
+
+		if ( 'approve' === $action ) {
+			$ok      = $service->approve( $vendor_id );
+			$status  = 'approved';
+			$message = __( 'Partner approved.', 'flex-multiple-listing-and-booking-system' );
+		} elseif ( 'suspend' === $action ) {
+			$ok      = $service->suspend( $vendor_id );
+			$status  = 'suspended';
+			$message = __( 'Partner suspended.', 'flex-multiple-listing-and-booking-system' );
+		} elseif ( 'update_business' === $action ) {
+			$name = isset( $_POST['business_name'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['business_name'] ) ) : '';
+			$ok   = $service->update_business_name( $vendor_id, $name );
+			$message = __( 'Business name saved.', 'flex-multiple-listing-and-booking-system' );
+		} else {
+			$ok      = $service->delete( $vendor_id );
+			$message = __( 'Partner removed.', 'flex-multiple-listing-and-booking-system' );
+		}
+
+		if ( ! $ok ) {
+			wp_send_json_error( array( 'message' => __( 'Partner could not be updated.', 'flex-multiple-listing-and-booking-system' ) ), 400 );
+		}
+
+		wp_send_json_success(
+			array(
+				'message' => $message,
 				'status'  => $status,
 				'deleted' => 'delete' === $action,
 			)
