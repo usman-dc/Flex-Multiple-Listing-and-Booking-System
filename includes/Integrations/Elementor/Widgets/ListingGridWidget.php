@@ -66,7 +66,7 @@ final class ListingGridWidget extends Widget_Base {
 
 	public function get_title() {
 
-		return __( 'Usman Listing Grid', 'flex-multiple-listing-and-booking-system' );
+		return __( 'Flex Listing Grid', 'flex-multiple-listing-and-booking-system' );
 
 	}
 

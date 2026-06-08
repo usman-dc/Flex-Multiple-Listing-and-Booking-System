@@ -256,8 +256,10 @@ final class FrontController {
 				'ajaxUrl'      => admin_url( 'admin-ajax.php' ),
 				'bookingNonce' => wp_create_nonce( 'ulbm_public_booking' ),
 				'i18n'         => array(
-					'noProperties'    => __( 'No properties found', 'flex-multiple-listing-and-booking-system' ),
-					'showingCount'    => __( 'Showing %1$d–%2$d of %3$d properties', 'flex-multiple-listing-and-booking-system' ),
+					'noProperties'   => __( 'No properties found', 'flex-multiple-listing-and-booking-system' ),
+					'showingCount'   =>
+						/* translators: %1$d: first visible listing number, %2$d: last visible listing number, %3$d: total listings. */
+						__( 'Showing %1$d–%2$d of %3$d properties', 'flex-multiple-listing-and-booking-system' ),
 					'filterFailed'    => __( 'Filter request failed.', 'flex-multiple-listing-and-booking-system' ),
 					'sessionExpired'  => __( 'Session expired. Please refresh the page and try again.', 'flex-multiple-listing-and-booking-system' ),
 				),

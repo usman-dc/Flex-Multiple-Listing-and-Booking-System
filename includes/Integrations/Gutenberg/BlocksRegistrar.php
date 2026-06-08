@@ -73,7 +73,7 @@ final class BlocksRegistrar {
 			'ulbm-booking/grid',
 			array(
 				'api_version'     => 2,
-				'title'           => __( 'Usman Listing Grid', 'flex-multiple-listing-and-booking-system' ),
+				'title'           => __( 'Flex Listing Grid', 'flex-multiple-listing-and-booking-system' ),
 				'editor_style'    => $block_styles,
 				'style'           => $block_styles,
 				'render_callback' => array( __CLASS__, 'render_listing_grid' ),
@@ -87,7 +87,7 @@ final class BlocksRegistrar {
 			'ulbm-booking/search',
 			array(
 				'api_version'     => 2,
-				'title'           => __( 'Usman Listing Search', 'flex-multiple-listing-and-booking-system' ),
+				'title'           => __( 'Flex Listing Search', 'flex-multiple-listing-and-booking-system' ),
 				'editor_style'    => $block_styles,
 				'style'           => $block_styles,
 				'render_callback' => array( __CLASS__, 'render_search' ),

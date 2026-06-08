@@ -68,7 +68,7 @@ registerBlockType( 'ulbm-booking/form', {
 
 /* ─── LISTING GRID BLOCK ──────────────────────────────────── */
 registerBlockType( 'ulbm-booking/grid', {
-	title: 'Usman Listing Grid',
+	title: 'Flex Listing Grid',
 	description: 'Display a filterable listing grid with AJAX search for any booking type.',
 	icon: 'grid-view',
 	category: 'widgets',
@@ -176,7 +176,7 @@ registerBlockType( 'ulbm-booking/grid', {
 
 /* ─── SEARCH BLOCK ─────────────────────────────────────────── */
 registerBlockType( 'ulbm-booking/search', {
-	title: 'Usman Listing Search',
+	title: 'Flex Listing Search',
 	description: 'AJAX-powered availability search UI.',
 	icon: 'search',
 	category: 'widgets',
@@ -206,7 +206,7 @@ registerBlockType( 'ulbm-booking/search', {
 				SSR
 					? el( SSR, { block: 'ulbm-booking/search', attributes: attributes } )
 					: el( 'div', { className: 'ulbm-block-placeholder' },
-						el( 'p', {}, '🔍 Usman Listing Search' ),
+						el( 'p', {}, '🔍 Flex Listing Search' ),
 						el( 'p', { className: 'components-placeholder__instructions' }, 'Layout: ' + attributes.layout )
 					)
 			)
