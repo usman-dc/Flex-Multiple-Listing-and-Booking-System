@@ -59,5 +59,8 @@ wp-config.php
 # Local PHPCS (rules live in dev-tools/; never ship to WordPress.org)
 /phpcs.xml.dist
 
+# wprogers.com license server (local only — not part of WP.org plugin)
+/dev-tools/flex-booking-license-server/
+
 # Release ZIP from bin/build-plugin-zip.ps1 (sibling of plugin folder)
 ../*.zip
