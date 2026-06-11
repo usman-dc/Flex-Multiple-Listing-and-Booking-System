@@ -1,5 +1,5 @@
 /**
- * Admin bundle — dashboard pings, setup wizard, future SPA mounts.
+ * Admin bundle ï¿½ dashboard pings, setup wizard, future SPA mounts.
  */
 import './admin.scss';
 
@@ -209,7 +209,7 @@ import './admin.scss';
 				$demoDelete.prop( 'disabled', true );
 				$demoSpinner.removeClass( 'd-none' );
 				$demoProgressWrap.removeClass( 'd-none' );
-				demoShowStatus( 'Importing demo content…', 'info' );
+				demoShowStatus( 'Importing demo contentï¿½', 'info' );
 
 				let done = 0;
 				let totalCreated = 0;
@@ -324,7 +324,7 @@ import './admin.scss';
 				if ( typeof ulbmAdmin === 'undefined' ) return;
 				$provisionBtn.prop( 'disabled', true );
 				$provisionSpinner.removeClass( 'd-none' );
-				provisionShowStatus( 'Creating partner pages…', 'info' );
+				provisionShowStatus( 'Creating partner pagesï¿½', 'info' );
 				$.post( ulbmAdmin.ajaxUrl, {
 					action: 'ulbm_provision_vendor_pages',
 					nonce: ulbmAdmin.nonce,
@@ -624,6 +624,127 @@ import './admin.scss';
 			const $row = $input.closest( '[data-partner-id]' );
 			if ( ! id ) return;
 			ulbmPartnerModerate( id, 'update_business', $row, { business_name: $input.val() } );
+		} );
+
+		function ulbmLicenseBadgeClass( status, isActive ) {
+			if ( isActive ) {
+				return 'success';
+			}
+			if ( status === 'expired' ) {
+				return 'warning';
+			}
+			if ( status === 'invalid' ) {
+				return 'danger';
+			}
+			return 'secondary';
+		}
+
+		function ulbmLicenseUpdateUi( license ) {
+			if ( ! license ) {
+				return;
+			}
+			const isActive = !! license.is_active;
+			const status = license.status || 'inactive';
+			const $panel = $( '#ulbm-license-panel' );
+			const $badge = $( '#ulbm-license-status-badge' );
+			const $key = $( '#ulbm_license_key' );
+
+			$panel.attr( 'data-is-active', isActive ? '1' : '0' );
+			$badge
+				.removeClass( 'bg-success bg-warning bg-danger bg-secondary' )
+				.addClass( 'bg-' + ulbmLicenseBadgeClass( status, isActive ) )
+				.text( status.charAt( 0 ).toUpperCase() + status.slice( 1 ) );
+
+			if ( license.expires_human ) {
+				$( '#ulbm-license-expires' ).text( license.expires_human );
+			}
+			if ( license.message ) {
+				let $msg = $( '#ulbm-license-message' );
+				if ( ! $msg.length ) {
+					$( '#ulbm-license-panel table tbody' ).append(
+						'<tr><th class="text-muted pe-3">Message</th><td id="ulbm-license-message" class="small"></td></tr>'
+					);
+					$msg = $( '#ulbm-license-message' );
+				}
+				$msg.text( license.message );
+			}
+
+			$key.val( '' ).prop( 'disabled', isActive );
+			if ( license.key_masked ) {
+				$key.attr( 'placeholder', license.key_masked );
+			}
+			$( '#ulbm-license-activate' ).prop( 'disabled', isActive );
+			$( '#ulbm-license-check, #ulbm-license-deactivate' ).prop( 'disabled', ! license.key_masked );
+		}
+
+		function ulbmLicenseFeedback( message, isError ) {
+			const $fb = $( '#ulbm-license-feedback' );
+			$fb
+				.removeClass( 'd-none alert-success alert-danger' )
+				.addClass( isError ? 'alert-danger' : 'alert-success' )
+				.text( message );
+		}
+
+		function ulbmLicenseAjax( action, extra, $btn ) {
+			const cfg = typeof ulbmAdmin !== 'undefined' ? ulbmAdmin : {};
+			const data = Object.assign(
+				{
+					action: action,
+					nonce: cfg.nonce,
+				},
+				extra || {}
+			);
+			if ( $btn ) {
+				$btn.prop( 'disabled', true );
+			}
+			return $.post( cfg.ajaxUrl, data )
+				.done( function ( res ) {
+					const payload = res.data || {};
+					if ( res.success ) {
+						ulbmLicenseFeedback( payload.message || 'OK', false );
+						ulbmLicenseUpdateUi( payload.license );
+					} else {
+						ulbmLicenseFeedback( payload.message || 'Request failed.', true );
+						if ( payload.license ) {
+							ulbmLicenseUpdateUi( payload.license );
+						}
+					}
+				} )
+				.fail( function () {
+					ulbmLicenseFeedback( 'License request failed. Please try again.', true );
+				} )
+				.always( function () {
+					if ( $btn ) {
+						const active = $( '#ulbm-license-panel' ).attr( 'data-is-active' ) === '1';
+						if ( action === 'ulbm_license_activate' ) {
+							$btn.prop( 'disabled', active );
+						} else if ( action === 'ulbm_license_deactivate' ) {
+							$btn.prop( 'disabled', false );
+						} else {
+							$btn.prop( 'disabled', false );
+						}
+					}
+				} );
+		}
+
+		$( '#ulbm-license-activate' ).on( 'click', function () {
+			const key = $( '#ulbm_license_key' ).val().trim();
+			if ( ! key ) {
+				ulbmLicenseFeedback( 'Please enter your license key.', true );
+				return;
+			}
+			ulbmLicenseAjax( 'ulbm_license_activate', { license_key: key }, $( this ) );
+		} );
+
+		$( '#ulbm-license-deactivate' ).on( 'click', function () {
+			if ( ! window.confirm( 'Deactivate this license on this site? You can activate it again later.' ) ) {
+				return;
+			}
+			ulbmLicenseAjax( 'ulbm_license_deactivate', {}, $( this ) );
+		} );
+
+		$( '#ulbm-license-check' ).on( 'click', function () {
+			ulbmLicenseAjax( 'ulbm_license_check', {}, $( this ) );
 		} );
 	} );
 } )( jQuery );

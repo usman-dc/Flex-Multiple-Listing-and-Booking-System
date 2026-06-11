@@ -116,6 +116,7 @@ final class Plugin {
 			'init',
 			static function () {
 				Capabilities::register();
+				\FlexBooking\License\LicenseManager::register();
 			},
 			1,
 			0

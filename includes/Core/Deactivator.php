@@ -20,6 +20,7 @@ final class Deactivator {
 	 * @return void
 	 */
 	public static function deactivate() {
+		\FlexBooking\License\LicenseManager::clear_cron();
 		flush_rewrite_rules();
 	}
 }

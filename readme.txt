@@ -4,7 +4,7 @@ Tags: booking, listings, rental, appointment, calendar
 Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.0.3
+Stable tag: 1.0.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -47,6 +47,8 @@ Source code (development, issues, releases): [GitHub repository](https://github.
 
 **Optional — Google Maps (not affiliated with Google):** If the site owner enables embedded maps under **Settings → Partner Portal**, listing pages can show a button for visitors to opt in before loading an iframe from `https://maps.google.com/`. Until the visitor clicks that button, no request is sent to Google. When loaded, the visitor’s IP address and map coordinates may be processed by Google. Terms: https://www.google.com/intl/en/policies/terms/ — Privacy: https://policies.google.com/privacy
 
+**Optional — License validation (not required for core features):** When a site owner activates a purchase key under **Settings → License**, the plugin sends a one-time admin request to your license server (default: `wprogers.com`) with the key and site URL. No automatic calls are made until activation or the daily status check for an already-activated key.
+
 **Optional:** Listing video embeds use WordPress `wp_oembed_get()` for URLs the site owner adds (e.g. YouTube). WooCommerce integration loads only when WooCommerce is active. Demo content uses placeholder images bundled in `assets/demo/` (no remote downloads).
 
 = Privacy =
@@ -72,7 +74,7 @@ If you clone from Git, run `npm install && npm run build` before use so `/dist` 
 WordPress.org does **not** install plugins directly from GitHub. Use this flow:
 
 1. Download or clone from [GitHub](https://github.com/usman-dc/Flex-Multiple-Listing-and-Booking-System).
-2. Create a ZIP of the **`flex-multiple-listing-and-booking-system`** folder containing **only runtime plugin files**. **Do not include** any file or folder whose name starts with `.` (for example `.gitignore`), `dev-tools/`, `node_modules/`, `vendor/`, `assets/src/`, or `package.json`. The `/dist` folder **must** be included.
+2. Create a ZIP of the **`flex-multiple-listing-and-booking-system`** folder containing **only runtime plugin files**. **Do not include** `dev-tools/`, `node_modules/`, `vendor/`, `assets/src/`, or `package.json`. The `/dist` folder **must** be included. With [WP-CLI](https://wp-cli.org/), run `wp dist-archive . ../flex-multiple-listing-and-booking-system.zip` from the plugin folder — `.distignore` excludes dev files automatically.
 3. Submit the ZIP at [WordPress.org Add Plugin](https://wordpress.org/plugins/developers/add/) (requires a WordPress.org account).
 4. After approval, releases are published via WordPress.org SVN — keep GitHub and SVN versions in sync.
 
@@ -121,6 +123,12 @@ Custom database tables and plugin options are removed on uninstall. Use the `ulb
 5. Partner portal — vendor dashboard and listing management
 
 == Changelog ==
+
+= 1.0.4 =
+* WordPress.org: `.distignore` and ZIP build script exclude `dev-tools/` and source files
+* Gutenberg block render callbacks escape shortcode HTML via `wp_kses_post()`
+* License key tab in Settings (optional purchase activation)
+* Partners admin page and listing grid improvements
 
 = 1.0.3 =
 * Demo content: bundled local placeholder images in `assets/demo/` (no remote Picsum downloads)

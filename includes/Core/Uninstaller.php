@@ -48,6 +48,7 @@ final class Uninstaller {
 			'ulbm_general_settings',
 			'ulbm_payment_settings',
 			'ulbm_email_settings',
+			'ulbm_license',
 		);
 
 		foreach ( $options as $option ) {

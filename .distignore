@@ -1,0 +1,42 @@
+# Development — not shipped to WordPress.org (use: wp dist-archive)
+/dev-tools/
+/assets/src/
+/node_modules/
+/vendor/
+
+# Build / package managers
+/package.json
+/package-lock.json
+/composer.json
+/composer.lock
+/.vite/
+
+# Git / IDE / editor
+/.git/
+/.gitignore
+/.github/
+/.cursor/
+/.idea/
+/.vscode/
+*.swp
+*.swo
+
+# Docs for developers (readme.txt is included)
+/README.md
+
+# Local tooling
+/phpcs.xml.dist
+/phpunit.xml
+/.phpunit.result.cache
+/coverage/
+
+# OS / env / archives
+.DS_Store
+Thumbs.db
+.env
+.env.*
+*.zip
+*.tar
+*.tar.gz
+*.map
+*.log

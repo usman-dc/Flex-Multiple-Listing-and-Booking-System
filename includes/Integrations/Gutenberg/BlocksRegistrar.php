@@ -223,7 +223,13 @@ final class BlocksRegistrar {
 
 
 
-		return do_shortcode( sprintf( '[ulbm_booking_form type="%s" id="%d"]', $type, $id ) );
+		return self::render_shortcode_html(
+			sprintf(
+				'[ulbm_booking_form type="%s" id="%d"]',
+				esc_attr( $type ),
+				$id
+			)
+		);
 
 	}
 
@@ -293,7 +299,7 @@ final class BlocksRegistrar {
 
 
 
-		return do_shortcode( '[ulbm_listing_grid ' . implode( ' ', $parts ) . ']' );
+		return self::render_shortcode_html( '[ulbm_listing_grid ' . implode( ' ', $parts ) . ']' );
 
 	}
 
@@ -317,7 +323,26 @@ final class BlocksRegistrar {
 
 
 
-		return do_shortcode( sprintf( '[ulbm_search layout="%s"]', $layout ) );
+		return self::render_shortcode_html(
+			sprintf(
+				'[ulbm_search layout="%s"]',
+				esc_attr( $layout )
+			)
+		);
+
+	}
+
+
+
+	/**
+	 * Run a plugin shortcode and return KSES-safe HTML for block front-end output.
+	 *
+	 * @param string $shortcode Shortcode invocation string.
+	 * @return string
+	 */
+	private static function render_shortcode_html( $shortcode ) {
+
+		return wp_kses_post( (string) do_shortcode( $shortcode ) );
 
 	}
 
