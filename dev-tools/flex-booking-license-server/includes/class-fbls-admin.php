@@ -29,8 +29,8 @@ final class FBLS_Admin {
 	 */
 	public static function menu() {
 		add_menu_page(
-			__( 'Flex Licenses', 'flex-booking-license-server' ),
-			__( 'Flex Licenses', 'flex-booking-license-server' ),
+			__( 'Flex Licenses', 'flex-multiple-listing-and-booking-system' ),
+			__( 'Flex Licenses', 'flex-multiple-listing-and-booking-system' ),
 			'manage_options',
 			'fbls-licenses',
 			array( __CLASS__, 'render_list' ),
@@ -127,7 +127,7 @@ final class FBLS_Admin {
 	 */
 	public static function render_list() {
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( esc_html__( 'Forbidden.', 'flex-booking-license-server' ) );
+			wp_die( esc_html__( 'Forbidden.', 'flex-multiple-listing-and-booking-system' ) );
 		}
 
 		$repo = new FBLS_License_Repository();

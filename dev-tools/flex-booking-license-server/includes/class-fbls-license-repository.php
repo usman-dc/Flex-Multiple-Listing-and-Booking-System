@@ -307,7 +307,7 @@ final class FBLS_License_Repository {
 
 		if ( $existing ) {
 			$this->touch_activation( (int) $existing['id'], $version );
-			return $this->success_response( $license, __( 'License already active on this site.', 'flex-booking-license-server' ) );
+			return $this->success_response( $license, __( 'License already active on this site.', 'flex-multiple-listing-and-booking-system' ) );
 		}
 
 		$limit = (int) $license['activation_limit'];
@@ -316,7 +316,7 @@ final class FBLS_License_Repository {
 			return array(
 				'success' => false,
 				'status'  => 'invalid',
-				'message' => __( 'Activation limit reached for this license.', 'flex-booking-license-server' ),
+				'message' => __( 'Activation limit reached for this license.', 'flex-multiple-listing-and-booking-system' ),
 			);
 		}
 
@@ -343,11 +343,11 @@ final class FBLS_License_Repository {
 			return array(
 				'success' => false,
 				'status'  => 'invalid',
-				'message' => __( 'Could not register activation.', 'flex-booking-license-server' ),
+				'message' => __( 'Could not register activation.', 'flex-multiple-listing-and-booking-system' ),
 			);
 		}
 
-		return $this->success_response( $license, __( 'License activated successfully.', 'flex-booking-license-server' ) );
+		return $this->success_response( $license, __( 'License activated successfully.', 'flex-multiple-listing-and-booking-system' ) );
 	}
 
 	/**
@@ -369,7 +369,7 @@ final class FBLS_License_Repository {
 		return array(
 			'success' => true,
 			'status'  => 'inactive',
-			'message' => __( 'License deactivated on this site.', 'flex-booking-license-server' ),
+			'message' => __( 'License deactivated on this site.', 'flex-multiple-listing-and-booking-system' ),
 		);
 	}
 
@@ -395,12 +395,12 @@ final class FBLS_License_Repository {
 			return array(
 				'success' => false,
 				'status'  => 'inactive',
-				'message' => __( 'License is valid but not activated on this site.', 'flex-booking-license-server' ),
+				'message' => __( 'License is valid but not activated on this site.', 'flex-multiple-listing-and-booking-system' ),
 			);
 		}
 
 		$this->touch_activation( (int) $existing['id'], $version );
-		return $this->success_response( $license, __( 'License is valid.', 'flex-booking-license-server' ) );
+		return $this->success_response( $license, __( 'License is valid.', 'flex-multiple-listing-and-booking-system' ) );
 	}
 
 	/**
@@ -414,7 +414,7 @@ final class FBLS_License_Repository {
 			return array(
 				'success' => false,
 				'status'  => 'invalid',
-				'message' => __( 'License has been revoked.', 'flex-booking-license-server' ),
+				'message' => __( 'License has been revoked.', 'flex-multiple-listing-and-booking-system' ),
 			);
 		}
 
@@ -422,7 +422,7 @@ final class FBLS_License_Repository {
 			return array(
 				'success' => false,
 				'status'  => 'invalid',
-				'message' => __( 'License is suspended.', 'flex-booking-license-server' ),
+				'message' => __( 'License is suspended.', 'flex-multiple-listing-and-booking-system' ),
 			);
 		}
 
@@ -432,7 +432,7 @@ final class FBLS_License_Repository {
 				return array(
 					'success' => false,
 					'status'  => 'expired',
-					'message' => __( 'License has expired.', 'flex-booking-license-server' ),
+					'message' => __( 'License has expired.', 'flex-multiple-listing-and-booking-system' ),
 					'expires' => gmdate( 'Y-m-d', $exp ),
 				);
 			}

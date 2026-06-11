@@ -93,7 +93,7 @@ Remove-Item $Staging -Recurse -Force
 # Verify dev-tools not in archive.
 Add-Type -AssemblyName System.IO.Compression.FileSystem
 $zip = [System.IO.Compression.ZipFile]::OpenRead($OutZip)
-$bad = $zip.Entries | Where-Object { $_.FullName -match '(^|/)dev-tools/' }
+$bad = $zip.Entries | Where-Object { $_.FullName -match '(^|/)dev-tools/' -or $_.FullName -match 'flex-booking-license-server' }
 $zip.Dispose()
 
 if ($bad) {

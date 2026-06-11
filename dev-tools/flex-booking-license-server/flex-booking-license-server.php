@@ -7,7 +7,7 @@
  * Author: WpRogers
  * Author URI: https://wprogers.com/
  * License: GPL v2 or later
- * Text Domain: flex-booking-license-server
+ * Text Domain: flex-multiple-listing-and-booking-system
  *
  * @package FlexBookingLicenseServer
  */

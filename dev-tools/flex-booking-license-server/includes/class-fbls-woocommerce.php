@@ -42,18 +42,18 @@ final class FBLS_WooCommerce {
 		woocommerce_wp_checkbox(
 			array(
 				'id'          => self::PRODUCT_META,
-				'label'       => __( 'Flex license key', 'flex-booking-license-server' ),
-				'description' => __( 'Generate a license key when this product is purchased.', 'flex-booking-license-server' ),
+				'label'       => __( 'Flex license key', 'flex-multiple-listing-and-booking-system' ),
+				'description' => __( 'Generate a license key when this product is purchased.', 'flex-multiple-listing-and-booking-system' ),
 			)
 		);
 
 		woocommerce_wp_text_input(
 			array(
 				'id'                => '_fbls_activation_limit',
-				'label'             => __( 'Activation limit', 'flex-booking-license-server' ),
+				'label'             => __( 'Activation limit', 'flex-multiple-listing-and-booking-system' ),
 				'type'              => 'number',
 				'custom_attributes' => array( 'min' => '0', 'step' => '1' ),
-				'description'       => __( '0 = unlimited sites.', 'flex-booking-license-server' ),
+				'description'       => __( '0 = unlimited sites.', 'flex-multiple-listing-and-booking-system' ),
 				'value'             => get_post_meta( get_the_ID(), '_fbls_activation_limit', true ) ?: '1',
 			)
 		);
@@ -61,9 +61,9 @@ final class FBLS_WooCommerce {
 		woocommerce_wp_text_input(
 			array(
 				'id'          => '_fbls_license_days',
-				'label'       => __( 'License days', 'flex-booking-license-server' ),
+				'label'       => __( 'License days', 'flex-multiple-listing-and-booking-system' ),
 				'type'        => 'number',
-				'description' => __( 'Leave empty for lifetime license.', 'flex-booking-license-server' ),
+				'description' => __( 'Leave empty for lifetime license.', 'flex-multiple-listing-and-booking-system' ),
 				'value'       => get_post_meta( get_the_ID(), '_fbls_license_days', true ),
 			)
 		);
@@ -168,14 +168,14 @@ final class FBLS_WooCommerce {
 		}
 
 		if ( $plain_text ) {
-			echo "\n\n" . esc_html__( 'Your license key(s):', 'flex-booking-license-server' ) . "\n";
+			echo "\n\n" . esc_html__( 'Your license key(s):', 'flex-multiple-listing-and-booking-system' ) . "\n";
 			foreach ( $keys as $key ) {
 				echo esc_html( $key ) . "\n";
 			}
 			return;
 		}
 
-		echo '<h2>' . esc_html__( 'Your license key(s)', 'flex-booking-license-server' ) . '</h2>';
+		echo '<h2>' . esc_html__( 'Your license key(s)', 'flex-multiple-listing-and-booking-system' ) . '</h2>';
 		echo '<p><code style="font-size:14px;">' . esc_html( implode( '</code></p><p><code style="font-size:14px;">', $keys ) ) . '</code></p>';
 	}
 }

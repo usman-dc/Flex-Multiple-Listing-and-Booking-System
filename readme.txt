@@ -4,7 +4,7 @@ Tags: booking, listings, rental, appointment, calendar
 Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.0.4
+Stable tag: 1.0.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -123,6 +123,10 @@ Custom database tables and plugin options are removed on uninstall. Use the `ulb
 5. Partner portal — vendor dashboard and listing management
 
 == Changelog ==
+
+= 1.0.5 =
+* Fix text domain: all plugin strings use `flex-multiple-listing-and-booking-system` only
+* Submission ZIP excludes `dev-tools/` via `.distignore`
 
 = 1.0.4 =
 * WordPress.org: `.distignore` and ZIP build script exclude `dev-tools/` and source files

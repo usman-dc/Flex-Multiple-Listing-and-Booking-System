@@ -59,7 +59,7 @@ final class FBLS_REST_API {
 				array(
 					'success' => false,
 					'status'  => 'invalid',
-					'message' => __( 'License key is required.', 'flex-booking-license-server' ),
+					'message' => __( 'License key is required.', 'flex-multiple-listing-and-booking-system' ),
 				),
 				400
 			);
@@ -70,7 +70,7 @@ final class FBLS_REST_API {
 				array(
 					'success' => false,
 					'status'  => 'invalid',
-					'message' => __( 'Site URL is required.', 'flex-booking-license-server' ),
+					'message' => __( 'Site URL is required.', 'flex-multiple-listing-and-booking-system' ),
 				),
 				400
 			);
@@ -84,7 +84,7 @@ final class FBLS_REST_API {
 				array(
 					'success' => false,
 					'status'  => 'invalid',
-					'message' => __( 'Invalid license key.', 'flex-booking-license-server' ),
+					'message' => __( 'Invalid license key.', 'flex-multiple-listing-and-booking-system' ),
 				),
 				404
 			);
@@ -95,7 +95,7 @@ final class FBLS_REST_API {
 				array(
 					'success' => false,
 					'status'  => 'invalid',
-					'message' => __( 'License key is not valid for this product.', 'flex-booking-license-server' ),
+					'message' => __( 'License key is not valid for this product.', 'flex-multiple-listing-and-booking-system' ),
 				),
 				403
 			);
