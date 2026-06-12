@@ -133,6 +133,42 @@ final class FrontController {
 
 		);
 
+		self::localize_public_script();
+
+	}
+
+	/**
+	 * Attach AJAX config whenever the public script handle is registered.
+	 *
+	 * @return void
+	 */
+	public static function localize_public_script() {
+		static $localized = false;
+
+		if ( $localized || ! wp_script_is( 'ulbm-public', 'registered' ) ) {
+			return;
+		}
+
+		$localized = true;
+
+		wp_localize_script(
+			'ulbm-public',
+			'ulbmPublic',
+			array(
+				'restUrl'      => esc_url_raw( rest_url( 'ulbm/v1' ) ),
+				'nonce'        => wp_create_nonce( 'wp_rest' ),
+				'ajaxUrl'      => admin_url( 'admin-ajax.php' ),
+				'bookingNonce' => wp_create_nonce( 'ulbm_public_booking' ),
+				'i18n'         => array(
+					'noProperties'  => __( 'No properties found', 'flex-multiple-listing-and-booking-system' ),
+					'showingCount'  =>
+						/* translators: %1$d: first visible listing number, %2$d: last visible listing number, %3$d: total listings. */
+						__( 'Showing %1$d–%2$d of %3$d properties', 'flex-multiple-listing-and-booking-system' ),
+					'filterFailed'   => __( 'Filter request failed.', 'flex-multiple-listing-and-booking-system' ),
+					'sessionExpired' => __( 'Session expired. Please refresh the page and try again.', 'flex-multiple-listing-and-booking-system' ),
+				),
+			)
+		);
 	}
 
 
@@ -217,55 +253,41 @@ final class FrontController {
 
 		}
 
-
-
 		self::register_public_assets();
+		self::enqueue_public_styles();
+		self::enqueue_public_scripts();
 
+	}
 
+	/**
+	 * Enqueue public CSS bundles (call after register_public_assets).
+	 *
+	 * @return void
+	 */
+	public static function enqueue_public_styles() {
+		static $inline_added = false;
 
 		wp_enqueue_style( 'ulbm-bootstrap' );
-
 		wp_enqueue_style( 'ulbm-bootstrap-icons' );
-
 		wp_enqueue_style( 'ulbm-public' );
 
-
-
-		$inline = ColorSettings::inline_css();
-
-		if ( '' !== $inline ) {
-
-			wp_add_inline_style( 'ulbm-public', $inline );
-
+		if ( ! $inline_added ) {
+			$inline = ColorSettings::inline_css();
+			if ( '' !== $inline ) {
+				wp_add_inline_style( 'ulbm-public', $inline );
+			}
+			$inline_added = true;
 		}
+	}
 
-
-
+	/**
+	 * Enqueue public JS bundles (call after register_public_assets).
+	 *
+	 * @return void
+	 */
+	public static function enqueue_public_scripts() {
 		wp_enqueue_script( 'ulbm-bootstrap' );
-
 		wp_enqueue_script( 'ulbm-public' );
-
-
-
-		wp_localize_script(
-			'ulbm-public',
-			'ulbmPublic',
-			array(
-				'restUrl'      => esc_url_raw( rest_url( 'ulbm/v1' ) ),
-				'nonce'        => wp_create_nonce( 'wp_rest' ),
-				'ajaxUrl'      => admin_url( 'admin-ajax.php' ),
-				'bookingNonce' => wp_create_nonce( 'ulbm_public_booking' ),
-				'i18n'         => array(
-					'noProperties'   => __( 'No properties found', 'flex-multiple-listing-and-booking-system' ),
-					'showingCount'   =>
-						/* translators: %1$d: first visible listing number, %2$d: last visible listing number, %3$d: total listings. */
-						__( 'Showing %1$d–%2$d of %3$d properties', 'flex-multiple-listing-and-booking-system' ),
-					'filterFailed'    => __( 'Filter request failed.', 'flex-multiple-listing-and-booking-system' ),
-					'sessionExpired'  => __( 'Session expired. Please refresh the page and try again.', 'flex-multiple-listing-and-booking-system' ),
-				),
-			)
-		);
-
 	}
 
 
@@ -306,6 +328,10 @@ final class FrontController {
 			if ( is_string( $archive_type ) && \FlexBooking\PostTypes\BookingTypePostTypeRegistry::is_listing_post_type( $archive_type ) ) {
 				return true;
 			}
+		}
+
+		if ( self::elementor_location_has_ulbm_widgets() ) {
+			return true;
 		}
 
 		if ( \FlexBooking\Vendor\VendorPages::is_vendor_page( $post ) ) {
@@ -383,6 +409,52 @@ final class FrontController {
 
 			|| false !== strpos( $data, 'ulbm_booking_form' );
 
+	}
+
+	/**
+	 * Whether the current Elementor theme location document includes FBS widgets.
+	 *
+	 * @return bool
+	 */
+	private static function elementor_location_has_ulbm_widgets() {
+		if ( ! class_exists( '\Elementor\Plugin' ) ) {
+			return false;
+		}
+
+		$plugin = \Elementor\Plugin::$instance;
+		if ( ! $plugin || ! isset( $plugin->modules_manager ) ) {
+			return false;
+		}
+
+		$module = $plugin->modules_manager->get_modules( 'theme-builder' );
+		if ( ! $module || ! method_exists( $module, 'get_locations_manager' ) ) {
+			return false;
+		}
+
+		$locations = $module->get_locations_manager();
+		if ( ! $locations || ! method_exists( $locations, 'get_current_location' ) ) {
+			return false;
+		}
+
+		$location = (string) $locations->get_current_location();
+		if ( '' === $location || ! method_exists( $locations, 'get_location' ) ) {
+			return false;
+		}
+
+		$documents = $locations->get_location( $location );
+		if ( empty( $documents ) || ! is_array( $documents ) ) {
+			return false;
+		}
+
+		foreach ( $documents as $document_id ) {
+			$data = get_post_meta( (int) $document_id, '_elementor_data', true );
+			if ( is_string( $data ) && '' !== $data
+				&& ( false !== strpos( $data, 'ulbm_listing_grid' ) || false !== strpos( $data, 'ulbm_booking_form' ) ) ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 }

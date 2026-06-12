@@ -342,7 +342,7 @@ final class BlocksRegistrar {
 	 */
 	private static function render_shortcode_html( $shortcode ) {
 
-		return wp_kses_post( (string) do_shortcode( $shortcode ) );
+		return \FlexBooking\Front\GridFilterUi::kses_grid_html( (string) do_shortcode( $shortcode ) );
 
 	}
 

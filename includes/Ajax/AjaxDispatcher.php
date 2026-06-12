@@ -18,7 +18,6 @@ use FlexBooking\Security\Nonce;
 use FlexBooking\Security\PostData;
 use FlexBooking\Setup\DemoContentSeeder;
 use FlexBooking\Setup\IndustryProvisioner;
-use FlexBooking\License\LicenseManager;
 use FlexBooking\Vendor\VendorAdminService;
 use FlexBooking\Vendor\VendorAuth;
 use FlexBooking\Vendor\VendorListingService;
@@ -67,10 +66,6 @@ final class AjaxDispatcher {
 		add_action( 'wp_ajax_ulbm_submit_review', array( $this, 'submit_review' ) );
 		add_action( 'wp_ajax_ulbm_review_moderate', array( $this, 'review_moderate' ) );
 		add_action( 'wp_ajax_ulbm_partner_moderate', array( $this, 'partner_moderate' ) );
-
-		add_action( 'wp_ajax_ulbm_license_activate', array( $this, 'license_activate' ) );
-		add_action( 'wp_ajax_ulbm_license_deactivate', array( $this, 'license_deactivate' ) );
-		add_action( 'wp_ajax_ulbm_license_check', array( $this, 'license_check' ) );
 
 		do_action( 'ulbm_register_ajax_actions', $plugin );
 	}
@@ -748,89 +743,6 @@ final class AjaxDispatcher {
 				'message' => $message,
 				'status'  => $status,
 				'deleted' => 'delete' === $action,
-			)
-		);
-	}
-
-	/**
-	 * Activate purchase license key.
-	 *
-	 * @return void
-	 */
-	public function license_activate() {
-		check_ajax_referer( Nonce::ACTION_AJAX, 'nonce' );
-		PostData::allow_processing();
-		if ( ! Capabilities::can_access_admin() ) {
-			wp_send_json_error( array( 'message' => __( 'Forbidden.', 'flex-multiple-listing-and-booking-system' ) ), 403 );
-		}
-
-		$key    = PostData::has( 'license_key' ) ? PostData::string( 'license_key' ) : '';
-		$result = LicenseManager::activate( $key );
-
-		if ( empty( $result['success'] ) ) {
-			wp_send_json_error(
-				array(
-					'message' => $result['message'],
-					'license' => LicenseManager::status_for_display(),
-				),
-				400
-			);
-		}
-
-		wp_send_json_success(
-			array(
-				'message' => $result['message'],
-				'license' => LicenseManager::status_for_display(),
-			)
-		);
-	}
-
-	/**
-	 * Deactivate license on this site.
-	 *
-	 * @return void
-	 */
-	public function license_deactivate() {
-		check_ajax_referer( Nonce::ACTION_AJAX, 'nonce' );
-		if ( ! Capabilities::can_access_admin() ) {
-			wp_send_json_error( array( 'message' => __( 'Forbidden.', 'flex-multiple-listing-and-booking-system' ) ), 403 );
-		}
-
-		$result = LicenseManager::deactivate();
-		wp_send_json_success(
-			array(
-				'message' => $result['message'],
-				'license' => LicenseManager::status_for_display(),
-			)
-		);
-	}
-
-	/**
-	 * Re-check license status with remote server.
-	 *
-	 * @return void
-	 */
-	public function license_check() {
-		check_ajax_referer( Nonce::ACTION_AJAX, 'nonce' );
-		if ( ! Capabilities::can_access_admin() ) {
-			wp_send_json_error( array( 'message' => __( 'Forbidden.', 'flex-multiple-listing-and-booking-system' ) ), 403 );
-		}
-
-		$result = LicenseManager::check_now();
-		if ( empty( $result['success'] ) ) {
-			wp_send_json_error(
-				array(
-					'message' => $result['message'],
-					'license' => LicenseManager::status_for_display(),
-				),
-				400
-			);
-		}
-
-		wp_send_json_success(
-			array(
-				'message' => $result['message'],
-				'license' => LicenseManager::status_for_display(),
 			)
 		);
 	}

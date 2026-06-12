@@ -20,6 +20,7 @@
 
 
 
+use FlexBooking\Front\GridFilterUi;
 use FlexBooking\Front\LayoutSettings;
 use FlexBooking\Front\ListingDisplay;
 
@@ -108,90 +109,19 @@ $ulbm_grid_spacing = isset( $ulbm_grid_spacing ) && is_array( $ulbm_grid_spacing
 $ulbm_grid_style   = LayoutSettings::grid_inline_style( $ulbm_grid_spacing );
 
 ?>
+<?php GridFilterUi::enqueue_critical_styles( $ulbm_uid ); ?>
 <div class="ulbm-listing-grid ulbm-marketplace-ui" id="<?php echo esc_attr( $ulbm_uid ); ?>" style="<?php echo esc_attr( $ulbm_grid_style ); ?>" data-type="<?php echo esc_attr( $ulbm_grid_type ); ?>" data-per-page="<?php echo esc_attr( (string) $ulbm_grid_limit ); ?>" data-columns="<?php echo esc_attr( (string) $ulbm_grid_columns ); ?>">
 
-
-
 	<?php if ( $ulbm_show_filters ) : ?>
-
-	<div class="ulbm-grid-filters ulbm-filter-panel">
-
-		<div class="row g-3 align-items-end">
-
-			<div class="col-lg-5">
-
-				<label class="form-label small fw-semibold mb-1"><?php esc_html_e( 'Keyword / Location', 'flex-multiple-listing-and-booking-system' ); ?></label>
-
-				<div class="input-group">
-
-					<span class="input-group-text"><i class="bi bi-search" aria-hidden="true"></i></span>
-
-					<input type="text" class="form-control ulbm-filter-keyword" placeholder="<?php esc_attr_e( 'Search by location or property name…', 'flex-multiple-listing-and-booking-system' ); ?>">
-
-				</div>
-
-			</div>
-
-			<?php if ( ! $ulbm_grid_type && count( $ulbm_all_types ) > 1 ) : ?>
-
-				<div class="col-md-6 col-lg-2">
-
-					<label class="form-label small fw-semibold mb-1"><?php esc_html_e( 'Type', 'flex-multiple-listing-and-booking-system' ); ?></label>
-
-					<select class="form-select ulbm-filter-type">
-
-						<option value=""><?php esc_html_e( 'All types', 'flex-multiple-listing-and-booking-system' ); ?></option>
-
-						<?php foreach ( $ulbm_all_types as $ulbm_ft ) : ?>
-
-							<option value="<?php echo esc_attr( (string) $ulbm_ft['slug'] ); ?>"><?php echo esc_html( (string) $ulbm_ft['name'] ); ?></option>
-
-						<?php endforeach; ?>
-
-					</select>
-
-				</div>
-
-			<?php endif; ?>
-
-			<div class="col-6 col-md-3 col-lg-2">
-
-				<label class="form-label small fw-semibold mb-1"><?php esc_html_e( 'Min price', 'flex-multiple-listing-and-booking-system' ); ?></label>
-
-				<input type="number" class="form-control ulbm-filter-min-price" placeholder="0" min="0" step="1">
-
-			</div>
-
-			<div class="col-6 col-md-3 col-lg-2">
-
-				<label class="form-label small fw-semibold mb-1"><?php esc_html_e( 'Max price', 'flex-multiple-listing-and-booking-system' ); ?></label>
-
-				<input type="number" class="form-control ulbm-filter-max-price" placeholder="<?php esc_attr_e( 'Any', 'flex-multiple-listing-and-booking-system' ); ?>" min="0" step="1">
-
-			</div>
-
-			<div class="col-6 col-md-3 col-lg-1">
-
-				<label class="form-label small fw-semibold mb-1"><?php esc_html_e( 'Guests', 'flex-multiple-listing-and-booking-system' ); ?></label>
-
-				<input type="number" class="form-control ulbm-filter-guests" placeholder="<?php esc_attr_e( 'Any', 'flex-multiple-listing-and-booking-system' ); ?>" min="0">
-
-			</div>
-
-			<div class="col-6 col-md-4 col-lg-2 d-grid">
-
-				<button type="button" class="btn btn-primary ulbm-filter-submit"><i class="bi bi-funnel me-1" aria-hidden="true"></i><?php esc_html_e( 'Show Results', 'flex-multiple-listing-and-booking-system' ); ?></button>
-
-			</div>
-
-		</div>
-
-		<input type="hidden" class="ulbm-filter-sort" value="date">
-
-		<button type="button" class="d-none ulbm-filter-reset" aria-hidden="true"></button>
-
-	</div>
-
+		<?php
+		GridFilterUi::render_panel(
+			$ulbm_uid,
+			array(
+				'type'      => $ulbm_grid_type,
+				'all_types' => $ulbm_all_types,
+			)
+		);
+		?>
 	<?php endif; ?>
 
 
@@ -225,19 +155,9 @@ $ulbm_grid_style   = LayoutSettings::grid_inline_style( $ulbm_grid_spacing );
 
 			<?php ListingDisplay::render_view_toggle( $ulbm_uid ); ?>
 
-			<label class="small text-muted mb-0" for="<?php echo esc_attr( $ulbm_uid ); ?>-sort"><?php esc_html_e( 'Sort by:', 'flex-multiple-listing-and-booking-system' ); ?></label>
+			<span class="small text-muted mb-0"><?php esc_html_e( 'Sort by:', 'flex-multiple-listing-and-booking-system' ); ?></span>
 
-			<select class="form-select form-select-sm ulbm-filter-sort-select" id="<?php echo esc_attr( $ulbm_uid ); ?>-sort" style="width:auto;">
-
-				<option value="date"><?php esc_html_e( 'Newest', 'flex-multiple-listing-and-booking-system' ); ?></option>
-
-				<option value="price_asc"><?php esc_html_e( 'Price: low to high', 'flex-multiple-listing-and-booking-system' ); ?></option>
-
-				<option value="price_desc"><?php esc_html_e( 'Price: high to low', 'flex-multiple-listing-and-booking-system' ); ?></option>
-
-				<option value="title"><?php esc_html_e( 'Name A–Z', 'flex-multiple-listing-and-booking-system' ); ?></option>
-
-			</select>
+			<?php ListingDisplay::render_sort_toggle( $ulbm_uid ); ?>
 
 			<span class="spinner-border spinner-border-sm text-primary d-none ulbm-grid-spinner" role="status"></span>
 

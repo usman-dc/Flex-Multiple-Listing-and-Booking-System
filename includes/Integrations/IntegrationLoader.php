@@ -50,6 +50,39 @@ final class IntegrationLoader {
 		);
 
 		add_action(
+			'elementor/frontend/before_enqueue_scripts',
+			function () {
+				FrontController::register_public_assets();
+
+				if ( ! FrontController::is_ulbm_frontend_page() ) {
+					return;
+				}
+
+				FrontController::enqueue_public_scripts();
+			}
+		);
+
+		add_action(
+			'elementor/frontend/widget/before_render',
+			function ( $widget ) {
+				if ( ! is_object( $widget ) || ! method_exists( $widget, 'get_name' ) ) {
+					return;
+				}
+
+				$name = (string) $widget->get_name();
+				if ( ! in_array( $name, array( 'ulbm_listing_grid', 'ulbm_booking_form' ), true ) ) {
+					return;
+				}
+
+				FrontController::register_public_assets();
+				FrontController::enqueue_public_styles();
+				FrontController::enqueue_public_scripts();
+			},
+			10,
+			1
+		);
+
+		add_action(
 			'elementor/editor/after_enqueue_scripts',
 			function () {
 				FrontController::register_public_assets();

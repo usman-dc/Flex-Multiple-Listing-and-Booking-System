@@ -43,7 +43,6 @@
 	padding-bottom: var(--ulbm-container-padding-y);
 	background: #ffffff;
 	border-radius: var(--ulbm-radius, 12px);
-	overflow: hidden;
 }
 
 // Keep theme/page background untouched — only plugin blocks use page-bg.
@@ -51,12 +50,334 @@ body.ulbm-booking-active {
 	background-color: inherit;
 }
 
-// Elementor widgets.
-[class*="elementor-widget-ulbm_"] > .elementor-widget-container {
-	max-width: var(--ulbm-container-width);
-	margin-left: auto;
-	margin-right: auto;
-	width: 100%;
+// Elementor widgets — sit above column/section background overlays that block clicks.
+.elementor-widget-ulbm_listing_grid,
+.elementor-widget-ulbm_booking_form,
+[class*="elementor-widget-ulbm_"] {
+	position: relative !important;
+	z-index: 2 !important;
+
+	> .elementor-widget-container {
+		position: relative !important;
+		z-index: 2 !important;
+		max-width: var(--ulbm-container-width);
+		margin-left: auto;
+		margin-right: auto;
+		width: 100%;
+	}
+}
+
+// Grid filter bar (ulbm-fctl = theme-safe control class).
+.ulbm-listing-grid {
+	.ulbm-filter-panel {
+		background: var(--ulbm-surface-bg, #fff);
+		border: 1px solid var(--ulbm-border, #e5e7eb);
+		border-radius: var(--ulbm-radius, 0.375rem);
+		padding: 1.25rem 1.5rem;
+		margin-bottom: 1rem;
+		box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+	}
+
+	.ulbm-filter-grid {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1rem;
+		align-items: flex-end;
+	}
+
+	.ulbm-filter-item {
+		flex: 1 1 140px;
+		min-width: 0;
+	}
+
+	.ulbm-filter-item--keyword {
+		flex: 2 1 220px;
+		min-width: min(100%, 220px);
+	}
+
+	.ulbm-filter-item--submit {
+		flex: 1 1 150px;
+		min-width: 150px;
+	}
+
+	.ulbm-filter-label {
+		display: block;
+		margin-bottom: 0.35rem;
+		font-size: 0.8125rem;
+		font-weight: 600;
+		color: var(--ulbm-text, #212529);
+	}
+
+	.ulbm-filter-box {
+		display: block !important;
+		width: 100% !important;
+		min-height: 42px !important;
+		height: 42px !important;
+		border: 1px solid var(--ulbm-border, #e5e7eb) !important;
+		border-radius: 6px !important;
+		background: var(--ulbm-input-bg, #fff) !important;
+		box-sizing: border-box !important;
+		overflow: hidden !important;
+		position: relative !important;
+
+		&--search .ulbm-filter-search-icon {
+			position: absolute;
+			left: 12px;
+			top: 50%;
+			transform: translateY(-50%);
+			color: var(--ulbm-muted, #6b7280);
+			pointer-events: none;
+			z-index: 2;
+			line-height: 1;
+		}
+	}
+
+	.ulbm-filter-box .ulbm-fctl {
+		display: block !important;
+		width: 100% !important;
+		height: 42px !important;
+		min-height: 42px !important;
+		padding: 8px 12px !important;
+		margin: 0 !important;
+		border: 0 !important;
+		border-radius: 0 !important;
+		background: transparent !important;
+		color: var(--ulbm-text, #212529) !important;
+		font-size: 16px !important;
+		line-height: 1.5 !important;
+		box-sizing: border-box !important;
+		opacity: 1 !important;
+		visibility: visible !important;
+		pointer-events: auto !important;
+		box-shadow: none !important;
+		appearance: none !important;
+		-webkit-appearance: none !important;
+	}
+
+	.ulbm-filter-box--search .ulbm-fctl {
+		padding-left: 40px !important;
+	}
+
+	.ulbm-filter-submit {
+		width: 100%;
+		min-height: 42px;
+	}
+}
+
+// Legacy grid filter overrides (older class names).
+.ulbm-listing-grid {
+	position: relative;
+	z-index: 1;
+
+	.ulbm-filter-panel {
+		position: relative;
+		z-index: 20;
+		isolation: isolate;
+		pointer-events: auto !important;
+	}
+
+	.ulbm-grid-filter-row {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1rem;
+		align-items: flex-end;
+	}
+
+	.ulbm-grid-filter-cell {
+		flex: 1 1 140px;
+		min-width: 0;
+	}
+
+	.ulbm-grid-filter-cell--keyword {
+		flex: 2 1 220px;
+		min-width: min(100%, 220px);
+	}
+
+	.ulbm-grid-filter-cell--submit {
+		flex: 1 1 150px;
+		min-width: 150px;
+	}
+
+	.ulbm-grid-filter-label {
+		display: block;
+		margin-bottom: 0.35rem;
+		font-size: 0.8125rem;
+		font-weight: 600;
+		color: var(--ulbm-text, #212529);
+		pointer-events: none;
+	}
+
+	.ulbm-grid-filter-field {
+		display: flex !important;
+		align-items: stretch;
+		width: 100%;
+		min-height: 42px;
+		border: 1px solid var(--ulbm-border, #e5e7eb);
+		border-radius: 0.375rem;
+		background: var(--ulbm-input-bg, #fff);
+		overflow: hidden;
+		box-sizing: border-box;
+		pointer-events: auto;
+
+		&--search .ulbm-grid-filter-icon {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			flex: 0 0 42px;
+			color: var(--ulbm-muted, #6b7280);
+			border-right: 1px solid var(--ulbm-border, #e5e7eb);
+			background: var(--ulbm-input-bg, #fff);
+			pointer-events: none;
+		}
+	}
+
+	.ulbm-grid-filter-input,
+	.ulbm-grid-filter-select {
+		display: block !important;
+		visibility: visible !important;
+		opacity: 1 !important;
+		position: relative !important;
+		left: auto !important;
+		top: auto !important;
+		right: auto !important;
+		bottom: auto !important;
+		clip: auto !important;
+		clip-path: none !important;
+		box-sizing: border-box !important;
+		flex: 1 1 auto !important;
+		align-self: stretch !important;
+		width: 100% !important;
+		min-width: 0 !important;
+		min-height: 42px !important;
+		height: 42px !important;
+		max-height: none !important;
+		margin: 0 !important;
+		padding: 0.5rem 0.75rem !important;
+		font-size: 1rem !important;
+		font-weight: 400;
+		line-height: 1.5 !important;
+		color: var(--ulbm-text, #212529) !important;
+		background-color: transparent !important;
+		border: 0 !important;
+		border-radius: 0;
+		box-shadow: none !important;
+		pointer-events: auto !important;
+		touch-action: manipulation;
+		cursor: text;
+		transform: none !important;
+		appearance: none !important;
+		-webkit-appearance: none !important;
+		z-index: 2 !important;
+
+		&::placeholder {
+			color: var(--ulbm-muted, #6b7280);
+			opacity: 1;
+		}
+
+		&:focus {
+			outline: 0;
+			box-shadow: inset 0 0 0 2px var(--ulbm-border-focus, #0d6efd);
+		}
+	}
+
+	select.ulbm-grid-filter-select {
+		cursor: pointer;
+		padding-right: 2rem !important;
+		appearance: menulist !important;
+		-webkit-appearance: menulist !important;
+		background-color: var(--ulbm-input-bg, #fff) !important;
+		background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e") !important;
+		background-repeat: no-repeat !important;
+		background-position: right 0.65rem center !important;
+		background-size: 14px 10px !important;
+		overflow: hidden !important;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	.ulbm-grid-filter-cell--submit .ulbm-filter-submit {
+		width: 100%;
+		min-height: 42px;
+		position: relative;
+		z-index: 21 !important;
+		pointer-events: auto !important;
+		touch-action: manipulation;
+		cursor: pointer !important;
+	}
+
+	.ulbm-grid-filter-select--compact {
+		width: auto !important;
+		min-width: 11rem;
+		min-height: 34px !important;
+		height: 34px !important;
+		max-height: 34px !important;
+		padding: 0.25rem 2rem 0.25rem 0.65rem !important;
+		font-size: 0.875rem !important;
+	}
+}
+
+body [class*="elementor-widget-ulbm_"] .elementor-widget-container .ulbm-filter-box,
+body [class*="elementor-widget-ulbm_"] .elementor-widget-container .ulbm-filter-box .ulbm-fctl {
+	display: block !important;
+	width: 100% !important;
+	min-height: 42px !important;
+	height: 42px !important;
+	pointer-events: auto !important;
+	opacity: 1 !important;
+	visibility: visible !important;
+}
+
+body [class*="elementor-widget-ulbm_"] .elementor-widget-container .ulbm-filter-box {
+	border: 1px solid #e5e7eb !important;
+	background: #fff !important;
+}
+
+body [class*="elementor-widget-ulbm_"] .elementor-widget-container .ulbm-filter-box .ulbm-fctl {
+	border: 0 !important;
+	background: transparent !important;
+}
+
+body [class*="elementor-widget-ulbm_"] .elementor-widget-container {
+	.ulbm-filter-panel,
+	.ulbm-grid-filter-row,
+	.ulbm-grid-filter-cell,
+	.ulbm-grid-filter-field,
+	.ulbm-grid-filter-input,
+	.ulbm-grid-filter-select,
+	.ulbm-filter-submit {
+		pointer-events: auto !important;
+	}
+
+	input.ulbm-grid-filter-input,
+	select.ulbm-grid-filter-select,
+	select.ulbm-filter-sort-select {
+		display: block !important;
+		visibility: visible !important;
+		opacity: 1 !important;
+		position: relative !important;
+		left: auto !important;
+		top: auto !important;
+		height: 42px !important;
+		min-height: 42px !important;
+		width: 100% !important;
+		padding: 0.5rem 0.75rem !important;
+		border: 0 !important;
+		background-color: transparent !important;
+		color: var(--ulbm-text, #212529) !important;
+		pointer-events: auto !important;
+		z-index: 2 !important;
+	}
+
+	select.ulbm-grid-filter-select--compact,
+	select.ulbm-filter-sort-select {
+		width: auto !important;
+		min-width: 11rem;
+		height: 34px !important;
+		min-height: 34px !important;
+		appearance: menulist !important;
+		-webkit-appearance: menulist !important;
+		background-color: var(--ulbm-input-bg, #fff) !important;
+	}
 }
 
 .ulbm-booking-form,
@@ -1162,22 +1483,6 @@ body.admin-bar .ulbm-single-listing-wrap.ulbm-marketplace-ui:has(.ulbm-account-t
 		padding: 1.25rem 1.5rem;
 		box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
 
-		.input-group-text {
-			background: var(--ulbm-input-bg);
-			border-color: var(--ulbm-border);
-			color: var(--ulbm-muted);
-		}
-
-		.form-control,
-		.form-select {
-			background: var(--ulbm-input-bg);
-			border-color: var(--ulbm-border);
-			color: var(--ulbm-text);
-
-			&:focus {
-				border-color: var(--ulbm-border-focus);
-			}
-		}
 	}
 
 	.ulbm-grid-toolbar {
@@ -1188,8 +1493,10 @@ body.admin-bar .ulbm-single-listing-wrap.ulbm-marketplace-ui:has(.ulbm-account-t
 		gap: 0.75rem;
 	}
 
-	.ulbm-view-toggle {
-		.ulbm-view-toggle-btn.active {
+	.ulbm-view-toggle,
+	.ulbm-sort-toggle {
+		.ulbm-view-toggle-btn.active,
+		.ulbm-sort-btn.active {
 			background: var(--ulbm-primary);
 			border-color: var(--ulbm-primary);
 			color: #fff;

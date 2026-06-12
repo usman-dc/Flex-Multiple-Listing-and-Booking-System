@@ -47,8 +47,6 @@ Source code (development, issues, releases): [GitHub repository](https://github.
 
 **Optional — Google Maps (not affiliated with Google):** If the site owner enables embedded maps under **Settings → Partner Portal**, listing pages can show a button for visitors to opt in before loading an iframe from `https://maps.google.com/`. Until the visitor clicks that button, no request is sent to Google. When loaded, the visitor’s IP address and map coordinates may be processed by Google. Terms: https://www.google.com/intl/en/policies/terms/ — Privacy: https://policies.google.com/privacy
 
-**Optional — License validation (not required for core features):** When a site owner activates a purchase key under **Settings → License**, the plugin sends a one-time admin request to your license server (default: `wprogers.com`) with the key and site URL. No automatic calls are made until activation or the daily status check for an already-activated key.
-
 **Optional:** Listing video embeds use WordPress `wp_oembed_get()` for URLs the site owner adds (e.g. YouTube). WooCommerce integration loads only when WooCommerce is active. Demo content uses placeholder images bundled in `assets/demo/` (no remote downloads).
 
 = Privacy =

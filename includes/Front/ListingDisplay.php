@@ -235,6 +235,34 @@ final class ListingDisplay {
 	}
 
 	/**
+	 * Sort toggle buttons (avoids theme breaking native &lt;select&gt;).
+	 *
+	 * @param string $uid_prefix Unique id prefix.
+	 * @return void
+	 */
+	public static function render_sort_toggle( $uid_prefix = 'ulbm' ) {
+		$group_id = sanitize_html_class( $uid_prefix ) . '-sort';
+		$options  = array(
+			'date'       => __( 'Newest', 'flex-multiple-listing-and-booking-system' ),
+			'price_asc'  => __( 'Price: low to high', 'flex-multiple-listing-and-booking-system' ),
+			'price_desc' => __( 'Price: high to low', 'flex-multiple-listing-and-booking-system' ),
+			'title'      => __( 'Name A–Z', 'flex-multiple-listing-and-booking-system' ),
+		);
+		?>
+		<div class="btn-group btn-group-sm ulbm-sort-toggle flex-wrap" role="group" aria-label="<?php esc_attr_e( 'Sort listings', 'flex-multiple-listing-and-booking-system' ); ?>" id="<?php echo esc_attr( $group_id ); ?>">
+			<?php foreach ( $options as $sort_key => $sort_label ) : ?>
+				<button
+					type="button"
+					class="btn btn-outline-secondary ulbm-sort-btn<?php echo 'date' === $sort_key ? ' active' : ''; ?>"
+					data-sort="<?php echo esc_attr( $sort_key ); ?>"
+					aria-pressed="<?php echo 'date' === $sort_key ? 'true' : 'false'; ?>"
+				><?php echo esc_html( $sort_label ); ?></button>
+			<?php endforeach; ?>
+		</div>
+		<?php
+	}
+
+	/**
 	 * Grid / list view toggle for listing grids.
 	 *
 	 * @param string $uid_prefix Unique id prefix for accessibility.

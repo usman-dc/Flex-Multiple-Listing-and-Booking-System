@@ -271,7 +271,7 @@ function initMarketplaceBooking( form, root ) {
 /* --- GRID AJAX FILTERS -------------------------------------- */
 function initGridFilters() {
 	document.querySelectorAll( '.ulbm-listing-grid' ).forEach( ( grid ) => {
-		if ( typeof ulbmPublic === 'undefined' ) return;
+		const hasPublic = typeof ulbmPublic !== 'undefined';
 
 		const resultsEl  = grid.querySelector( '.ulbm-grid-results' );
 		const countEl    = grid.querySelector( '.ulbm-grid-count' );
@@ -282,10 +282,26 @@ function initGridFilters() {
 		const pageInfo   = grid.querySelector( '.ulbm-grid-page-info' );
 		const filterBtn  = grid.querySelector( '.ulbm-filter-submit' );
 		const resetBtn   = grid.querySelector( '.ulbm-filter-reset' );
-		const sortSelect = grid.querySelector( '.ulbm-filter-sort-select' );
 		const sortHidden = grid.querySelector( '.ulbm-filter-sort' );
+		const sortBtns   = grid.querySelectorAll( '.ulbm-sort-btn' );
 
 		if ( ! resultsEl ) return;
+
+		function getActiveSort() {
+			const active = grid.querySelector( '.ulbm-sort-btn.active' );
+			return active ? ( active.dataset.sort || 'date' ) : 'date';
+		}
+
+		function setActiveSort( sortKey ) {
+			sortBtns.forEach( ( btn ) => {
+				const on = btn.dataset.sort === sortKey;
+				btn.classList.toggle( 'active', on );
+				btn.setAttribute( 'aria-pressed', on ? 'true' : 'false' );
+			} );
+			if ( sortHidden ) {
+				sortHidden.value = sortKey;
+			}
+		}
 
 		const viewToggleBtns = grid.querySelectorAll( '.ulbm-view-toggle-btn' );
 		const storageKey     = 'ulbm_grid_view_' + ( grid.id || 'default' );
@@ -342,8 +358,10 @@ function initGridFilters() {
 
 
 		function getFilters() {
-			const sortVal = sortSelect ? sortSelect.value : ( sortHidden ? sortHidden.value : 'date' );
-			if ( sortHidden ) sortHidden.value = sortVal;
+			const sortVal = getActiveSort();
+			if ( sortHidden ) {
+				sortHidden.value = sortVal;
+			}
 			return {
 				keyword:   ( grid.querySelector( '.ulbm-filter-keyword' ) || {} ).value || '',
 				type:      baseType || ( grid.querySelector( '.ulbm-filter-type' ) || {} ).value || '',
@@ -355,6 +373,10 @@ function initGridFilters() {
 		}
 
 		async function loadPage( page ) {
+			if ( ! hasPublic ) {
+				return;
+			}
+
 			if ( spinnerEl ) spinnerEl.classList.remove( 'd-none' );
 			if ( filterBtn ) filterBtn.disabled = true;
 
@@ -421,18 +443,19 @@ function initGridFilters() {
 			} );
 		} );
 
-		if ( sortSelect ) {
-			sortSelect.addEventListener( 'change', () => {
+		sortBtns.forEach( ( btn ) => {
+			btn.addEventListener( 'click', () => {
+				setActiveSort( btn.dataset.sort || 'date' );
 				currentPage = 1;
 				loadPage( 1 );
 			} );
-		}
+		} );
 
 		if ( resetBtn ) {
 			resetBtn.addEventListener( 'click', () => {
-				grid.querySelectorAll( '.ulbm-grid-filters input' ).forEach( ( i ) => { i.value = ''; } );
+				grid.querySelectorAll( '.ulbm-grid-filters input:not([type="hidden"])' ).forEach( ( i ) => { i.value = ''; } );
 				grid.querySelectorAll( '.ulbm-grid-filters select' ).forEach( ( s ) => { s.selectedIndex = 0; } );
-				if ( sortSelect ) sortSelect.selectedIndex = 0;
+				setActiveSort( 'date' );
 				currentPage = 1;
 				loadPage( 1 );
 			} );

@@ -82,15 +82,6 @@ if ( \FlexBooking\Core\Capabilities::can_access_admin() ) {
 }
 
 $ulbm_vendor_page_rows = \FlexBooking\Vendor\VendorPageProvisioner::status_rows();
-$ulbm_license          = \FlexBooking\License\LicenseManager::status_for_display();
-$ulbm_license_badge    = 'secondary';
-if ( ! empty( $ulbm_license['is_active'] ) ) {
-	$ulbm_license_badge = 'success';
-} elseif ( 'expired' === ( $ulbm_license['status'] ?? '' ) ) {
-	$ulbm_license_badge = 'warning';
-} elseif ( 'invalid' === ( $ulbm_license['status'] ?? '' ) ) {
-	$ulbm_license_badge = 'danger';
-}
 
 // Shortcodes reference.
 $ulbm_shortcodes_help = array(
@@ -144,7 +135,6 @@ $ulbm_shortcodes_help = apply_filters( 'ulbm_settings_shortcodes_help', $ulbm_sh
 			<li class="nav-item"><button class="nav-link<?php echo 'cpts' === $ulbm_settings_tab ? ' active' : ''; ?>" data-bs-toggle="tab" data-bs-target="#ulbm-st-cpts" data-ulbm-tab="cpts" type="button"><?php esc_html_e( 'Post Types', 'flex-multiple-listing-and-booking-system' ); ?></button></li>
 			<li class="nav-item"><button class="nav-link<?php echo 'demo' === $ulbm_settings_tab ? ' active' : ''; ?>" data-bs-toggle="tab" data-bs-target="#ulbm-st-demo" data-ulbm-tab="demo" type="button"><?php esc_html_e( 'Demo Content', 'flex-multiple-listing-and-booking-system' ); ?></button></li>
 			<li class="nav-item"><button class="nav-link<?php echo 'partner' === $ulbm_settings_tab ? ' active' : ''; ?>" data-bs-toggle="tab" data-bs-target="#ulbm-st-partner" data-ulbm-tab="partner" type="button"><?php esc_html_e( 'Partner Portal', 'flex-multiple-listing-and-booking-system' ); ?></button></li>
-			<li class="nav-item"><button class="nav-link<?php echo 'license' === $ulbm_settings_tab ? ' active' : ''; ?>" data-bs-toggle="tab" data-bs-target="#ulbm-st-license" data-ulbm-tab="license" type="button"><?php esc_html_e( 'License', 'flex-multiple-listing-and-booking-system' ); ?></button></li>
 		</ul>
 
 		<div class="tab-content">
@@ -704,79 +694,6 @@ $ulbm_shortcodes_help = apply_filters( 'ulbm_settings_shortcodes_help', $ulbm_sh
 						<code class="user-select-all ms-1">[ulbm_become_partner]</code>
 						<span class="text-muted ms-2"><?php esc_html_e( 'Add this on your homepage to promote partner signup.', 'flex-multiple-listing-and-booking-system' ); ?></span>
 					</div>
-				</div>
-			</div>
-
-			<!-- LICENSE -->
-			<div class="tab-pane fade<?php echo 'license' === $ulbm_settings_tab ? ' show active' : ''; ?>" id="ulbm-st-license">
-				<div class="ulbm-admin-panel border rounded bg-white p-4 mb-4" id="ulbm-license-panel"
-					data-is-active="<?php echo ! empty( $ulbm_license['is_active'] ) ? '1' : '0'; ?>">
-					<h5 class="fw-bold mb-3"><i class="bi bi-key me-2"></i><?php esc_html_e( 'License Key', 'flex-multiple-listing-and-booking-system' ); ?></h5>
-					<p class="text-muted small mb-4">
-						<?php esc_html_e( 'Enter the purchase key from your order confirmation to activate updates and premium support on this site.', 'flex-multiple-listing-and-booking-system' ); ?>
-						<a href="<?php echo esc_url( (string) $ulbm_license['purchase_url'] ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Get a license', 'flex-multiple-listing-and-booking-system' ); ?></a>
-					</p>
-
-					<div class="row g-3 align-items-end mb-3">
-						<div class="col-md-8">
-							<label class="form-label" for="ulbm_license_key"><?php esc_html_e( 'Purchase / license key', 'flex-multiple-listing-and-booking-system' ); ?></label>
-							<input
-								class="form-control font-monospace"
-								type="text"
-								id="ulbm_license_key"
-								name="ulbm_license_key"
-								value=""
-								placeholder="<?php echo esc_attr( ! empty( $ulbm_license['key_masked'] ) ? (string) $ulbm_license['key_masked'] : 'XXXX-XXXX-XXXX-XXXX' ); ?>"
-								autocomplete="off"
-								<?php echo ! empty( $ulbm_license['is_active'] ) ? 'disabled' : ''; ?>
-							>
-							<?php if ( ! empty( $ulbm_license['is_active'] ) && ! empty( $ulbm_license['key_masked'] ) ) : ?>
-								<span class="form-text"><?php esc_html_e( 'Active key:', 'flex-multiple-listing-and-booking-system' ); ?> <code><?php echo esc_html( (string) $ulbm_license['key_masked'] ); ?></code></span>
-							<?php endif; ?>
-						</div>
-						<div class="col-md-4 d-flex flex-wrap gap-2">
-							<button type="button" class="btn btn-primary" id="ulbm-license-activate" <?php disabled( ! empty( $ulbm_license['is_active'] ) ); ?>>
-								<i class="bi bi-check-circle me-1"></i><?php esc_html_e( 'Activate', 'flex-multiple-listing-and-booking-system' ); ?>
-							</button>
-							<button type="button" class="btn btn-outline-secondary" id="ulbm-license-check" <?php disabled( empty( $ulbm_license['key_masked'] ) ); ?>>
-								<i class="bi bi-arrow-repeat me-1"></i><?php esc_html_e( 'Check status', 'flex-multiple-listing-and-booking-system' ); ?>
-							</button>
-							<button type="button" class="btn btn-outline-danger" id="ulbm-license-deactivate" <?php disabled( empty( $ulbm_license['key_masked'] ) ); ?>>
-								<?php esc_html_e( 'Deactivate', 'flex-multiple-listing-and-booking-system' ); ?>
-							</button>
-						</div>
-					</div>
-
-					<div id="ulbm-license-feedback" class="alert d-none mb-3" role="status"></div>
-
-					<table class="table table-sm table-borderless mb-0 w-auto">
-						<tbody>
-							<tr>
-								<th class="text-muted pe-3"><?php esc_html_e( 'Status', 'flex-multiple-listing-and-booking-system' ); ?></th>
-								<td>
-									<span class="badge bg-<?php echo esc_attr( $ulbm_license_badge ); ?>" id="ulbm-license-status-badge">
-										<?php echo esc_html( ucfirst( (string) ( $ulbm_license['status'] ?? 'inactive' ) ) ); ?>
-									</span>
-								</td>
-							</tr>
-							<tr>
-								<th class="text-muted pe-3"><?php esc_html_e( 'Expires', 'flex-multiple-listing-and-booking-system' ); ?></th>
-								<td id="ulbm-license-expires"><?php echo esc_html( (string) ( $ulbm_license['expires_human'] ?? __( '—', 'flex-multiple-listing-and-booking-system' ) ) ); ?></td>
-							</tr>
-							<?php if ( ! empty( $ulbm_license['last_check'] ) ) : ?>
-								<tr>
-									<th class="text-muted pe-3"><?php esc_html_e( 'Last checked', 'flex-multiple-listing-and-booking-system' ); ?></th>
-									<td id="ulbm-license-last-check"><?php echo esc_html( date_i18n( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), (int) $ulbm_license['last_check'] ) ); ?></td>
-								</tr>
-							<?php endif; ?>
-							<?php if ( ! empty( $ulbm_license['message'] ) ) : ?>
-								<tr>
-									<th class="text-muted pe-3"><?php esc_html_e( 'Message', 'flex-multiple-listing-and-booking-system' ); ?></th>
-									<td id="ulbm-license-message" class="small"><?php echo esc_html( (string) $ulbm_license['message'] ); ?></td>
-								</tr>
-							<?php endif; ?>
-						</tbody>
-					</table>
 				</div>
 			</div>
 
