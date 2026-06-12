@@ -4,7 +4,7 @@ Tags: booking, listings, rental, appointment, calendar
 Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.0.5
+Stable tag: 1.0.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -122,6 +122,12 @@ Custom database tables and plugin options are removed on uninstall. Use the `ulb
 
 == Changelog ==
 
+= 1.0.6 =
+* Remove license key settings tab and related admin code
+* Rebuild listing grid filters for theme and Elementor compatibility (visible inputs, sort toggle)
+* Fix Gutenberg grid block so filter inputs are not stripped by kses
+* Enqueue grid filter styles via public stylesheet instead of inline shortcode output
+
 = 1.0.5 =
 * Fix text domain: all plugin strings use `flex-multiple-listing-and-booking-system` only
 * Submission ZIP excludes `dev-tools/` via `.distignore`
@@ -158,6 +164,9 @@ Custom database tables and plugin options are removed on uninstall. Use the `ulb
 * REST API and admin dashboard
 
 == Upgrade Notice ==
+
+= 1.0.6 =
+Listing grid filters work better with themes and Elementor. License settings tab removed.
 
 = 1.0.1 =
 Improved color settings and plugin branding. Settings and data are preserved on upgrade.

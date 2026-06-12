@@ -1,6 +1,9 @@
 # Development — not shipped to WordPress.org (use: wp dist-archive)
 /dev-tools/
 /assets/src/
+/assets/wporg/
+/vite.config.js
+/bin/
 /node_modules/
 /vendor/
 
