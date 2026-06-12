@@ -220,7 +220,10 @@ final class Plugin {
 			}
 		}
 
-		$ulbm_form_groups = \FlexBooking\Forms\PublicBookingFields::groups_for_type( $ulbm_booking_type );
+		$ulbm_form_groups = \FlexBooking\Forms\PublicBookingFields::groups_for_type(
+			$ulbm_booking_type,
+			$ulbm_listing_id > 0 ? (string) get_post_type( $ulbm_listing_id ) : ''
+		);
 
 		$ulbm_prefill = array(
 			'customer_email'      => '',
@@ -253,8 +256,9 @@ final class Plugin {
 		$atts = shortcode_atts(
 			array(
 				'type'          => '',
-				'columns'       => 3,
-				'limit'         => 12,
+				'columns'       => '',
+				'limit'         => '',
+				'design'        => '',
 				'gap'           => '',
 				'padding_x'     => '',
 				'padding_y'     => '',
@@ -267,8 +271,11 @@ final class Plugin {
 		);
 
 		$ulbm_grid_type    = sanitize_key( $atts['type'] );
-		$ulbm_grid_columns = max( 1, min( 6, (int) $atts['columns'] ) );
-		$ulbm_grid_limit   = max( 1, min( 100, (int) $atts['limit'] ) );
+		$ulbm_grid_columns = \FlexBooking\Front\LayoutSettings::grid_columns( $atts['columns'] );
+		$ulbm_grid_limit   = \FlexBooking\Front\LayoutSettings::grid_per_page( $atts['limit'] );
+		$ulbm_grid_design  = '' !== (string) $atts['design']
+			? \FlexBooking\Front\GridDesignRegistry::sanitize_id( (string) $atts['design'] )
+			: null;
 		$ulbm_grid_spacing = array();
 		foreach ( array( 'gap', 'padding_x', 'padding_y', 'margin_top', 'margin_bottom', 'card_padding' ) as $spacing_key ) {
 			if ( '' !== (string) $atts[ $spacing_key ] ) {

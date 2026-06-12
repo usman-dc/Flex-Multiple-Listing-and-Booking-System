@@ -298,6 +298,83 @@ final class ListingDisplay {
 	}
 
 	/**
+	 * Short excerpt for grid cards.
+	 *
+	 * @param int $post_id Post ID.
+	 * @param int $words   Max words.
+	 * @return string
+	 */
+	public static function card_excerpt( $post_id, $words = 22 ) {
+		$post_id = (int) $post_id;
+		if ( has_excerpt( $post_id ) ) {
+			return wp_trim_words( get_the_excerpt( $post_id ), $words, '&hellip;' );
+		}
+
+		$post = get_post( $post_id );
+		if ( ! $post ) {
+			return '';
+		}
+
+		return wp_trim_words( wp_strip_all_tags( $post->post_content ), $words, '&hellip;' );
+	}
+
+	/**
+	 * Booking type label for a listing post.
+	 *
+	 * @param int $post_id Post ID.
+	 * @return string
+	 */
+	public static function booking_type_label( $post_id ) {
+		$row = \FlexBooking\PostTypes\BookingTypePostTypeRegistry::booking_type_for_post_type(
+			(string) get_post_type( (int) $post_id )
+		);
+
+		return $row ? (string) $row['name'] : '';
+	}
+
+	/**
+	 * Plain price string for compact badges.
+	 *
+	 * @param string $base_price Base price.
+	 * @param string $sale_price Sale price.
+	 * @param string $suffix     Suffix.
+	 * @return string
+	 */
+	public static function card_price_label( $base_price, $sale_price = '', $suffix = '' ) {
+		$sale_price = trim( (string) $sale_price );
+		$base_price = trim( (string) $base_price );
+		$amount     = '' !== $sale_price ? $sale_price : $base_price;
+
+		if ( '' === $amount ) {
+			return '';
+		}
+
+		$label = PriceFormatter::format_plain( $amount );
+		$suf   = PriceFormatter::normalize_suffix( $suffix );
+
+		return '' !== $suf ? $label . ' ' . $suf : $label;
+	}
+
+	/**
+	 * Human-readable time since publish.
+	 *
+	 * @param int $post_id Post ID.
+	 * @return string
+	 */
+	public static function card_time_ago( $post_id ) {
+		$post = get_post( (int) $post_id );
+		if ( ! $post ) {
+			return '';
+		}
+
+		return sprintf(
+			/* translators: %s: human-readable time difference */
+			__( '%s ago', 'flex-multiple-listing-and-booking-system' ),
+			human_time_diff( strtotime( $post->post_date ), time() )
+		);
+	}
+
+	/**
 	 * Aria label for grid star rating.
 	 *
 	 * @param float $rating Average rating.

@@ -154,11 +154,15 @@ function syncMarketplaceHiddenDates( form, root ) {
 	const endHidden   = form.querySelector( '#ulbm-end' );
 	const checkInT    = root.dataset.ulbmCheckInTime || '14:00';
 	const checkOutT   = root.dataset.ulbmCheckOutTime || '11:00';
+	const showEnd     = root.dataset.ulbmShowEndDate !== '0';
 	if ( startHidden && checkinEl?.value ) {
 		startHidden.value = checkinEl.value + 'T' + checkInT;
 	}
-	if ( endHidden && checkoutEl?.value ) {
-		endHidden.value = checkoutEl.value + 'T' + checkOutT;
+	if ( endHidden ) {
+		const endDate = ( showEnd && checkoutEl?.value ) ? checkoutEl.value : ( checkinEl?.value || '' );
+		if ( endDate ) {
+			endHidden.value = endDate + 'T' + checkOutT;
+		}
 	}
 }
 
@@ -170,13 +174,15 @@ function initMarketplaceBooking( form, root ) {
 	const startHidden = form.querySelector( '#ulbm-start' );
 	const endHidden   = form.querySelector( '#ulbm-end' );
 	const baseHidden  = form.querySelector( '[name="base_price"]' );
-	if ( ! checkinEl || ! checkoutEl ) return;
+	if ( ! checkinEl ) return;
 
 	const nightly   = parseFloat( root.dataset.ulbmNightly || '0' );
 	const cleaning  = parseFloat( root.dataset.ulbmCleaning || '0' );
 	let serviceFee  = parseFloat( root.dataset.ulbmService || '0' );
 	const currency  = root.dataset.ulbmCurrency || 'USD';
 	const suffix    = root.dataset.ulbmPriceSuffix || '/night';
+	const unitLabel = root.dataset.ulbmUnitLabel || 'nights';
+	const showEnd   = root.dataset.ulbmShowEndDate !== '0';
 	const checkInT  = root.dataset.ulbmCheckInTime || '14:00';
 	const checkOutT = root.dataset.ulbmCheckOutTime || '11:00';
 
@@ -208,11 +214,15 @@ function initMarketplaceBooking( form, root ) {
 		const inDate = new Date( today );
 		inDate.setDate( inDate.getDate() + 5 );
 		const outDate = new Date( inDate );
-		outDate.setDate( outDate.getDate() + 5 );
+		if ( showEnd ) {
+			outDate.setDate( outDate.getDate() + 5 );
+		}
 		checkinEl.min = toIsoDate( today );
 		checkinEl.value = toIsoDate( inDate );
-		checkoutEl.min = toIsoDate( inDate );
-		checkoutEl.value = toIsoDate( outDate );
+		if ( checkoutEl ) {
+			checkoutEl.min = toIsoDate( inDate );
+			checkoutEl.value = toIsoDate( showEnd ? outDate : inDate );
+		}
 		updateBreakdown();
 	}
 
@@ -220,27 +230,33 @@ function initMarketplaceBooking( form, root ) {
 		if ( startHidden && checkinEl.value ) {
 			startHidden.value = checkinEl.value + 'T' + checkInT;
 		}
-		if ( endHidden && checkoutEl.value ) {
-			endHidden.value = checkoutEl.value + 'T' + checkOutT;
+		if ( endHidden ) {
+			const endDate = ( showEnd && checkoutEl?.value ) ? checkoutEl.value : checkinEl.value;
+			if ( endDate ) {
+				endHidden.value = endDate + 'T' + checkOutT;
+			}
 		}
 	}
 
 	function updateBreakdown() {
+		if ( ! showEnd && checkoutEl && checkinEl.value ) {
+			checkoutEl.value = checkinEl.value;
+		}
 		syncHiddenDates();
 		const inD  = checkinEl.value ? new Date( checkinEl.value + 'T12:00:00' ) : null;
-		const outD = checkoutEl.value ? new Date( checkoutEl.value + 'T12:00:00' ) : null;
-		let nights = 1;
-		if ( inD && outD && outD > inD ) {
-			nights = Math.max( 1, Math.round( ( outD - inD ) / 86400000 ) );
+		const outD = ( showEnd && checkoutEl?.value ) ? new Date( checkoutEl.value + 'T12:00:00' ) : inD;
+		let units = 1;
+		if ( showEnd && inD && outD && outD > inD ) {
+			units = Math.max( 1, Math.round( ( outD - inD ) / 86400000 ) );
 		}
-		const subtotal = nightly * nights;
+		const subtotal = nightly * units;
 		if ( ! serviceFee && subtotal > 0 ) {
 			serviceFee = Math.round( subtotal * 0.05 );
 		}
 		const total = subtotal + cleaning + serviceFee;
 
 		if ( nightsLine ) {
-			nightsLine.textContent = fmtMoney( nightly ) + ' x ' + nights + ' nights';
+			nightsLine.textContent = fmtMoney( nightly ) + ' x ' + units + ' ' + unitLabel;
 		}
 		if ( nightsVal ) nightsVal.textContent = fmtMoney( subtotal );
 		if ( cleaningVal ) cleaningVal.textContent = fmtMoney( cleaning );
@@ -250,15 +266,17 @@ function initMarketplaceBooking( form, root ) {
 	}
 
 	checkinEl.addEventListener( 'change', () => {
-		checkoutEl.min = checkinEl.value;
-		if ( checkoutEl.value && checkoutEl.value <= checkinEl.value ) {
-			const d = new Date( checkinEl.value + 'T12:00:00' );
-			d.setDate( d.getDate() + 1 );
-			checkoutEl.value = toIsoDate( d );
+		if ( checkoutEl ) {
+			checkoutEl.min = checkinEl.value;
+			if ( showEnd && checkoutEl.value && checkoutEl.value <= checkinEl.value ) {
+				const d = new Date( checkinEl.value + 'T12:00:00' );
+				d.setDate( d.getDate() + 1 );
+				checkoutEl.value = toIsoDate( d );
+			}
 		}
 		updateBreakdown();
 	} );
-	checkoutEl.addEventListener( 'change', updateBreakdown );
+	checkoutEl?.addEventListener( 'change', updateBreakdown );
 	form.querySelector( '.ulbm-mp-guests' )?.addEventListener( 'change', updateBreakdown );
 
 	if ( ! checkinEl.value ) {

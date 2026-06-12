@@ -20,6 +20,8 @@ use Elementor\Controls_Manager;
 
 use Elementor\Widget_Base;
 
+use FlexBooking\Front\GridDesignRegistry;
+
 
 
 defined( 'ABSPATH' ) || exit;
@@ -226,9 +228,11 @@ final class ListingGridWidget extends Widget_Base {
 
 				'type'    => Controls_Manager::SELECT,
 
-				'default' => '3',
+				'default' => '',
 
 				'options' => array(
+
+					''  => __( 'Use global setting', 'flex-multiple-listing-and-booking-system' ),
 
 					'2' => '2',
 
@@ -259,6 +263,26 @@ final class ListingGridWidget extends Widget_Base {
 				'min'     => 1,
 
 				'max'     => 50,
+
+			)
+
+		);
+
+
+
+		$this->add_control(
+
+			'grid_design',
+
+			array(
+
+				'label'   => __( 'Card design', 'flex-multiple-listing-and-booking-system' ),
+
+				'type'    => Controls_Manager::SELECT,
+
+				'default' => '',
+
+				'options' => GridDesignRegistry::select_options( true ),
 
 			)
 
@@ -560,7 +584,7 @@ final class ListingGridWidget extends Widget_Base {
 
 		$type     = isset( $settings['booking_type'] ) ? sanitize_key( $settings['booking_type'] ) : '';
 
-		$columns  = isset( $settings['columns'] ) ? absint( $settings['columns'] ) : 3;
+		$columns_raw = isset( $settings['columns'] ) ? (string) $settings['columns'] : '';
 
 		$limit    = isset( $settings['limit'] ) ? absint( $settings['limit'] ) : 12;
 
@@ -570,11 +594,23 @@ final class ListingGridWidget extends Widget_Base {
 
 			sprintf( 'type="%s"', esc_attr( $type ) ),
 
-			sprintf( 'columns="%d"', $columns ),
-
-			sprintf( 'limit="%d"', $limit ),
-
 		);
+
+		if ( '' !== $columns_raw ) {
+			$parts[] = sprintf( 'columns="%d"', absint( $columns_raw ) );
+		}
+
+		$parts[] = sprintf( 'limit="%d"', $limit );
+
+
+
+		$design = isset( $settings['grid_design'] ) ? sanitize_key( $settings['grid_design'] ) : '';
+
+		if ( '' !== $design && GridDesignRegistry::get( $design ) ) {
+
+			$parts[] = sprintf( 'design="%s"', esc_attr( $design ) );
+
+		}
 
 
 

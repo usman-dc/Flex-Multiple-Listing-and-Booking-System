@@ -23,7 +23,6 @@
 
 
 use FlexBooking\Front\PriceFormatter;
-
 use FlexBooking\Listings\ListingMeta;
 
 
@@ -37,16 +36,23 @@ $type    = isset( $atts['type'] ) ? sanitize_title( $atts['type'] ) : '';
 $id      = isset( $atts['id'] ) ? absint( $atts['id'] ) : 0;
 
 $ulbm_groups = isset( $ulbm_form_groups ) && is_array( $ulbm_form_groups ) ? $ulbm_form_groups : array(
-
-	'industry' => 'generic',
-
-	'contact'  => array(),
-
-	'extra'    => array(),
-
-	'title'    => '',
-
+	'industry'       => 'generic',
+	'contact'        => array(),
+	'extra'          => array(),
+	'title'          => '',
+	'widget_title'   => '',
+	'schedule'       => array(),
+	'skip_marketplace' => array(),
 );
+
+$ulbm_schedule = isset( $ulbm_groups['schedule'] ) && is_array( $ulbm_groups['schedule'] ) ? $ulbm_groups['schedule'] : array();
+$ulbm_show_guests_mp = ! empty( $ulbm_schedule['show_guests'] );
+$ulbm_show_end_mp    = ! isset( $ulbm_schedule['show_end_date'] ) || ! empty( $ulbm_schedule['show_end_date'] );
+$ulbm_start_label    = (string) ( $ulbm_schedule['start_label'] ?? __( 'Check-in', 'flex-multiple-listing-and-booking-system' ) );
+$ulbm_end_label      = (string) ( $ulbm_schedule['end_label'] ?? __( 'Check-out', 'flex-multiple-listing-and-booking-system' ) );
+$ulbm_price_unit     = (string) ( $ulbm_schedule['price_unit'] ?? 'night' );
+$ulbm_unit_label     = (string) ( $ulbm_schedule['unit_label'] ?? __( 'nights', 'flex-multiple-listing-and-booking-system' ) );
+$ulbm_skip_mp        = isset( $ulbm_groups['skip_marketplace'] ) && is_array( $ulbm_groups['skip_marketplace'] ) ? $ulbm_groups['skip_marketplace'] : array( 'guests_count' );
 
 if ( ! isset( $ulbm_prefill ) || ! is_array( $ulbm_prefill ) ) {
 	$ulbm_prefill = array();
@@ -206,6 +212,12 @@ if ( $ulbm_marketplace ) {
 
 	$ulbm_price_suffix   = PriceFormatter::normalize_suffix( ListingMeta::get( $ulbm_listing_id, ListingMeta::KEY_PRICE_SUFFIX, 'string' ) ?: '/night' );
 
+	if ( in_array( (string) $ulbm_groups['industry'], array( 'car_rental', 'equipment_rental', 'transport_shuttles', 'boats_charters', 'workspace_desks' ), true ) ) {
+		if ( '' === $ulbm_price_suffix || '/night' === $ulbm_price_suffix ) {
+			$ulbm_price_suffix = '/day';
+		}
+	}
+
 	$ulbm_check_in_time  = ListingMeta::get( $ulbm_listing_id, ListingMeta::KEY_CHECK_IN_TIME, 'string' ) ?: '14:00';
 
 	$ulbm_check_out_time = ListingMeta::get( $ulbm_listing_id, ListingMeta::KEY_CHECK_OUT_TIME, 'string' ) ?: '11:00';
@@ -268,6 +280,14 @@ $ulbm_currency = PriceFormatter::currency_code();
 
 	data-ulbm-price-suffix="<?php echo esc_attr( $ulbm_price_suffix ); ?>"
 
+	data-ulbm-price-unit="<?php echo esc_attr( $ulbm_price_unit ); ?>"
+
+	data-ulbm-unit-label="<?php echo esc_attr( $ulbm_unit_label ); ?>"
+
+	data-ulbm-show-guests="<?php echo $ulbm_show_guests_mp ? '1' : '0'; ?>"
+
+	data-ulbm-show-end-date="<?php echo $ulbm_show_end_mp ? '1' : '0'; ?>"
+
 	data-ulbm-check-in-time="<?php echo esc_attr( $ulbm_check_in_time ); ?>"
 
 	data-ulbm-check-out-time="<?php echo esc_attr( $ulbm_check_out_time ); ?>"
@@ -318,7 +338,7 @@ $ulbm_currency = PriceFormatter::currency_code();
 
 					<div class="ulbm-mp-field">
 
-						<label class="ulbm-mp-label" for="ulbm-checkin"><?php esc_html_e( 'Check-in', 'flex-multiple-listing-and-booking-system' ); ?></label>
+						<label class="ulbm-mp-label" for="ulbm-checkin"><?php echo esc_html( $ulbm_start_label ); ?></label>
 
 						<div class="ulbm-mp-input-wrap">
 
@@ -330,21 +350,21 @@ $ulbm_currency = PriceFormatter::currency_code();
 
 					</div>
 
-					<div class="ulbm-mp-field">
+					<div class="ulbm-mp-field ulbm-mp-field--checkout<?php echo $ulbm_show_end_mp ? '' : ' d-none'; ?>">
 
-						<label class="ulbm-mp-label" for="ulbm-checkout"><?php esc_html_e( 'Check-out', 'flex-multiple-listing-and-booking-system' ); ?></label>
+						<label class="ulbm-mp-label" for="ulbm-checkout"><?php echo esc_html( $ulbm_end_label ?: __( 'End date', 'flex-multiple-listing-and-booking-system' ) ); ?></label>
 
 						<div class="ulbm-mp-input-wrap">
 
 							<i class="bi bi-calendar3" aria-hidden="true"></i>
 
-							<input type="date" class="ulbm-mp-input ulbm-mp-checkout" id="ulbm-checkout" name="ulbm_checkout" required>
+							<input type="date" class="ulbm-mp-input ulbm-mp-checkout" id="ulbm-checkout" name="ulbm_checkout"<?php echo $ulbm_show_end_mp ? ' required' : ''; ?>>
 
 						</div>
 
 					</div>
 
-					<div class="ulbm-mp-field">
+					<div class="ulbm-mp-field ulbm-mp-field--guests<?php echo $ulbm_show_guests_mp ? '' : ' d-none'; ?>">
 
 						<label class="ulbm-mp-label" for="ulbm-guests"><?php esc_html_e( 'Guests', 'flex-multiple-listing-and-booking-system' ); ?></label>
 
@@ -502,12 +522,17 @@ $ulbm_currency = PriceFormatter::currency_code();
 
 						<?php if ( ! empty( $ulbm_groups['extra'] ) ) : ?>
 
+							<div class="col-12">
+
+								<p class="ulbm-contact-panel-subtitle"><?php echo esc_html( $ulbm_groups['title'] ?: __( 'Booking details', 'flex-multiple-listing-and-booking-system' ) ); ?></p>
+
+							</div>
+
 							<?php foreach ( $ulbm_groups['extra'] as $ulbm_field ) : ?>
 
 								<?php
 								$ulbm_fname = isset( $ulbm_field['name'] ) ? (string) $ulbm_field['name'] : '';
-								// Marketplace already collects guests via .ulbm-mp-guests.
-								if ( 'guests_count' === $ulbm_fname ) {
+								if ( in_array( $ulbm_fname, $ulbm_skip_mp, true ) ) {
 									continue;
 								}
 								$ulbm_render_field( $ulbm_field, true );

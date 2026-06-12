@@ -21,6 +21,7 @@
 
 
 use FlexBooking\Front\GridFilterUi;
+use FlexBooking\Front\GridDesignRegistry;
 use FlexBooking\Front\LayoutSettings;
 use FlexBooking\Front\ListingDisplay;
 
@@ -36,9 +37,8 @@ defined( 'ABSPATH' ) || exit;
 
 $ulbm_grid_type    = isset( $ulbm_grid_type ) ? (string) $ulbm_grid_type : '';
 
-$ulbm_grid_columns = isset( $ulbm_grid_columns ) ? (int) $ulbm_grid_columns : 3;
-
-$ulbm_grid_limit   = isset( $ulbm_grid_limit ) ? (int) $ulbm_grid_limit : 12;
+$ulbm_grid_columns = isset( $ulbm_grid_columns ) ? (int) $ulbm_grid_columns : LayoutSettings::grid_columns();
+$ulbm_grid_limit   = isset( $ulbm_grid_limit ) ? (int) $ulbm_grid_limit : LayoutSettings::grid_per_page();
 
 
 
@@ -106,11 +106,11 @@ $ulbm_total        = (int) $ulbm_grid_query->found_posts;
 $ulbm_showing_end  = min( $ulbm_grid_limit, $ulbm_total );
 
 $ulbm_grid_spacing = isset( $ulbm_grid_spacing ) && is_array( $ulbm_grid_spacing ) ? $ulbm_grid_spacing : array();
-$ulbm_grid_style   = LayoutSettings::grid_inline_style( $ulbm_grid_spacing );
+$ulbm_grid_style   = LayoutSettings::grid_root_style( $ulbm_grid_columns, $ulbm_grid_spacing );
 
 ?>
 <?php GridFilterUi::enqueue_critical_styles( $ulbm_uid ); ?>
-<div class="ulbm-listing-grid ulbm-marketplace-ui" id="<?php echo esc_attr( $ulbm_uid ); ?>" style="<?php echo esc_attr( $ulbm_grid_style ); ?>" data-type="<?php echo esc_attr( $ulbm_grid_type ); ?>" data-per-page="<?php echo esc_attr( (string) $ulbm_grid_limit ); ?>" data-columns="<?php echo esc_attr( (string) $ulbm_grid_columns ); ?>">
+<div class="ulbm-listing-grid ulbm-marketplace-ui <?php echo esc_attr( GridDesignRegistry::css_class( $ulbm_grid_design ?? null ) ); ?>" id="<?php echo esc_attr( $ulbm_uid ); ?>" style="<?php echo esc_attr( $ulbm_grid_style ); ?>" data-type="<?php echo esc_attr( $ulbm_grid_type ); ?>" data-per-page="<?php echo esc_attr( (string) $ulbm_grid_limit ); ?>" data-columns="<?php echo esc_attr( (string) $ulbm_grid_columns ); ?>">
 
 	<?php if ( $ulbm_show_filters ) : ?>
 		<?php
@@ -167,7 +167,7 @@ $ulbm_grid_style   = LayoutSettings::grid_inline_style( $ulbm_grid_spacing );
 
 
 
-	<div class="ulbm-grid-results row ulbm-view-grid">
+	<div class="ulbm-grid-results ulbm-view-grid">
 
 		<?php if ( $ulbm_grid_query->have_posts() ) : ?>
 

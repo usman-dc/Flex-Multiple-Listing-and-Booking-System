@@ -597,7 +597,8 @@ final class AjaxDispatcher {
 		$query = new \WP_Query( $args );
 
 		$general   = json_decode( (string) get_option( 'ulbm_general_settings', '{}' ), true );
-		$columns   = PostData::has( 'columns' ) ? PostData::int( 'columns' ) : (int) ( is_array( $general ) ? ( $general['grid_columns'] ?? 3 ) : 3 );
+		$columns_raw = PostData::has( 'columns' ) ? PostData::int( 'columns' ) : 0;
+		$columns     = $columns_raw > 0 ? max( 1, min( 6, $columns_raw ) ) : \FlexBooking\Front\LayoutSettings::grid_columns();
 		$col_class = ListingDisplay::grid_col_class( $columns );
 
 		ob_start();

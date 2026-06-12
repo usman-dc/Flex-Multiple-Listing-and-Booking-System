@@ -483,6 +483,11 @@ import './admin.scss';
 			}
 		} );
 
+		$( '.ulbm-grid-design-picker' ).on( 'change', 'input[type="radio"]', function () {
+			$( '.ulbm-grid-design-option' ).removeClass( 'is-active' );
+			$( this ).closest( '.ulbm-grid-design-option' ).addClass( 'is-active' );
+		} );
+
 		const $reviewsFeedback = $( '#ulbm-reviews-feedback' );
 		function ulbmReviewsFeedback( msg, ok ) {
 			if ( ! $reviewsFeedback.length ) return;

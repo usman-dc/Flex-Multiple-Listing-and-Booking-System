@@ -1,6 +1,10 @@
 # WordPress.org directory assets
 
-PNG files in this folder are ready to upload (icons, banners, screenshots 1–5). Regenerate with the resize script in repo docs or replace PNGs manually.
+PNG files in this folder are ready to upload (icons, banners, screenshots 1–5).
+
+**Banners:** run `dev-tools/generate-banners.ps1` (modern vector-style, full bleed).
+
+**Icons:** run `dev-tools/generate-wporg-assets.ps1`.
 
 Upload these files to the **SVN assets folder** for the plugin:
 

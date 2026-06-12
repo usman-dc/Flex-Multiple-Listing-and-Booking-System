@@ -321,18 +321,26 @@ function New-PluginBanner {
     return $bmp
 }
 
-Write-Host "Generating WordPress.org assets in $OutDir"
+if ($MyInvocation.InvocationName -ne '.') {
+    Write-Host "Generating WordPress.org assets in $OutDir"
 
-Save-Png (New-PluginIcon 128) (Join-Path $OutDir 'icon-128x128.png')
-Save-Png (New-PluginIcon 256) (Join-Path $OutDir 'icon-256x256.png')
-Save-Png (New-PluginBanner 772 250) (Join-Path $OutDir 'banner-772x250.png')
-Save-Png (New-PluginBanner 1544 500) (Join-Path $OutDir 'banner-1544x500.png')
+    Save-Png (New-PluginIcon 128) (Join-Path $OutDir 'icon-128x128.png')
+    Save-Png (New-PluginIcon 256) (Join-Path $OutDir 'icon-256x256.png')
 
-foreach ($file in @('icon-128x128.png', 'icon-256x256.png', 'banner-772x250.png', 'banner-1544x500.png')) {
-    $path = Join-Path $OutDir $file
-    $img = [System.Drawing.Image]::FromFile($path)
-    Write-Host "  $file -> $($img.Width)x$($img.Height)"
-    $img.Dispose()
+    $bannerScript = Join-Path $PSScriptRoot 'generate-banners.ps1'
+    if (Test-Path $bannerScript) {
+        & $bannerScript
+    } else {
+        Save-Png (New-PluginBanner 772 250) (Join-Path $OutDir 'banner-772x250.png')
+        Save-Png (New-PluginBanner 1544 500) (Join-Path $OutDir 'banner-1544x500.png')
+    }
+
+    foreach ($file in @('icon-128x128.png', 'icon-256x256.png', 'banner-772x250.png', 'banner-1544x500.png')) {
+        $path = Join-Path $OutDir $file
+        $img = [System.Drawing.Image]::FromFile($path)
+        Write-Host "  $file -> $($img.Width)x$($img.Height)"
+        $img.Dispose()
+    }
+
+    Write-Host 'Done.'
 }
-
-Write-Host 'Done.'

@@ -6,6 +6,7 @@
  */
 
 use FlexBooking\Front\ColorSettings;
+use FlexBooking\Front\GridDesignRegistry;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -53,6 +54,7 @@ $ulbm_defaults = array(
 	'grid_show_rating'       => true,
 	'grid_show_amenities'    => true,
 	'grid_amenities_limit'   => 4,
+	'grid_design'            => 'marketplace',
 );
 $ulbm_s = array_merge( $ulbm_defaults, ColorSettings::defaults(), is_array( $ulbm_parsed ) ? $ulbm_parsed : array() );
 foreach ( ColorSettings::fields() as $ulbm_color_field_key => $ulbm_color_field ) {
@@ -86,7 +88,7 @@ $ulbm_vendor_page_rows = \FlexBooking\Vendor\VendorPageProvisioner::status_rows(
 // Shortcodes reference.
 $ulbm_shortcodes_help = array(
 	array( 'tag' => 'ulbm_booking_form', 'description' => __( 'Booking form for a specific type.', 'flex-multiple-listing-and-booking-system' ), 'example' => '[ulbm_booking_form id="1"]', 'attrs' => '<code>id</code> (required)' ),
-	array( 'tag' => 'ulbm_listing_grid', 'description' => __( 'Listing grid with AJAX filters.', 'flex-multiple-listing-and-booking-system' ), 'example' => '[ulbm_listing_grid type="car-rental" columns="3" limit="12"]', 'attrs' => '<code>type</code>, <code>columns</code>, <code>limit</code>' ),
+	array( 'tag' => 'ulbm_listing_grid', 'description' => __( 'Listing grid with AJAX filters.', 'flex-multiple-listing-and-booking-system' ), 'example' => '[ulbm_listing_grid type="car-rental" columns="3" limit="12" design="minimal"]', 'attrs' => '<code>type</code>, <code>columns</code>, <code>limit</code>, <code>design</code>' ),
 	array( 'tag' => 'ulbm_search', 'description' => __( 'Search UI (AJAX).', 'flex-multiple-listing-and-booking-system' ), 'example' => '[ulbm_search]', 'attrs' => '<code>layout</code>' ),
 	array( 'tag' => 'ulbm_register', 'description' => __( 'Partner registration form.', 'flex-multiple-listing-and-booking-system' ), 'example' => '[ulbm_register]', 'attrs' => '—' ),
 	array( 'tag' => 'ulbm_login', 'description' => __( 'Partner login form.', 'flex-multiple-listing-and-booking-system' ), 'example' => '[ulbm_login]', 'attrs' => '—' ),
@@ -240,7 +242,7 @@ $ulbm_shortcodes_help = apply_filters( 'ulbm_settings_shortcodes_help', $ulbm_sh
 			</div>
 
 			<!-- LAYOUT -->
-			<div class="tab-pane fade" id="ulbm-st-layout">
+			<div class="tab-pane fade<?php echo 'layout' === $ulbm_settings_tab ? ' show active' : ''; ?>" id="ulbm-st-layout">
 				<div class="ulbm-admin-panel border rounded bg-white p-4 mb-4">
 					<h5 class="fw-bold mb-3"><i class="bi bi-arrows-angle-expand me-2"></i><?php esc_html_e( 'Container Width', 'flex-multiple-listing-and-booking-system' ); ?></h5>
 					<p class="text-muted small mb-3"><?php esc_html_e( 'Maximum content width for all plugin pages, shortcodes, blocks, and Elementor widgets.', 'flex-multiple-listing-and-booking-system' ); ?></p>
@@ -268,6 +270,46 @@ $ulbm_shortcodes_help = apply_filters( 'ulbm_settings_shortcodes_help', $ulbm_sh
 				</div>
 
 				<div class="ulbm-admin-panel border rounded bg-white p-4 mb-4">
+					<h5 class="fw-bold mb-3"><i class="bi bi-palette me-2"></i><?php esc_html_e( 'Grid Card Design', 'flex-multiple-listing-and-booking-system' ); ?></h5>
+					<p class="text-muted small mb-3"><?php esc_html_e( 'Choose the default card style for grids and archives. You can override this per block (Gutenberg), Elementor widget, or shortcode using the design attribute.', 'flex-multiple-listing-and-booking-system' ); ?></p>
+					<?php
+					$ulbm_active_design = GridDesignRegistry::sanitize_id( (string) ( $ulbm_s['grid_design'] ?? GridDesignRegistry::DEFAULT ) );
+					?>
+					<div class="ulbm-grid-design-picker row g-3">
+						<?php foreach ( GridDesignRegistry::all() as $ulbm_design ) : ?>
+							<?php
+							$ulbm_design_id    = $ulbm_design['id'];
+							$ulbm_design_input = 'ulbm_grid_design_' . $ulbm_design_id;
+							$ulbm_preview      = GridDesignRegistry::preview_url( $ulbm_design_id );
+							$ulbm_is_active    = $ulbm_active_design === $ulbm_design_id;
+							?>
+							<div class="col-6 col-md-4 col-xl-3">
+								<label class="ulbm-grid-design-option<?php echo $ulbm_is_active ? ' is-active' : ''; ?>" for="<?php echo esc_attr( $ulbm_design_input ); ?>">
+									<input
+										type="radio"
+										name="ulbm_grid_design"
+										id="<?php echo esc_attr( $ulbm_design_input ); ?>"
+										value="<?php echo esc_attr( $ulbm_design_id ); ?>"
+										<?php checked( $ulbm_is_active ); ?>
+									/>
+									<span class="ulbm-grid-design-preview">
+										<?php if ( $ulbm_preview ) : ?>
+											<img src="<?php echo esc_url( $ulbm_preview ); ?>" alt="" loading="lazy" width="1280" height="800" decoding="async" />
+										<?php else : ?>
+											<span class="ulbm-grid-design-preview-fallback"><?php echo esc_html( $ulbm_design['label'] ); ?></span>
+										<?php endif; ?>
+									</span>
+									<span class="ulbm-grid-design-meta">
+										<strong class="ulbm-grid-design-label"><?php echo esc_html( $ulbm_design['label'] ); ?></strong>
+										<span class="ulbm-grid-design-desc"><?php echo esc_html( $ulbm_design['description'] ); ?></span>
+									</span>
+								</label>
+							</div>
+						<?php endforeach; ?>
+					</div>
+				</div>
+
+				<div class="ulbm-admin-panel border rounded bg-white p-4 mb-4">
 					<h5 class="fw-bold mb-3"><i class="bi bi-grid me-2"></i><?php esc_html_e( 'Grid & Card Settings', 'flex-multiple-listing-and-booking-system' ); ?></h5>
 					<div class="row g-3">
 						<div class="col-md-3">
@@ -277,6 +319,7 @@ $ulbm_shortcodes_help = apply_filters( 'ulbm_settings_shortcodes_help', $ulbm_sh
 									<option value="<?php echo esc_attr( (string) $ulbm_c ); ?>" <?php selected( (int) $ulbm_s['grid_columns'], $ulbm_c ); ?>><?php echo esc_html( (string) $ulbm_c ); ?></option>
 								<?php endfor; ?>
 							</select>
+							<p class="form-text small mb-0"><?php esc_html_e( 'Default columns for listing grids and archives. Gutenberg/Elementor blocks can override this.', 'flex-multiple-listing-and-booking-system' ); ?></p>
 						</div>
 						<div class="col-md-3">
 							<label class="form-label"><?php esc_html_e( 'Posts per page', 'flex-multiple-listing-and-booking-system' ); ?></label>
@@ -388,7 +431,7 @@ $ulbm_shortcodes_help = apply_filters( 'ulbm_settings_shortcodes_help', $ulbm_sh
 			</div>
 
 			<!-- NOTIFICATIONS -->
-			<div class="tab-pane fade" id="ulbm-st-notify">
+			<div class="tab-pane fade<?php echo 'notify' === $ulbm_settings_tab ? ' show active' : ''; ?>" id="ulbm-st-notify">
 				<div class="ulbm-admin-panel border rounded bg-white p-4 mb-4">
 					<h5 class="fw-bold mb-3"><i class="bi bi-envelope me-2"></i><?php esc_html_e( 'Customer Email Notifications', 'flex-multiple-listing-and-booking-system' ); ?></h5>
 					<p class="text-muted small"><?php esc_html_e( 'When staff change booking status, the customer receives an email if a valid address exists.', 'flex-multiple-listing-and-booking-system' ); ?></p>
@@ -418,7 +461,7 @@ $ulbm_shortcodes_help = apply_filters( 'ulbm_settings_shortcodes_help', $ulbm_sh
 			</div>
 
 			<!-- SHORTCODES -->
-			<div class="tab-pane fade" id="ulbm-st-shortcodes">
+			<div class="tab-pane fade<?php echo 'shortcodes' === $ulbm_settings_tab ? ' show active' : ''; ?>" id="ulbm-st-shortcodes">
 				<div class="ulbm-admin-panel border rounded bg-white p-4 mb-4">
 					<h5 class="fw-bold mb-3"><i class="bi bi-code-slash me-2"></i><?php esc_html_e( 'Available Shortcodes', 'flex-multiple-listing-and-booking-system' ); ?></h5>
 					<div class="table-responsive">
@@ -447,7 +490,7 @@ $ulbm_shortcodes_help = apply_filters( 'ulbm_settings_shortcodes_help', $ulbm_sh
 			</div>
 
 			<!-- POST TYPES -->
-			<div class="tab-pane fade" id="ulbm-st-cpts">
+			<div class="tab-pane fade<?php echo 'cpts' === $ulbm_settings_tab ? ' show active' : ''; ?>" id="ulbm-st-cpts">
 				<div class="ulbm-admin-panel border rounded bg-white p-4 mb-4">
 					<h5 class="fw-bold mb-3"><i class="bi bi-collection me-2"></i><?php esc_html_e( 'Registered Post Types', 'flex-multiple-listing-and-booking-system' ); ?></h5>
 					<p class="text-muted small mb-3"><?php esc_html_e( 'Each published booking type auto-creates a CPT. Add posts under the plugin admin menu.', 'flex-multiple-listing-and-booking-system' ); ?></p>
@@ -488,7 +531,7 @@ $ulbm_shortcodes_help = apply_filters( 'ulbm_settings_shortcodes_help', $ulbm_sh
 			</div>
 
 			<!-- DEMO CONTENT -->
-			<div class="tab-pane fade" id="ulbm-st-demo">
+			<div class="tab-pane fade<?php echo 'demo' === $ulbm_settings_tab ? ' show active' : ''; ?>" id="ulbm-st-demo">
 				<div class="ulbm-admin-panel border rounded bg-white p-4 mb-4">
 					<h5 class="fw-bold mb-2"><i class="bi bi-magic me-2"></i><?php esc_html_e( 'One-Click Demo Content', 'flex-multiple-listing-and-booking-system' ); ?></h5>
 					<p class="text-muted small mb-4">
@@ -562,7 +605,7 @@ $ulbm_shortcodes_help = apply_filters( 'ulbm_settings_shortcodes_help', $ulbm_sh
 			</div>
 
 			<!-- PARTNER PORTAL -->
-			<div class="tab-pane fade" id="ulbm-st-partner">
+			<div class="tab-pane fade<?php echo 'partner' === $ulbm_settings_tab ? ' show active' : ''; ?>" id="ulbm-st-partner">
 				<div class="ulbm-admin-panel border rounded bg-white p-4 mb-4">
 					<h5 class="fw-bold mb-2"><i class="bi bi-people me-2"></i><?php esc_html_e( 'Partner / Vendor Portal', 'flex-multiple-listing-and-booking-system' ); ?></h5>
 					<p class="text-muted small mb-3"><?php esc_html_e( 'Partner pages are created automatically with the correct shortcodes. You can reassign pages below or click Create Pages to repair missing pages.', 'flex-multiple-listing-and-booking-system' ); ?></p>

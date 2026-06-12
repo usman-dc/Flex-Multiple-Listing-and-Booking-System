@@ -90,7 +90,9 @@ final class SettingsSave {
 				'currency_position'  => PostData::has( 'ulbm_currency_position' ) ? sanitize_text_field( PostData::string( 'ulbm_currency_position' ) ) : ( $prev['currency_position'] ?? 'left' ),
 				'date_format'        => PostData::has( 'ulbm_date_format' ) ? sanitize_text_field( PostData::string( 'ulbm_date_format' ) ) : ( $prev['date_format'] ?? 'Y-m-d' ),
 				'time_format'        => PostData::has( 'ulbm_time_format' ) ? sanitize_text_field( PostData::string( 'ulbm_time_format' ) ) : ( $prev['time_format'] ?? 'H:i' ),
-				'grid_columns'       => PostData::has( 'ulbm_grid_columns' ) ? absint( PostData::int( 'ulbm_grid_columns' ) ) : (int) ( $prev['grid_columns'] ?? 3 ),
+				'grid_columns'       => PostData::has( 'ulbm_grid_columns' )
+					? max( 2, min( 4, absint( PostData::int( 'ulbm_grid_columns' ) ) ) )
+					: max( 2, min( 4, (int) ( $prev['grid_columns'] ?? 3 ) ) ),
 				'grid_per_page'      => PostData::has( 'ulbm_grid_per_page' ) ? absint( PostData::int( 'ulbm_grid_per_page' ) ) : (int) ( $prev['grid_per_page'] ?? 12 ),
 				'card_border_radius' => PostData::has( 'ulbm_card_border_radius' ) ? absint( PostData::int( 'ulbm_card_border_radius' ) ) : (int) ( $prev['card_border_radius'] ?? 12 ),
 				'card_shadow'        => self::checkbox_from_post( 'ulbm_card_shadow', $prev, 'card_shadow', true ),
@@ -129,6 +131,9 @@ final class SettingsSave {
 				'grid_show_rating'       => self::checkbox_from_post( 'ulbm_grid_show_rating', $prev, 'grid_show_rating', true ),
 				'grid_show_amenities'    => self::checkbox_from_post( 'ulbm_grid_show_amenities', $prev, 'grid_show_amenities', true ),
 				'grid_amenities_limit'   => PostData::has( 'ulbm_grid_amenities_limit' ) ? max( 1, min( 8, absint( PostData::int( 'ulbm_grid_amenities_limit' ) ) ) ) : (int) ( $prev['grid_amenities_limit'] ?? 4 ),
+				'grid_design'            => PostData::has( 'ulbm_grid_design' )
+					? \FlexBooking\Front\GridDesignRegistry::sanitize_id( PostData::key( 'ulbm_grid_design' ) )
+					: \FlexBooking\Front\GridDesignRegistry::sanitize_id( (string) ( $prev['grid_design'] ?? \FlexBooking\Front\GridDesignRegistry::DEFAULT ) ),
 			)
 		);
 

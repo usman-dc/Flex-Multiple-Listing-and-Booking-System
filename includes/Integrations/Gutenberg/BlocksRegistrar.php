@@ -121,9 +121,11 @@ final class BlocksRegistrar {
 
 			'type'          => array( 'type' => 'string', 'default' => '' ),
 
-			'columns'       => array( 'type' => 'number', 'default' => 3 ),
+			'columns'       => array( 'type' => 'number', 'default' => 0 ),
 
 			'limit'         => array( 'type' => 'number', 'default' => 12 ),
+
+			'design'        => array( 'type' => 'string', 'default' => '' ),
 
 			'gap'           => array( 'type' => 'number', 'default' => 0 ),
 
@@ -197,7 +199,24 @@ final class BlocksRegistrar {
 
 
 
-		wp_localize_script( 'ulbm-blocks-editor', 'ulbmBlockData', array( 'types' => $types_js ) );
+		wp_localize_script(
+			'ulbm-blocks-editor',
+			'ulbmBlockData',
+			array(
+				'types'   => $types_js,
+				'designs' => array_values(
+					array_map(
+						static function ( $design ) {
+							return array(
+								'id'    => $design['id'],
+								'label' => $design['label'],
+							);
+						},
+						\FlexBooking\Front\GridDesignRegistry::all()
+					)
+				),
+			)
+		);
 
 	}
 
@@ -251,7 +270,7 @@ final class BlocksRegistrar {
 
 		$type    = isset( $attributes['type'] ) ? sanitize_key( $attributes['type'] ) : '';
 
-		$columns = isset( $attributes['columns'] ) ? absint( $attributes['columns'] ) : 3;
+		$columns_raw = isset( $attributes['columns'] ) ? absint( $attributes['columns'] ) : 0;
 
 		$limit   = isset( $attributes['limit'] ) ? absint( $attributes['limit'] ) : 12;
 
@@ -261,11 +280,13 @@ final class BlocksRegistrar {
 
 			sprintf( 'type="%s"', esc_attr( $type ) ),
 
-			sprintf( 'columns="%d"', $columns ),
-
-			sprintf( 'limit="%d"', $limit ),
-
 		);
+
+		if ( $columns_raw > 0 ) {
+			$parts[] = sprintf( 'columns="%d"', $columns_raw );
+		}
+
+		$parts[] = sprintf( 'limit="%d"', $limit );
 
 
 
@@ -294,6 +315,14 @@ final class BlocksRegistrar {
 				$parts[] = sprintf( '%s="%d"', $short_key, absint( $attributes[ $attr_key ] ) );
 
 			}
+
+		}
+
+		$design = isset( $attributes['design'] ) ? sanitize_key( $attributes['design'] ) : '';
+
+		if ( '' !== $design && \FlexBooking\Front\GridDesignRegistry::get( $design ) ) {
+
+			$parts[] = sprintf( 'design="%s"', esc_attr( $design ) );
 
 		}
 

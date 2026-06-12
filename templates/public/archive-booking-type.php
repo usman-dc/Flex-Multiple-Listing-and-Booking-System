@@ -5,7 +5,7 @@
  * @package FlexBookingSystem
  */
 
-use FlexBooking\Front\GridFilterUi;
+use FlexBooking\Front\GridDesignRegistry;
 use FlexBooking\Front\LayoutSettings;
 use FlexBooking\Front\ListingDisplay;
 use FlexBooking\PostTypes\BookingTypePostTypeRegistry;
@@ -24,10 +24,11 @@ if ( $ulbm_matched_type ) {
 	$ulbm_type_slug = (string) $ulbm_matched_type['slug'];
 }
 
-$ulbm_general      = json_decode( (string) get_option( 'ulbm_general_settings', '{}' ), true );
+$ulbm_general      = LayoutSettings::get();
 $ulbm_show_filters = ! isset( $ulbm_general['show_filters'] ) || ! empty( $ulbm_general['show_filters'] );
-$ulbm_col_class    = ListingDisplay::grid_col_class( (int) ( $ulbm_general['grid_columns'] ?? 3 ) );
-$ulbm_per_page     = (int) get_option( 'posts_per_page', 12 );
+$ulbm_grid_columns = LayoutSettings::grid_columns();
+$ulbm_col_class    = ListingDisplay::grid_col_class( $ulbm_grid_columns );
+$ulbm_per_page     = LayoutSettings::grid_per_page();
 $ulbm_uid          = 'ulbm-grid-archive-' . wp_unique_id();
 
 global $wp_query;
@@ -41,10 +42,9 @@ $ulbm_showing_end = min( $ulbm_per_page, $ulbm_total );
 
 	<div class="container ulbm-container">
 
-		<?php $ulbm_grid_style = LayoutSettings::grid_inline_style(); ?>
-		<?php $ulbm_grid_columns = (int) ( $ulbm_general['grid_columns'] ?? 3 ); ?>
+		<?php $ulbm_grid_style = LayoutSettings::grid_root_style( $ulbm_grid_columns ); ?>
 		<?php GridFilterUi::enqueue_critical_styles( $ulbm_uid ); ?>
-		<div class="ulbm-listing-grid ulbm-marketplace-ui" id="<?php echo esc_attr( $ulbm_uid ); ?>" style="<?php echo esc_attr( $ulbm_grid_style ); ?>" data-type="<?php echo esc_attr( $ulbm_type_slug ); ?>" data-per-page="<?php echo esc_attr( (string) $ulbm_per_page ); ?>" data-columns="<?php echo esc_attr( (string) $ulbm_grid_columns ); ?>">
+		<div class="ulbm-listing-grid ulbm-marketplace-ui <?php echo esc_attr( GridDesignRegistry::css_class() ); ?>" id="<?php echo esc_attr( $ulbm_uid ); ?>" style="<?php echo esc_attr( $ulbm_grid_style ); ?>" data-type="<?php echo esc_attr( $ulbm_type_slug ); ?>" data-per-page="<?php echo esc_attr( (string) $ulbm_per_page ); ?>" data-columns="<?php echo esc_attr( (string) $ulbm_grid_columns ); ?>">
 
 			<header class="ulbm-grid-hero">
 				<h1 class="ulbm-grid-hero-title"><?php echo esc_html( $ulbm_type_name ?: post_type_archive_title( '', false ) ); ?></h1>
@@ -94,7 +94,7 @@ $ulbm_showing_end = min( $ulbm_per_page, $ulbm_total );
 				</div>
 			</div>
 
-			<div class="ulbm-grid-results row ulbm-view-grid">
+			<div class="ulbm-grid-results ulbm-view-grid">
 				<?php if ( have_posts() ) : ?>
 					<?php while ( have_posts() ) : the_post(); ?>
 						<?php ListingDisplay::render_grid_card( get_the_ID(), $ulbm_col_class ); ?>

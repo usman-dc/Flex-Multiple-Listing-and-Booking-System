@@ -7,6 +7,7 @@
 
 namespace FlexBooking\Forms;
 
+use FlexBooking\PostTypes\BookingTypePostTypeRegistry;
 use FlexBooking\Setup\IndustryCatalog;
 
 defined( 'ABSPATH' ) || exit;
@@ -37,7 +38,230 @@ final class PublicBookingFields {
 		if ( $key && in_array( $key, IndustryCatalog::valid_keys(), true ) ) {
 			return $key;
 		}
+
+		if ( ! empty( $booking_type['slug'] ) ) {
+			$from_slug = self::industry_from_slug( (string) $booking_type['slug'] );
+			if ( 'generic' !== $from_slug ) {
+				return $from_slug;
+			}
+		}
+
 		return 'generic';
+	}
+
+	/**
+	 * Resolve industry from booking type slug.
+	 *
+	 * @param string $slug Booking type slug.
+	 * @return string
+	 */
+	public static function industry_from_slug( $slug ) {
+		$slug = sanitize_title( (string) $slug );
+		foreach ( IndustryCatalog::definitions() as $key => $def ) {
+			if ( (string) ( $def['booking_slug'] ?? '' ) === $slug ) {
+				return $key;
+			}
+		}
+
+		return 'generic';
+	}
+
+	/**
+	 * Resolve industry from listing post type.
+	 *
+	 * @param string $post_type Post type name.
+	 * @return string
+	 */
+	public static function industry_from_post_type( $post_type ) {
+		$post_type = sanitize_key( (string) $post_type );
+		if ( '' === $post_type ) {
+			return 'generic';
+		}
+
+		foreach ( IndustryCatalog::definitions() as $key => $def ) {
+			if ( (string) ( $def['post_type'] ?? '' ) === $post_type ) {
+				return $key;
+			}
+		}
+
+		$match = BookingTypePostTypeRegistry::booking_type_for_post_type( $post_type );
+		if ( $match && ! empty( $match['slug'] ) ) {
+			return self::industry_from_slug( (string) $match['slug'] );
+		}
+
+		return 'generic';
+	}
+
+	/**
+	 * Sidebar widget heading per industry.
+	 *
+	 * @param string $industry Industry key.
+	 * @return string
+	 */
+	public static function widget_title_for_industry( $industry ) {
+		$titles = array(
+			'car_rental'            => __( 'Book This Vehicle', 'flex-multiple-listing-and-booking-system' ),
+			'hotel_accommodation'   => __( 'Book Your Stay', 'flex-multiple-listing-and-booking-system' ),
+			'events_tickets'        => __( 'Book Tickets', 'flex-multiple-listing-and-booking-system' ),
+			'appointments_services' => __( 'Book Appointment', 'flex-multiple-listing-and-booking-system' ),
+			'tours_activities'      => __( 'Book This Tour', 'flex-multiple-listing-and-booking-system' ),
+			'equipment_rental'      => __( 'Rent Equipment', 'flex-multiple-listing-and-booking-system' ),
+			'classes_courses'       => __( 'Enroll Now', 'flex-multiple-listing-and-booking-system' ),
+			'restaurant_tables'     => __( 'Reserve a Table', 'flex-multiple-listing-and-booking-system' ),
+			'workspace_desks'       => __( 'Book Workspace', 'flex-multiple-listing-and-booking-system' ),
+			'boats_charters'        => __( 'Book Charter', 'flex-multiple-listing-and-booking-system' ),
+			'spa_wellness'          => __( 'Book Treatment', 'flex-multiple-listing-and-booking-system' ),
+			'sports_facilities'     => __( 'Book Facility', 'flex-multiple-listing-and-booking-system' ),
+			'transport_shuttles'    => __( 'Book Transfer', 'flex-multiple-listing-and-booking-system' ),
+		);
+
+		$industry = sanitize_key( (string) $industry );
+
+		return $titles[ $industry ] ?? __( 'Book Now', 'flex-multiple-listing-and-booking-system' );
+	}
+
+	/**
+	 * Marketplace schedule field config per industry.
+	 *
+	 * @param string $industry Industry key.
+	 * @return array<string, mixed>
+	 */
+	public static function schedule_for_industry( $industry ) {
+		$industry = sanitize_key( (string) $industry );
+
+		$map = array(
+			'car_rental' => array(
+				'start_label'   => __( 'Pick-up date', 'flex-multiple-listing-and-booking-system' ),
+				'end_label'     => __( 'Return date', 'flex-multiple-listing-and-booking-system' ),
+				'show_guests'   => false,
+				'show_end_date' => true,
+				'price_unit'    => 'day',
+				'unit_label'    => __( 'days', 'flex-multiple-listing-and-booking-system' ),
+			),
+			'equipment_rental' => array(
+				'start_label'   => __( 'Pick-up date', 'flex-multiple-listing-and-booking-system' ),
+				'end_label'     => __( 'Return date', 'flex-multiple-listing-and-booking-system' ),
+				'show_guests'   => false,
+				'show_end_date' => true,
+				'price_unit'    => 'day',
+				'unit_label'    => __( 'days', 'flex-multiple-listing-and-booking-system' ),
+			),
+			'transport_shuttles' => array(
+				'start_label'   => __( 'Pick-up date', 'flex-multiple-listing-and-booking-system' ),
+				'end_label'     => __( 'Return date', 'flex-multiple-listing-and-booking-system' ),
+				'show_guests'   => false,
+				'show_end_date' => true,
+				'price_unit'    => 'day',
+				'unit_label'    => __( 'days', 'flex-multiple-listing-and-booking-system' ),
+			),
+			'hotel_accommodation' => array(
+				'start_label'   => __( 'Check-in', 'flex-multiple-listing-and-booking-system' ),
+				'end_label'     => __( 'Check-out', 'flex-multiple-listing-and-booking-system' ),
+				'show_guests'   => true,
+				'show_end_date' => true,
+				'price_unit'    => 'night',
+				'unit_label'    => __( 'nights', 'flex-multiple-listing-and-booking-system' ),
+			),
+			'boats_charters' => array(
+				'start_label'   => __( 'Charter start', 'flex-multiple-listing-and-booking-system' ),
+				'end_label'     => __( 'Charter end', 'flex-multiple-listing-and-booking-system' ),
+				'show_guests'   => false,
+				'show_end_date' => true,
+				'price_unit'    => 'day',
+				'unit_label'    => __( 'days', 'flex-multiple-listing-and-booking-system' ),
+			),
+			'workspace_desks' => array(
+				'start_label'   => __( 'Start date', 'flex-multiple-listing-and-booking-system' ),
+				'end_label'     => __( 'End date', 'flex-multiple-listing-and-booking-system' ),
+				'show_guests'   => false,
+				'show_end_date' => true,
+				'price_unit'    => 'day',
+				'unit_label'    => __( 'days', 'flex-multiple-listing-and-booking-system' ),
+			),
+			'appointments_services' => array(
+				'start_label'   => __( 'Appointment date', 'flex-multiple-listing-and-booking-system' ),
+				'end_label'     => __( 'End date', 'flex-multiple-listing-and-booking-system' ),
+				'show_guests'   => false,
+				'show_end_date' => false,
+				'price_unit'    => 'session',
+				'unit_label'    => __( 'sessions', 'flex-multiple-listing-and-booking-system' ),
+			),
+			'spa_wellness' => array(
+				'start_label'   => __( 'Preferred date', 'flex-multiple-listing-and-booking-system' ),
+				'end_label'     => '',
+				'show_guests'   => false,
+				'show_end_date' => false,
+				'price_unit'    => 'session',
+				'unit_label'    => __( 'sessions', 'flex-multiple-listing-and-booking-system' ),
+			),
+			'tours_activities' => array(
+				'start_label'   => __( 'Tour date', 'flex-multiple-listing-and-booking-system' ),
+				'end_label'     => __( 'Return date', 'flex-multiple-listing-and-booking-system' ),
+				'show_guests'   => false,
+				'show_end_date' => false,
+				'price_unit'    => 'person',
+				'unit_label'    => __( 'guests', 'flex-multiple-listing-and-booking-system' ),
+			),
+			'events_tickets' => array(
+				'start_label'   => __( 'Event date', 'flex-multiple-listing-and-booking-system' ),
+				'end_label'     => '',
+				'show_guests'   => false,
+				'show_end_date' => false,
+				'price_unit'    => 'ticket',
+				'unit_label'    => __( 'tickets', 'flex-multiple-listing-and-booking-system' ),
+			),
+			'restaurant_tables' => array(
+				'start_label'   => __( 'Reservation date', 'flex-multiple-listing-and-booking-system' ),
+				'end_label'     => '',
+				'show_guests'   => false,
+				'show_end_date' => false,
+				'price_unit'    => 'booking',
+				'unit_label'    => __( 'bookings', 'flex-multiple-listing-and-booking-system' ),
+			),
+			'classes_courses' => array(
+				'start_label'   => __( 'Class date', 'flex-multiple-listing-and-booking-system' ),
+				'end_label'     => '',
+				'show_guests'   => false,
+				'show_end_date' => false,
+				'price_unit'    => 'seat',
+				'unit_label'    => __( 'seats', 'flex-multiple-listing-and-booking-system' ),
+			),
+			'sports_facilities' => array(
+				'start_label'   => __( 'Booking date', 'flex-multiple-listing-and-booking-system' ),
+				'end_label'     => __( 'End date', 'flex-multiple-listing-and-booking-system' ),
+				'show_guests'   => false,
+				'show_end_date' => true,
+				'price_unit'    => 'hour',
+				'unit_label'    => __( 'hours', 'flex-multiple-listing-and-booking-system' ),
+			),
+		);
+
+		$defaults = array(
+			'start_label'   => __( 'Start date', 'flex-multiple-listing-and-booking-system' ),
+			'end_label'     => __( 'End date', 'flex-multiple-listing-and-booking-system' ),
+			'show_guests'   => true,
+			'show_end_date' => true,
+			'price_unit'    => 'night',
+			'unit_label'    => __( 'nights', 'flex-multiple-listing-and-booking-system' ),
+		);
+
+		return array_merge( $defaults, $map[ $industry ] ?? array() );
+	}
+
+	/**
+	 * Fields skipped in marketplace sidebar (collected elsewhere).
+	 *
+	 * @param string $industry Industry key.
+	 * @return string[]
+	 */
+	public static function marketplace_skip_fields( $industry ) {
+		$skip = array( 'guests_count' );
+
+		if ( 'hotel_accommodation' === sanitize_key( $industry ) ) {
+			$skip[] = 'guests_count';
+		}
+
+		return array_unique( $skip );
 	}
 
 	/**
@@ -268,16 +492,23 @@ final class PublicBookingFields {
 	 * @param array<string, mixed>|null $booking_type Booking type row or null.
 	 * @return array{industry: string, contact: array, extra: array, title: string}
 	 */
-	public static function groups_for_type( $booking_type ) {
+	public static function groups_for_type( $booking_type, $listing_post_type = '' ) {
 		$industry = self::industry_from_type( $booking_type );
-		$def      = IndustryCatalog::get( $industry );
-		$title    = $def ? (string) $def['select_label'] : __( 'Booking details', 'flex-multiple-listing-and-booking-system' );
+		if ( 'generic' === $industry && '' !== (string) $listing_post_type ) {
+			$industry = self::industry_from_post_type( (string) $listing_post_type );
+		}
+
+		$def   = IndustryCatalog::get( $industry );
+		$title = $def ? (string) $def['select_label'] : __( 'Booking details', 'flex-multiple-listing-and-booking-system' );
 
 		$groups = array(
-			'industry' => $industry,
-			'contact'  => self::contact_fields(),
-			'extra'    => self::extra_fields_for_industry( $industry ),
-			'title'    => $title,
+			'industry'      => $industry,
+			'contact'       => self::contact_fields(),
+			'extra'         => self::extra_fields_for_industry( $industry ),
+			'title'         => $title,
+			'widget_title'  => self::widget_title_for_industry( $industry ),
+			'schedule'      => self::schedule_for_industry( $industry ),
+			'skip_marketplace' => self::marketplace_skip_fields( $industry ),
 		);
 
 		return apply_filters( 'ulbm_public_booking_field_groups', $groups, $booking_type );

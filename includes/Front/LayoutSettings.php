@@ -28,6 +28,14 @@ final class LayoutSettings {
 
 	public const DEFAULT_GRID_CARD_PADDING = 16;
 
+	public const DEFAULT_GRID_COLUMNS = 3;
+
+	public const MIN_GRID_COLUMNS = 2;
+
+	public const MAX_GRID_COLUMNS = 4;
+
+	public const DEFAULT_GRID_PER_PAGE = 12;
+
 	/**
 	 * @var array<string,mixed>|null
 	 */
@@ -59,11 +67,48 @@ final class LayoutSettings {
 				'grid_margin_top'    => self::DEFAULT_GRID_MARGIN,
 				'grid_margin_bottom' => self::DEFAULT_GRID_MARGIN,
 				'grid_card_padding'  => self::DEFAULT_GRID_CARD_PADDING,
+				'grid_columns'       => self::DEFAULT_GRID_COLUMNS,
+				'grid_per_page'      => self::DEFAULT_GRID_PER_PAGE,
 			),
 			$raw
 		);
 
 		return self::$cached;
+	}
+
+	/**
+	 * Sanitized grid column count from settings (2–4).
+	 *
+	 * @param int|string|null $override Optional explicit columns (widget/shortcode).
+	 * @return int
+	 */
+	public static function grid_columns( $override = null ) {
+		if ( null !== $override && '' !== (string) $override ) {
+			return max( 1, min( 6, (int) $override ) );
+		}
+
+		$settings = self::get();
+
+		return max(
+			self::MIN_GRID_COLUMNS,
+			min( self::MAX_GRID_COLUMNS, (int) ( $settings['grid_columns'] ?? self::DEFAULT_GRID_COLUMNS ) )
+		);
+	}
+
+	/**
+	 * Posts per page for grids from settings.
+	 *
+	 * @param int|string|null $override Optional explicit limit.
+	 * @return int
+	 */
+	public static function grid_per_page( $override = null ) {
+		if ( null !== $override && '' !== (string) $override ) {
+			return max( 1, min( 100, (int) $override ) );
+		}
+
+		$settings = self::get();
+
+		return max( 1, min( 100, (int) ( $settings['grid_per_page'] ?? self::DEFAULT_GRID_PER_PAGE ) ) );
 	}
 
 	/**
@@ -163,6 +208,20 @@ final class LayoutSettings {
 		}
 
 		return implode( ';', $parts );
+	}
+
+	/**
+	 * Inline style for listing grid root (spacing vars + column count).
+	 *
+	 * @param int                  $columns   Resolved column count (2–4).
+	 * @param array<string, mixed> $overrides Spacing overrides.
+	 * @return string
+	 */
+	public static function grid_root_style( $columns, array $overrides = array() ) {
+		$columns = max( self::MIN_GRID_COLUMNS, min( self::MAX_GRID_COLUMNS, (int) $columns ) );
+		$style   = self::grid_inline_style( $overrides );
+
+		return $style ? $style . ';--ulbm-grid-columns:' . $columns : '--ulbm-grid-columns:' . $columns;
 	}
 
 	/**

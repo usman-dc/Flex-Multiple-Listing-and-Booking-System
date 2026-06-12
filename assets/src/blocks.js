@@ -19,6 +19,10 @@ const typeOptions = [ { label: '— All Types —', value: '' } ].concat(
 const typeIdOptions = [ { label: '— Select —', value: '0' } ].concat(
 	bookingTypes.map( ( t ) => ( { label: t.name + ' (#' + t.id + ')', value: String( t.id ) } ) )
 );
+const gridDesigns = ( window.ulbmBlockData && window.ulbmBlockData.designs ) || [];
+const designOptions = [ { label: 'Use global setting', value: '' } ].concat(
+	gridDesigns.map( ( d ) => ( { label: d.label, value: d.id } ) )
+);
 
 /* ─── BOOKING FORM BLOCK ───────────────────────────────────── */
 registerBlockType( 'ulbm-booking/form', {
@@ -75,8 +79,9 @@ registerBlockType( 'ulbm-booking/grid', {
 	keywords: [ 'listings', 'grid', 'booking', 'filter', 'search' ],
 	attributes: {
 		type: { type: 'string', default: '' },
-		columns: { type: 'number', default: 3 },
+		columns: { type: 'number', default: 0 },
 		limit: { type: 'number', default: 12 },
+		design: { type: 'string', default: '' },
 		gap: { type: 'number', default: 0 },
 		paddingX: { type: 'number', default: 0 },
 		paddingY: { type: 'number', default: 0 },
@@ -99,10 +104,10 @@ registerBlockType( 'ulbm-booking/grid', {
 						help: 'Leave "All Types" to show listings from every booking type.',
 					} ),
 					el( RangeControl, {
-						label: 'Columns',
+						label: 'Columns (0 = global default)',
 						value: attributes.columns,
 						onChange: ( val ) => setAttributes( { columns: val } ),
-						min: 1,
+						min: 0,
 						max: 4,
 					} ),
 					el( RangeControl, {
@@ -111,6 +116,13 @@ registerBlockType( 'ulbm-booking/grid', {
 						onChange: ( val ) => setAttributes( { limit: val } ),
 						min: 1,
 						max: 50,
+					} ),
+					el( SelectControl, {
+						label: 'Card design',
+						value: attributes.design || '',
+						options: designOptions,
+						onChange: ( val ) => setAttributes( { design: val } ),
+						help: 'Override the site-wide design from Settings → Layout, or use global.',
 					} )
 				),
 				el( PanelBody, { title: 'Spacing (px)', initialOpen: false },
@@ -165,7 +177,10 @@ registerBlockType( 'ulbm-booking/grid', {
 						el( 'p', {}, '🏠 Flex Listing Grid' ),
 						el( 'p', { className: 'components-placeholder__instructions' },
 							( attributes.type ? 'Type: ' + attributes.type : 'All types' ) +
-							' · ' + attributes.columns + ' cols · ' + attributes.limit + ' per page'
+							' · ' + ( attributes.columns > 0 ? attributes.columns + ' cols' : 'global columns' ) + ' · ' + attributes.limit + ' per page' +
+							( attributes.design
+								? ' · Design: ' + ( gridDesigns.find( ( d ) => d.id === attributes.design ) || { label: attributes.design } ).label
+								: '' )
 						)
 					)
 			)

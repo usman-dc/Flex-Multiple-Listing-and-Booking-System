@@ -4,7 +4,7 @@ Tags: booking, listings, rental, appointment, calendar
 Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.0.6
+Stable tag: 1.0.7
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -122,6 +122,13 @@ Custom database tables and plugin options are removed on uninstall. Use the `ulb
 
 == Changelog ==
 
+= 1.0.7 =
+* Grid card design picker with seven presets and per-widget override (shortcode, Gutenberg, Elementor)
+* Grid columns setting applies on the front end via CSS Grid and global block defaults
+* Industry-aware booking form fields (e.g. car rental pick-up/return vs hotel check-in/out)
+* Fix settings Layout tab content disappearing after save
+* Updated WordPress.org launch banners and HD grid design preview images
+
 = 1.0.6 =
 * Remove license key settings tab and related admin code
 * Rebuild listing grid filters for theme and Elementor compatibility (visible inputs, sort toggle)
@@ -164,6 +171,9 @@ Custom database tables and plugin options are removed on uninstall. Use the `ulb
 * REST API and admin dashboard
 
 == Upgrade Notice ==
+
+= 1.0.7 =
+Grid card designs, column layout fixes, industry-specific booking forms, and updated banners.
 
 = 1.0.6 =
 Listing grid filters work better with themes and Elementor. License settings tab removed.
