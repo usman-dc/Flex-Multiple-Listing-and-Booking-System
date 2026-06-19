@@ -333,6 +333,10 @@ final class Admin {
 		$general  = json_decode( (string) get_option( 'ulbm_general_settings', '{}' ), true );
 		$currency = is_array( $general ) && ! empty( $general['currency'] ) ? (string) $general['currency'] : 'USD';
 
+		$spark_labels   = array_slice( $labels, -7 );
+		$spark_bookings = array_slice( $bookings, -7 );
+		$spark_revenue  = array_slice( $revenue, -7 );
+
 		wp_enqueue_script(
 			'ulbm-chartjs',
 			ULBM_PLUGIN_URL . 'assets/vendor/chart.umd.min.js',
@@ -363,6 +367,9 @@ final class Admin {
 					$currency
 				),
 				'currency'      => $currency,
+				'sparkLabels'   => $spark_labels,
+				'sparkBookings' => $spark_bookings,
+				'sparkRevenue'  => $spark_revenue,
 				'statusLabels'  => $status_labels,
 				'statusCounts'  => $status_counts,
 				'statusColors'  => $status_colors,

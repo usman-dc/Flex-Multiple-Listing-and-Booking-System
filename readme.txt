@@ -1,8 +1,9 @@
 === Flex Listings and Booking Manager ===
 Contributors: usmanaliwpdeveloper
+Donate link: https://wprogers.com/donate
 Tags: booking, listings, rental, appointment, calendar
 Requires at least: 6.2
-Tested up to: 7.0
+Tested up to: 6.7
 Requires PHP: 7.4
 Stable tag: 1.0.7
 License: GPLv2 or later
@@ -17,6 +18,19 @@ Multiple listing grids and a full booking engine for property rentals, car hire,
 Developed by [Usman Ali](https://profiles.wordpress.org/usmanaliwpdeveloper/) at [WpRogers](https://wprogers.com/).
 
 Source code (development, issues, releases): [GitHub repository](https://github.com/usman-dc/Flex-Multiple-Listing-and-Booking-System)
+
+= Live demo =
+
+Try the plugin on a live demo site before you install:
+
+* [Listing grid with AJAX filters](https://demo.wprogers.com/grid-page/) — searchable property grid with multiple card designs
+* [Partner dashboard](https://demo.wprogers.com/partner-dashboard/) — vendor area for managing listings and bookings
+* [Partner login](https://demo.wprogers.com/partner-login/) — front-end partner sign-in
+* [Partner register](https://demo.wprogers.com/partner-register/) — partner registration form
+
+= Support development =
+
+If this plugin helps your project, please [donate now](https://wprogers.com/donate) to support ongoing updates and new features.
 
 = Key features =
 
@@ -112,6 +126,10 @@ No. WooCommerce integration is optional and loads only when WooCommerce is activ
 
 Custom database tables and plugin options are removed on uninstall. Use the `ulbm_uninstall_remove_all_data` filter to keep data if needed.
 
+= Is there a live demo I can try? =
+
+Yes. See the **Live demo** links in the description above, or visit [demo.wprogers.com/grid-page/](https://demo.wprogers.com/grid-page/) for the listing grid, plus partner login, register, and dashboard pages on the same demo site.
+
 == Screenshots ==
 
 1. Admin dashboard with booking statistics and charts
@@ -128,6 +146,8 @@ Custom database tables and plugin options are removed on uninstall. Use the `ulb
 * Industry-aware booking form fields (e.g. car rental pick-up/return vs hotel check-in/out)
 * Fix settings Layout tab content disappearing after save
 * Updated WordPress.org launch banners and HD grid design preview images
+* Redesigned admin dashboard with quick actions, compact charts, and live demo links in readme
+* Added donate link and demo site URLs to readme for WordPress.org
 
 = 1.0.6 =
 * Remove license key settings tab and related admin code

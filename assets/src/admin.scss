@@ -129,6 +129,299 @@ body.ulbm-admin-screen {
 		font-size: 1.1rem;
 	}
 
+	// ─── Dashboard v2 (command center layout) ─────────────────────────────────
+	.ulbm-dashboard-v2 {
+		--ulbm-dash-bg: #eef1f8;
+		--ulbm-dash-indigo: #4f46e5;
+
+		.ulbm-version-badge {
+			background: var(--ulbm-dash-indigo) !important;
+			color: #fff !important;
+			font-size: 0.78rem;
+			font-weight: 600;
+			padding: 0.45rem 0.75rem;
+			border-radius: 999px;
+			box-shadow: none;
+		}
+	}
+
+	.ulbm-dash-panel {
+		border: 1px solid var(--ulbm-admin-border);
+		border-radius: var(--ulbm-admin-radius-lg);
+		background: var(--ulbm-admin-surface);
+		box-shadow: var(--ulbm-admin-shadow);
+		overflow: hidden;
+	}
+
+	.ulbm-dash-panel-head {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.75rem;
+		flex-wrap: wrap;
+		padding: 0.85rem 1rem;
+	}
+
+	.ulbm-dash-panel-title {
+		font-size: 0.95rem;
+		font-weight: 700;
+		color: var(--ulbm-admin-text);
+	}
+
+	.ulbm-dash-panel-sub {
+		font-size: 0.72rem;
+		color: var(--ulbm-admin-muted);
+	}
+
+	.ulbm-dash-chip {
+		font-size: 0.68rem;
+		font-weight: 600;
+		color: var(--ulbm-admin-muted);
+		background: var(--ulbm-admin-surface-2);
+		border: 1px solid var(--ulbm-admin-border);
+		border-radius: 999px;
+		padding: 0.2rem 0.55rem;
+	}
+
+	.ulbm-dash-kpis {
+		.ulbm-stat-card {
+			height: auto;
+		}
+	}
+
+	.ulbm-dash-stat {
+		padding: 0.85rem 1rem 0.65rem;
+		position: relative;
+		overflow: hidden;
+	}
+
+	.ulbm-dash-stat-top {
+		display: flex;
+		align-items: center;
+		gap: 0.45rem;
+		margin-bottom: 0.35rem;
+	}
+
+	.ulbm-dash-stat-icon {
+		width: 28px;
+		height: 28px;
+		border-radius: 8px;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 0.9rem;
+		background: rgba(79, 70, 229, 0.1);
+		color: var(--ulbm-dash-indigo, #4f46e5);
+	}
+
+	.ulbm-dash-stat-label {
+		font-size: 0.72rem;
+		font-weight: 600;
+		color: var(--ulbm-admin-muted);
+	}
+
+	.ulbm-dash-stat-value {
+		font-size: 1.65rem;
+		font-weight: 800;
+		line-height: 1.1;
+		letter-spacing: -0.03em;
+		color: var(--ulbm-admin-text);
+	}
+
+	.ulbm-dash-stat--featured {
+		background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important;
+		border-color: #1e293b !important;
+		color: #fff;
+
+		.ulbm-dash-stat-label,
+		.ulbm-dash-stat-value {
+			color: #fff;
+		}
+
+		.ulbm-dash-stat-icon {
+			background: rgba(255, 255, 255, 0.12);
+			color: #fff;
+		}
+	}
+
+	.ulbm-stat-spark-wrap {
+		position: relative;
+		height: 40px;
+		max-height: 40px;
+		margin-top: 0.35rem;
+		overflow: hidden;
+	}
+
+	.ulbm-stat-spark {
+		display: block !important;
+		width: 100% !important;
+		height: 40px !important;
+		max-height: 40px !important;
+	}
+
+	.ulbm-dash-chart-wrap {
+		position: relative;
+		height: 180px;
+		max-height: 180px;
+		padding: 0 0.75rem 0.75rem;
+		overflow: hidden;
+
+		canvas {
+			display: block !important;
+			width: 100% !important;
+			height: 100% !important;
+			max-height: 180px !important;
+		}
+	}
+
+	.ulbm-dash-actions-grid {
+		display: grid;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: 0.65rem;
+		padding: 0 1rem 1rem;
+
+		@media (max-width: 1199.98px) {
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+		}
+
+		@media (max-width: 767.98px) {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+	}
+
+	.ulbm-dash-action {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 0.45rem;
+		min-height: 88px;
+		padding: 0.65rem 0.4rem;
+		border-radius: 12px;
+		text-decoration: none !important;
+		background: #fff;
+		border: 1px solid var(--ulbm-admin-border);
+		transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+		&:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+		}
+	}
+
+	.ulbm-dash-action-icon {
+		width: 42px;
+		height: 42px;
+		border-radius: 50%;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 1.05rem;
+		color: #fff;
+		box-shadow: 0 4px 12px rgba(15, 23, 42, 0.12);
+	}
+
+	.ulbm-dash-action-label {
+		font-size: 0.72rem;
+		font-weight: 700;
+		color: var(--ulbm-admin-text);
+		text-align: center;
+		line-height: 1.25;
+	}
+
+	$ulbm-dash-tones: (
+		'green': linear-gradient(135deg, #22c55e, #16a34a),
+		'pink': linear-gradient(135deg, #ec4899, #db2777),
+		'blue': linear-gradient(135deg, #3b82f6, #2563eb),
+		'teal': linear-gradient(135deg, #14b8a6, #0d9488),
+		'navy': linear-gradient(135deg, #1e3a8a, #0f172a),
+		'indigo': linear-gradient(135deg, #6366f1, #4f46e5),
+		'cyan': linear-gradient(135deg, #06b6d4, #0891b2),
+		'orange': linear-gradient(135deg, #f97316, #ea580c),
+		'violet': linear-gradient(135deg, #a855f7, #9333ea),
+		'slate': linear-gradient(135deg, #64748b, #475569),
+		'sky': linear-gradient(135deg, #38bdf8, #0ea5e9),
+		'gray': linear-gradient(135deg, #94a3b8, #64748b)
+	);
+
+	@each $name, $gradient in $ulbm-dash-tones {
+		.ulbm-dash-action--#{$name} .ulbm-dash-action-icon {
+			background: $gradient;
+		}
+	}
+
+	.ulbm-dash-table tbody td {
+		padding-top: 0.75rem;
+		padding-bottom: 0.75rem;
+	}
+
+	.ulbm-dash-customer {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+	}
+
+	.ulbm-dash-avatar {
+		width: 30px;
+		height: 30px;
+		border-radius: 50%;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 0.65rem;
+		font-weight: 700;
+		color: #fff;
+		background: linear-gradient(135deg, #6366f1, #4f46e5);
+		flex-shrink: 0;
+	}
+
+	.ulbm-dash-pill {
+		font-size: 0.68rem;
+		font-weight: 600;
+		padding: 0.35em 0.65em;
+	}
+
+	.ulbm-dash-status-body {
+		padding: 0 1rem 1rem;
+	}
+
+	.ulbm-dash-donut-wrap {
+		max-width: 180px;
+		margin: 0 auto 0.75rem;
+	}
+
+	.ulbm-dash-status-legend li {
+		display: flex;
+		align-items: center;
+		gap: 0.45rem;
+		padding: 0.35rem 0;
+		font-size: 0.78rem;
+	}
+
+	.ulbm-dash-legend-dot {
+		width: 8px;
+		height: 8px;
+		border-radius: 50%;
+		flex-shrink: 0;
+	}
+
+	.ulbm-dash-legend-label {
+		flex: 1;
+		font-weight: 600;
+		color: var(--ulbm-admin-text);
+	}
+
+	.ulbm-dash-legend-meta {
+		color: var(--ulbm-admin-muted);
+		font-size: 0.72rem;
+	}
+
+	.ulbm-dash-status-total {
+		margin-top: 0.65rem;
+		padding-top: 0.65rem;
+		border-top: 1px solid var(--ulbm-admin-border);
+	}
+
 	// Panels (tables, filters) — do not clip table body
 	.ulbm-admin-panel {
 		border: 1px solid var(--ulbm-admin-border) !important;
